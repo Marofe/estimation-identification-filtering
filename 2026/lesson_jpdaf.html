@@ -1,0 +1,1491 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>SEL5917 - Estimation, Identification and Stochastic Filtering</title>
+
+		<link rel="stylesheet" href="../dist/reset.css">
+		<link rel="stylesheet" href="../dist/reveal.css">
+		<link rel="stylesheet" href="../dist/theme/white.css" id="theme">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="../plugin/highlight/monokai.css" id="highlight-theme">
+		<link rel="stylesheet" href="../style.css">
+
+	</head>
+	<body>
+
+		<div class="reveal">
+			<div class="slides">
+
+				<!-- ============ TITLE ============ -->
+				<section data-hide-slide-number="true" data-transition="slide">
+					<div class="logo"><img src="../images/sel.png"/> </div>
+					<div class="logo2"><img src="../images/Logo EESC-USP_top.png"/> </div>
+					<div class="title">
+                        <p>&nbsp;</p>
+					<h2>Probabilistic Data Association: <br>PDAF and JPDAF<br>SEL5917</h2>
+					</div>
+					<div class="author">
+					<h3>Prof. Dr. Marcos Rogério Fernandes</h3>
+				</div>
+					<div class="advisor">
+					<p style="text-align: center;font-size: 0.8em;">2026</p>
+				</div>
+				</section>
+
+				<!-- ============ OBJECTIVES ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>Objectives:</h2>
+					</div>
+					<p>&nbsp;</p>
+					<div class="slide-content">
+						<p>The objectives of this class are:
+							<ul>
+								<li><b>Introduce the PDAF</b>: single target tracking;</li>
+								<li><b>Introduce the JPDAF</b>: multi-target tracking;</li>
+								<li>Show an example in Matlab;</li>
+								</ul>
+							</p>
+					</div>
+				</section>
+
+				<!-- ============ INTRO: ASSOCIATION PROBLEM (existing images) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>Introduction to the Association Problem</h2>
+					</div>
+					<div class="slide-content">
+						<center>
+							<p class="lightup">The problem: measurement-origin uncertainty</p>
+							<img src="../images/singletarget-gate.png" width="700">
+						</center>
+					</div>
+				</section>
+
+				<section>
+					<div class="slide-title">
+						<h2>Introduction to the Association Problem</h2>
+					</div>
+					<div class="slide-content">
+						<center>
+							<p class="lightup">The problem: measurement-origin uncertainty</p>
+							<img src="../images/singletarget-gate2.png" width="700">
+						</center>
+					</div>
+				</section>
+
+				<section>
+					<div class="slide-title">
+						<h2>Introduction to the Association Problem</h2>
+					</div>
+					<div class="slide-content">
+						<center>
+							<p class="lightup">The problem: measurement-origin uncertainty</p>
+							<img src="../images/multitarget-gate.png" width="600">
+						</center>
+					</div>
+				</section>
+
+				<section>
+					<div class="slide-title">
+						<h2>Introduction to the Association Problem</h2>
+					</div>
+					<div class="slide-content">
+						<center>
+							<p class="lightup">The problem: measurement-origin uncertainty</p>
+							<img src="../images/multitarget-gate2.png" width="600">
+						</center>
+					</div>
+				</section>
+
+				<!-- ============ THE PROBLEM: TRACKING IN CLUTTER (PDF p3) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>The problem: tracking in clutter</h2>
+					</div>
+					<div class="slide-content dense">
+						<div class="two-col">
+							<div>
+								<div class="box">
+									<span class="box-title">Measurement-origin uncertainty</span>
+									Each scan a sensor returns <b>many</b> measurements:
+									<ul>
+										<li>at most one from the target,</li>
+										<li>the rest <i>clutter</i> / false alarms,</li>
+										<li>the target may be <i>missed</i> ($P_D &lt; 1$).</li>
+									</ul>
+									Which measurement is the target? <b>Unknown.</b>
+								</div>
+								<p><b>Approaches:</b></p>
+								<ul>
+									<li>Nearest-neighbour &mdash; cheap, brittle.</li>
+									<li>MHT &mdash; defer decisions, costly.</li>
+									<li><b>PDA</b> &mdash; <i>soft</i> decision within a scan.</li>
+								</ul>
+							</div>
+						
+				
+					</div>
+				</section>
+
+				<!-- ============ MODEL AND ASSUMPTIONS (PDF p4) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>Model and assumptions</h2>
+					</div>
+					<div class="slide-content small">
+						<p><b>Linear-Gaussian target and measurement:</b></p>
+						<p align="center">
+							$$
+							\begin{align}
+							\mathbf{x}_k &= F\mathbf{x}_{k-1} + \mathbf{w}_{k-1},\quad   \mathbf{w}_{k-1} \sim \mathcal{N}(\mathbf{0}, Q) \\
+							  \mathbf{y}_k &= H\mathbf{x}_k + \mathbf{v}_k, \quad
+							  \mathbf{v}_k \sim \mathcal{N}(\mathbf{0}, R).
+							 \end{align} 
+							  $$
+						</p>
+						<div class="box">
+							<span class="box-title">Standing assumptions</span>
+							<span class="assump">(A1)</span> Gaussian past:
+								$p(\mathbf{x}_k \mid Y^{k-1}) = \mathcal{N}(\hat{\mathbf{x}}_{k|k-1}, P_{k|k-1})$;<br>
+							<span class="assump">(A2)</span> at most one measurement per target; detection prob. $P_D$;<br>
+							<span class="assump">(A3)</span> target-originated measurement in gate with prob. $P_G$;<br>
+							<span class="assump">(A4)</span> clutter uniform in the gate, Poisson count (density $\lambda$);<br>
+							<span class="assump">(A5)</span> measurements conditionally independent given origin.
+						</div>
+					</div>
+				</section>
+
+
+                
+                	<!-- ============ VALIDATION GATING (PDF p5) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>Validation gating</h2>
+					</div>
+					<div class="slide-content small">
+				
+							<div>
+								<p>Predicted measurement and innovation covariance:</p>
+								<p align="center">
+									$$
+									\begin{align}
+									\hat{\mathbf{y}}_{k|k-1} &= H\hat{\mathbf{x}}_{k|k-1}, \\
+									  S_k &= HP_{k|k-1}H^{\trp} + R\\
+                                      \boldsymbol{\nu}_j &= \mathbf{y}_j - \hat{\mathbf{y}}_{k|k-1}
+									  \end{align}
+                                      $$
+								</p>
+								<p><b>Gate</b> (Mahalanobis test):</p>
+								<p align="center">
+									$$\boxed{\;\mathcal{G}(\gamma):=\{\boldsymbol{\nu}_j:\boldsymbol{\nu}_j^{\trp} S_k^{-1} \boldsymbol{\nu}_j \le \gamma\}\;}$$
+								</p>
+                                <center>
+								<p>The threshould is $\gamma$ from $\chi^2_{n_y}$ for gate probability $P_G$.<br>
+								<b>Gate volume:</b> $$V_k = c_{n_y}\,\gamma^{n_y/2}\,|S_k|^{1/2}$$</p>
+                         
+                                </center>
+							</div>
+			
+					</div>
+				</section>
+
+				<!-- ============ VALIDATION GATING (PDF p5) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>Validation gating</h2>
+					</div>
+					<div class="slide-content small">
+					<center>
+			
+								<svg viewBox="0 0 440 320" width="800">
+									<ellipse cx="200" cy="150" rx="180" ry="115" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>
+									<foreignObject x="328" y="26" width="60" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="flab" style="color:#1d4ed8">$\mathcal{G}(\gamma)$</div></foreignObject>
+									<!-- innovations -->
+									<line x1="200" y1="160" x2="315" y2="140" stroke="#94a3b8" stroke-width="1.5"/>
+									<line x1="200" y1="160" x2="110" y2="100" stroke="#94a3b8" stroke-width="1.5"/>
+									<line x1="200" y1="160" x2="235" y2="240" stroke="#94a3b8" stroke-width="1.5"/>
+									<foreignObject x="146" y="106" width="34" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab" style="color:#475569">$\boldsymbol{\nu}_1$</div></foreignObject>
+									<!-- measurements -->
+									<circle cx="315" cy="140" r="5" fill="#dc2626"/><foreignObject x="322" y="120" width="34" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab" style="color:#dc2626">$\mathbf{y}_1$</div></foreignObject>
+									<circle cx="110" cy="100" r="5" fill="#dc2626"/><foreignObject x="80" y="80" width="34" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab" style="color:#dc2626">$\mathbf{y}_2$</div></foreignObject>
+									<circle cx="235" cy="240" r="5" fill="#dc2626"/><foreignObject x="243" y="240" width="34" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab" style="color:#dc2626">$\mathbf{y}_3$</div></foreignObject>
+									<!-- predicted -->
+									<circle cx="200" cy="160" r="5" fill="#1d4ed8"/>
+									<foreignObject x="130" y="166" width="90" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="flab" style="color:#1d4ed8">$\hat{\mathbf{y}}_{k|k-1}$</div></foreignObject>
+									<!-- rejected -->
+									<circle cx="408" cy="295" r="4" fill="#334155"/>
+									<text x="330" y="300" font-size="13" fill="#334155">rejected</text>
+								</svg>
+
+
+                                </center>
+					
+						
+					</div>
+				</section>
+
+
+
+
+				<!-- ============ PDAF: ASSOCIATION PROBABILITIES (PDF p6) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>PDAF: association probabilities</h2>
+					</div>
+					<div class="slide-content dense">
+						<p class="lightup"><b>Events:</b> 
+                            $$
+                            \theta_{j}=\{y_{k,j} \text{ is target-originated}\},\quad \forall j=1,\ldots,m_k\\
+							\theta_{0}=\{\text{no validated measurements is target-originated}\}
+                            $$
+                            </p>
+						<p align="center">
+                            <p>&nbsp;</p>
+                            <b>Event Posterior Probability:</b>
+                            <p class="lightup">
+							$$\beta_{j} := \mathbb{P}(\theta_{j} \mid Y^k), \qquad
+							  \sum_{j=0}^{m_k} \beta_{j} = 1.$$
+                              </p>
+						</p>
+					
+				</section>
+
+
+
+                <!-- ============ PDAF: ASSOCIATION PROBABILITIES (PDF p6) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>PDAF: association probabilities</h2>
+					</div>
+					<div class="slide-content dense">
+						Note that
+                        <p class="lightup">
+                        $$
+                            Y^k:= \{y_{k,1},\ldots,y_{k,m_k}\}\cup Y^{k-1}
+                        $$
+                        </p>
+						<p align="center">
+                            <p>&nbsp;</p>
+                            Accordingly, for $j\neq 0$,
+
+							$$
+                            \beta_{j} := \mathbb{P}(\theta_{j} \mid Y^k) =  \mathbb{P}(\theta_{j} \mid \{y_{k,1},\ldots,y_{k,m_k}\}, m_k, Y^{k-1})\\
+                            = \frac{1}{c}p(\{y_{k,1},\ldots,y_{k,m_k}\} \mid \theta_{j} , m_k, Y^{k-1})\mathbb{P}(\theta_{j}\mid m_k, Y^{k-1})\\
+                            = \frac{1}{c}\underbrace{\frac{\mathcal{N}(y_{k,j};\hat{y}_{k|k-1},S_{k|k-1})}{P_G}}_{\text{Prob. } y_{k,j} \text{ is T.O.}} \underbrace{\Bigl(\frac{1}{V_k}\Bigr)^{m_k-1}}_{\text{Prob. } m_k-1 \text{ clutters}}\mathbb{P}(\theta_{j}\mid m_k, Y^{k-1})\\
+                            $$
+
+						</p>
+					
+				</section>
+
+
+                
+
+                <!-- ============ PDAF: ASSOCIATION PROBABILITIES (PDF p6) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>PDAF: association probabilities</h2>
+					</div>
+					<div class="slide-content dense">
+						Note that
+                        <p class="lightup">
+                        $$
+                            Y^k:= \{y_{k,1},\ldots,y_{k,m_k}\}\cup Y^{k-1}
+                        $$
+                        </p>
+						<p align="center">
+                            <p>&nbsp;</p>
+                            Accordingly, for $j = 0$,
+
+							$$
+                            \beta_{0} := \mathbb{P}(\theta_{0} \mid Y^k) =  \mathbb{P}(\theta_{0} \mid \{y_{k,1},\ldots,y_{k,m_k}\}, m_k, Y^{k-1})\\
+                            = \frac{1}{c}p(\{y_{k,1},\ldots,y_{k,m_k}\} \mid \theta_{0} , m_k, Y^{k-1})\mathbb{P}(\theta_{0}\mid m_k, Y^{k-1})\\
+                            = \frac{1}{c}\underbrace{\Bigl(\frac{1}{V_k}\Bigr)^{m_k}}_{\text{Prob. } m_k \text{ clutters}}\mathbb{P}(\theta_{0}\mid m_k, Y^{k-1})\\
+                            $$
+
+						</p>
+					
+				</section>
+
+
+
+                        <!-- ============ PDAF: ASSOCIATION PROBABILITIES (PDF p6) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>PDAF: association probabilities</h2>
+					</div>
+					<div class="slide-content dense">
+						Now, consider the prior event probability:
+						<p align="center">
+                         <p class="lightup">
+							$$
+                         \mathbb{P}(\theta_{j}\mid m_k, Y^{k-1})\propto \begin{cases}
+P_DP_G \mu_F(m_k-1)\frac{1}{m_k},\quad j\neq 0\\
+(1-P_DP_G)\mu_F(m_k),\quad j=0
+\end{cases}
+                            $$
+                            </p>
+                            where
+                            $$
+                                \mu_F(\phi)=e^{-\lambda V_k }\frac{(\lambda V_k)^\phi}{\phi!}
+                            $$
+                            <p>&nbsp;</p>
+                            <center>
+                            Obs: It is assumed that the number $\phi$ of clutters inside the gate follows a Poisson distribution with mean $\lambda V_k$!
+</center>
+						</p>
+					
+				</section>
+
+
+
+                                 <!-- ============ PDAF: ASSOCIATION PROBABILITIES (PDF p6) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>PDAF: association probabilities</h2>
+					</div>
+					<div class="slide-content dense">
+                        Note that
+                        $$
+                            \frac{\beta_{j}}{\beta_{0}}=\frac{\frac{1}{c}\underbrace{\frac{\mathcal{N}(y_{k,j};\hat{y}_{k|k-1},S_{k|k-1})}{P_G}}_{\text{Prob. } y_{k,j} \text{ is T.O.}} \underbrace{\Bigl(\frac{1}{V_k}\Bigr)^{m_k-1}}_{\text{Prob. } m_k-1 \text{ clutters}}P_DP_G \mu_F(m_k-1)\frac{1}{m_k}}{\frac{1}{c}\underbrace{\Bigl(\frac{1}{V_k}\Bigr)^{m_k}}_{\text{Prob. } m_k \text{ clutters}}(1-P_DP_G)\mu_F(m_k)}\\
+                            =P_D \mathcal{N}_j V_k \frac{\mu_F(m_k-1)}{(1-P_DP_G)\mu_F(m_k)m_k}
+
+                        $$
+                        From the Poisson distribution,
+                        $$
+                        \frac{\mu_F(m_k-1)}{\mu_F(m_k)}=\frac{e^{-\lambda V_k }\frac{(\lambda V_k)^{m_k-1}}{(m_k-1)!}}{e^{-\lambda V_k }\frac{(\lambda V_k)^{m_k}}{m_k!}}=\frac{(\lambda V_k)^{-1}m_k!}{(m_k-1)!}=\frac{m_k}{\lambda V_k}
+                        $$
+					</div>
+					
+				</section>
+
+
+                			<section>
+					<div class="slide-title">
+						<h2>PDAF: association probabilities</h2>
+					</div>
+					<div class="slide-content dense">
+                       Therefore,
+                       <p class="lightup">
+                        $$
+                            \frac{\beta_{j}}{\beta_{0}}= \frac{ P_D \mathcal{N}_j}{(1-P_DP_G)\lambda}=\frac{\mathcal{L}_j(k)}{1-P_DP_G}
+
+                        $$
+                        where
+                        $$
+                            \mathcal{L}_j(k):=\frac{\mathcal{N}(y_{k,j};\hat{y}_{k|k-1},S_{k|k-1}) P_D}{\lambda}
+                        $$
+                        </p>
+                        In addition, as $\sum_{j=0}^{m_k} \beta_{j} =1$, one conclude that 
+                        $$
+                           \sum_{j=1}^{m_k} \frac{\mathcal{L}_j(k)\beta_{0}}{1-P_DP_G}=1-\beta_{0}\\
+                           \Rightarrow \Bigl(\frac{\sum_j \mathcal{L}_j(k)+(1-P_DP_G)}{1-P_DP_G}\Bigr)\beta_{0}=1
+                        $$
+                      
+					</div>
+					
+				</section>
+
+
+                
+                			<section>
+					<div class="slide-title">
+						<h2>PDAF: association probabilities</h2>
+					</div>
+					<div class="slide-content dense">
+                       Therefore,
+                       <p class="lightup">
+                        $$
+                            \frac{\beta_{j}}{\beta_{0}}= \frac{ P_D \mathcal{N}_j}{(1-P_DP_G)\lambda}=\frac{\mathcal{L}_j(k)}{1-P_DP_G}
+
+                        $$
+                        where
+                        $$
+                            \mathcal{L}_j(k):=\frac{\mathcal{N}(y_{k,j};\hat{y}_{k|k-1},S_{k|k-1}) P_D}{\lambda}
+                        $$
+                        </p>
+                        In addition, as $\sum_{j=0}^{m_k} \beta_{j} =1$, one conclude that 
+                        $$
+                           \sum_{j=1}^{m_k} \frac{\mathcal{L}_j(k)\beta_{0}}{1-P_DP_G}=1-\beta_{0}\\
+                           \Rightarrow \beta_{0}=\frac{1-P_DP_G}{\sum_{j=1}^{m_k} \mathcal{L}_j(k)+(1-P_DP_G)}
+                        $$
+                      
+					</div>
+					
+				</section>
+
+
+
+                      
+                			<section>
+					<div class="slide-title">
+						<h2>PDAF: association probabilities</h2>
+					</div>
+					<div class="slide-content dense">
+                       Thus,
+                       <p class="">
+                        $$
+                          \beta_{j}= \frac{\mathcal{L}_j(k)}{1-P_DP_G}\beta_{0}=\frac{\mathcal{L}_j(k)}{1-P_DP_G}\frac{1-P_DP_G}{\sum_{i=1}^{m_k} \mathcal{L}_i(k)+(1-P_DP_G)}\\
+                          \Rightarrow  \beta_{j}=\frac{\mathcal{L}_j(k)}{\sum_{i=1}^{m_k} \mathcal{L}_i(k)+(1-P_DP_G)}
+
+                        $$
+                        In conclusion,
+                        <p class="lightup">
+$$
+                                \beta_{j}=\begin{cases} 
+                                    \frac{\mathcal{L}_j(k)}{\sum_{i=1}^{m_k} \mathcal{L}_i(k)+(1-P_DP_G)},\quad j\neq 0 \\
+                                    \frac{1-P_DP_G}{\sum_{i=1}^{m_k} \mathcal{L}_i(k)+(1-P_DP_G)},\quad j=0
+                                \end{cases}
+                                $$
+                        </p>
+                        Obs: 
+                        $$
+                            \beta_{j}=\mathbb{P}(\theta_{j}|Y^k)
+                        $$
+           
+                      
+					</div>
+					
+				</section>
+
+
+				  	<!-- ============ PDAF: COMBINED INNOVATION (PDF p7) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>PDAF: state update</h2>
+					</div>
+					<div class="slide-content dense">
+                         We want the posterior state distribution
+						<div class="box">
+                          
+							$$
+                                p(x_k|Y^k)=\sum_j p(x_k|\theta_{j},Y^k)\mathbb{P}(\theta_{j}|Y^k)
+                            $$
+                           
+						</div>
+                        <p>&nbsp;</p>
+                         So, the posteriori state distribution is a Gaussian Mixture
+                              <p>&nbsp;</p>
+                            $$
+                             \boxed{\; p(x_k|Y^k)=\sum_j \beta_{j}p(x_k|\theta_{j},Y^k)}
+                             $$
+						
+                            </center>
+					
+					</div>
+				</section>
+
+
+                    	<!-- ============ PDAF: COMBINED INNOVATION (PDF p7) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>Gaussian Mixture</h2>
+					</div>
+					<div class="slide-content dense">
+                        <p class="box">
+                            <span class="box-title">Moment-matching for Gaussian Mixtures</span>
+                       For any mixture $\sum_i w_i\mathcal{N}(\mu_i,\Sigma_i)$ with $\sum_i w_i=1$, the mean and covariance are
+                       $$
+  \mu=\sum_i w_i\mu_i,\\
+  \Sigma=\sum_i w_i\Bigl[\Sigma_i+(\mu_i-\mu)(\mu_i-\mu)^\trp\Bigr]
+$$
+</p>
+
+Thus,
+$$
+        \hat{x}_{k|k}=\sum_{j}\beta_{j}\hat{x}_{k|k}^j \\
+        P_{k|k}=\sum_{j} \beta_{j}\Bigl[P_{k|k}^j+(\hat{x}_{k|k}^j-\hat{x}_{k|k})(\hat{x}_{k|k}^j-\hat{x}_{k|k})^\trp\Bigr]
+$$
+
+					
+					</div>
+				</section>
+
+
+                		<section>
+					<div class="slide-title">
+						<h2>Gaussian Mixture</h2>
+					</div>
+					<div class="slide-content dense">
+                        <p class="box">
+                            <span class="box-title">Moment-matching for Gaussian Mixtures</span>
+                       For any mixture $\sum_i w_i\mathcal{N}(\mu_i,\Sigma_i)$ with $\sum_i w_i=1$, the mean and covariance are
+                       $$
+  \mu=\sum_i w_i\mu_i,\\
+  \Sigma=\sum_i w_i\Bigl[\Sigma_i+(\mu_i-\mu)(\mu_i-\mu)^\trp\Bigr]
+$$
+</p>
+
+Thus,
+$$
+        \hat{x}_{k|k}=\hat{x}_{k|k-1}+K_k\Bigl(\sum_{j}\beta_{j}(y_{k,j}-\hat{y}_{k|k-1})\Bigr) \\
+        P_{k|k}=\sum_{j} \beta_{j}\Bigl[P_{k|k}^j+(\hat{x}_{k|k}^j-\hat{x}_{k|k})(\hat{x}_{k|k}^j-\hat{x}_{k|k})^\trp\Bigr]
+$$
+
+					
+					</div>
+				</section>
+
+
+                
+
+				<!-- ============ PDAF: COMBINED INNOVATION (PDF p7) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>PDAF: state update via the combined innovation</h2>
+					</div>
+					<div class="slide-content dense">
+                          Define the weighted innovation
+						<div class="box">
+                          
+							<p align="center">
+								$$\boldsymbol{\nu}_k = \sum_{j=1}^{m_k} \beta_{j}\,\boldsymbol{\nu}_{k,j}
+								 $$
+							</p>
+                           
+						</div>
+                         So, the posteriori state estimate is
+                            $$
+                             \boxed{\;\hat{\mathbf{x}}_{k|k} = \hat{\mathbf{x}}_{k|k-1} + K_k\,\boldsymbol{\nu}_k\;}
+                             $$
+							with the ordinary Kalman gain $K_k = P_{k|k-1}H^{\trp}S_k^{-1}$.
+                            <center>
+                                <br>
+						<p class="lightup2">Obs: A <i>single</i>, probability-weighted, innovation replaces the choice of one measurement:
+							each validated $\mathbf{y}_j$ pulls the estimate in proportion to $\beta_{j}$,
+							how likely it is to be the target.</p>
+                            </center>
+					
+					</div>
+				</section>
+
+				<!-- ============ PDAF: COVARIANCE AND SPREAD (PDF p8) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>PDAF: covariance and the spread of the innovations</h2>
+					</div>
+					<div class="slide-content dense">
+						<p>The covariance must also reflect uncertainty about <i>which</i> measurement was correct:</p>
+						<p align="center">
+                            <p class="lightup">
+							$$
+							\begin{align}
+							P_{k|k} &= \underbrace{\beta_{0}P_{k|k-1}}_{\text{no T.O.}} + \underbrace{(1-\beta_{0})P_k^{c}}_{\text{correct assoc.}} + \underbrace{\tilde{P}_k}_{\text{spread}}\\
+							P_k^{c} &= (I - K_kH)P_{k|k-1}\\
+                            \tilde{P}_k &= K_k\!\Big[\textstyle\sum_{j=1}^{m_k} \beta_{j}\boldsymbol{\nu}_{k,j}\boldsymbol{\nu}_{k,j}^{\trp}
+							  - \boldsymbol{\nu}_k\boldsymbol{\nu}_k^{\trp}\Big]K_k^{\trp} \succeq 0.
+							  \end{align}
+							  $$
+                              </p>
+							
+						</p>
+                        <p>&nbsp;</p>
+						<div class="">
+							
+							The posterior is an <i>exact Gaussian mixture</i> (one component per event); the PDAF collapses it
+							to one Gaussian by <i>moment matching</i>. The spread term $\tilde{P}_k$ <b>inflates</b> the covariance
+							&rArr; honest uncertainty and consistency in clutter.
+						</div>
+					</div>
+				</section>
+
+				<!-- ============ PDAF: ONE RECURSIVE CYCLE (PDF p9) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>PDAF: one recursive cycle</h2>
+					</div>
+					<div class="slide-content small">
+						<center>
+							<svg viewBox="0 0 620 300" width="820">
+								<defs>
+									<marker id="fa" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+										<path d="M0,0 L7,3 L0,6 Z" fill="#334155"/>
+									</marker>
+									<marker id="fr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+										<path d="M0,0 L7,3 L0,6 Z" fill="#dc2626"/>
+									</marker>
+								</defs>
+								<!-- sensor -->
+								<rect x="235" y="10" width="150" height="42" rx="6" fill="#f1f5f9" stroke="#334155"/>
+								<foreignObject x="235" y="16" width="150" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab c" style="color:#334155;font-weight:600">sensor $Y_k$</div></foreignObject>
+								<text x="310" y="46" font-size="12" text-anchor="middle" fill="#64748b">(clutter)</text>
+								<!-- row 1 -->
+								<rect x="20" y="105" width="150" height="52" rx="6" fill="#fdecec" stroke="#dc2626"/>
+								<text x="95" y="126" font-size="13" text-anchor="middle" fill="#dc2626" font-weight="600">Predict</text>
+								<foreignObject x="20" y="134" width="150" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab c sm" style="color:#334155">$\hat{\mathbf{x}}_{k|k-1},\ P_{k|k-1}$</div></foreignObject>
+
+								<rect x="235" y="105" width="150" height="52" rx="6" fill="#eef2ff" stroke="#1d4ed8"/>
+								<text x="310" y="126" font-size="13" text-anchor="middle" fill="#1d4ed8" font-weight="600">1. Gate</text>
+								<foreignObject x="235" y="134" width="150" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab c sm" style="color:#334155">$\boldsymbol{\nu}^{\trp}S^{-1}\boldsymbol{\nu}\le\gamma$</div></foreignObject>
+
+								<rect x="450" y="105" width="150" height="52" rx="6" fill="#eef2ff" stroke="#1d4ed8"/>
+								<text x="525" y="126" font-size="13" text-anchor="middle" fill="#1d4ed8" font-weight="600">2. Associate</text>
+								<foreignObject x="450" y="134" width="150" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab c sm" style="color:#334155">$\beta_{k,i}$</div></foreignObject>
+								<!-- row 2 -->
+								<rect x="450" y="215" width="150" height="60" rx="6" fill="#eef2ff" stroke="#1d4ed8"/>
+								<text x="525" y="236" font-size="13" text-anchor="middle" fill="#1d4ed8" font-weight="600">3. Combine</text>
+								<foreignObject x="448" y="245" width="154" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab c sm" style="color:#334155">$\boldsymbol{\nu}_k=\sum_i\beta_{k,i}\boldsymbol{\nu}_{k,i}$</div></foreignObject>
+
+								<rect x="235" y="219" width="150" height="52" rx="6" fill="#fdecec" stroke="#dc2626"/>
+								<foreignObject x="235" y="228" width="150" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab c" style="color:#dc2626;font-weight:600">4. Update $\hat{\mathbf{x}}$</div></foreignObject>
+								<foreignObject x="235" y="248" width="150" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab c sm" style="color:#334155">$+\,K_k\boldsymbol{\nu}_k$</div></foreignObject>
+
+								<rect x="20" y="219" width="150" height="52" rx="6" fill="#fdecec" stroke="#dc2626"/>
+								<foreignObject x="20" y="228" width="150" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab c" style="color:#dc2626;font-weight:600">5. Update $P$</div></foreignObject>
+								<foreignObject x="20" y="248" width="150" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab c sm" style="color:#334155">$+\,\tilde{P}_k$</div></foreignObject>
+								<!-- arrows -->
+								<line x1="310" y1="52" x2="310" y2="103" stroke="#334155" stroke-width="1.5" marker-end="url(#fa)"/>
+								<line x1="170" y1="131" x2="233" y2="131" stroke="#334155" stroke-width="1.5" marker-end="url(#fa)"/>
+								<line x1="385" y1="131" x2="448" y2="131" stroke="#334155" stroke-width="1.5" marker-end="url(#fa)"/>
+								<line x1="525" y1="157" x2="525" y2="213" stroke="#334155" stroke-width="1.5" marker-end="url(#fa)"/>
+								<line x1="450" y1="245" x2="387" y2="245" stroke="#334155" stroke-width="1.5" marker-end="url(#fa)"/>
+								<line x1="235" y1="245" x2="172" y2="245" stroke="#334155" stroke-width="1.5" marker-end="url(#fa)"/>
+								<line x1="95" y1="219" x2="95" y2="159" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#fr)"/>
+								<foreignObject x="56" y="183" width="130" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="flab sm" style="color:#dc2626">recursion $k\!\leftarrow\!k{+}1$</div></foreignObject>
+							</svg>
+							<span class="fig-cap">Only the <b>association</b> block distinguishes the PDAF from a plain Kalman filter.</span>
+						</center>
+					</div>
+				</section>
+
+				<!-- ============ WHY JOINT? CONTESTED MEASUREMENTS (PDF p10) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>Why joint association? Contested measurements</h2>
+					</div>
+					<div class="slide-content small">
+						<div class="two-col">
+							<div>
+								<p>With <b>several targets</b> whose gates overlap, a measurement in the overlap could belong to
+									<i>either</i> target.</p>
+								<p>Two independent PDAFs would let <i>both</i> claim it &rArr; bias, <b>track coalescence</b>.</p>
+								<p><b>JPDAF:</b> score association events <i>jointly</i>; one measurement feeds at most one target.</p>
+							</div>
+							<div>
+								<svg viewBox="0 0 460 300" width="440">
+									<ellipse cx="180" cy="150" rx="150" ry="100" fill="#1d4ed8" fill-opacity="0.10" stroke="#1d4ed8" stroke-width="2"/>
+									<ellipse cx="300" cy="150" rx="150" ry="100" fill="#dc2626" fill-opacity="0.10" stroke="#dc2626" stroke-width="2"/>
+									<foreignObject x="66" y="40" width="44" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="flab" style="color:#1d4ed8">$\mathcal{G}_1$</div></foreignObject>
+									<foreignObject x="396" y="40" width="44" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="flab" style="color:#dc2626">$\mathcal{G}_2$</div></foreignObject>
+									<!-- predicted centers -->
+									<circle cx="150" cy="165" r="4" fill="#1d4ed8"/><foreignObject x="114" y="172" width="40" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab" style="color:#1d4ed8">$\hat{\mathbf{y}}^1$</div></foreignObject>
+									<circle cx="330" cy="165" r="4" fill="#dc2626"/><foreignObject x="335" y="172" width="40" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab" style="color:#dc2626">$\hat{\mathbf{y}}^2$</div></foreignObject>
+									<!-- measurements -->
+									<circle cx="110" cy="120" r="4" fill="#334155"/><foreignObject x="84" y="99" width="40" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab">$\mathbf{y}_a$</div></foreignObject>
+									<circle cx="240" cy="110" r="5" fill="#111827"/><foreignObject x="246" y="90" width="40" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab" style="color:#111827">$\mathbf{y}_b$</div></foreignObject>
+									<circle cx="380" cy="140" r="4" fill="#334155"/><foreignObject x="386" y="122" width="40" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab">$\mathbf{y}_c$</div></foreignObject>
+									<circle cx="240" cy="278" r="4" fill="#334155"/><foreignObject x="250" y="270" width="90" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab">$\mathbf{y}_d$ clutter</div></foreignObject>
+								</svg>
+								<span class="fig-cap">$\mathbf{y}_b$ is <i>contested</i> by both targets.</span>
+							</div>
+						</div>
+					</div>
+				</section>
+
+			  <section>
+					<div class="slide-title">
+						<h2>JPDAF: validation gate</h2>
+					</div>
+					<div class="slide-content small">
+					
+							<div>
+								<div class="box">
+									<span class="box-title">Feasibility</span>
+									<span class="assump">(R1)</span> one source per measurement;<br>
+									<span class="assump">(R2)</span> $\le 1$ measurement per target.
+								</div>
+                                	<p><b>Validation matrix</b>: ($m_k$ valid measurements and $T$ targets) 
+                                        $$\omega_{jt}=\begin{cases} 
+                                                1,\quad \text{if } y_{k,j}\in\mathcal{G}_t,\quad t\ge 1\\ 
+                                                0,\quad \text{otherwise} \\ 
+                                            \end{cases}\\
+                                            1\le j \le m_k \\
+                                            0\le t \le T
+                                            $$
+                                            <center>
+                                         Obs: $\omega_{j0}=1,\forall j$ (clutter is always feasible)   
+                                         </center>
+							</div>
+							
+						</div>	
+				</section>
+
+
+                
+
+
+				<section>
+					<div class="slide-title">
+						<h2>JPDAF: validation gate</h2>
+					</div>
+					<div class="slide-content small">
+					
+							<div>
+								<div class="box">
+									<span class="box-title">Feasibility</span>
+									<span class="assump">(R1)</span> one source per measurement;<br>
+									<span class="assump">(R2)</span> $\le 1$ measurement per target.
+								</div>
+                                	<p><b>Validation matrix</b>: ($m_k$ valid measurements and $T$ targets) 
+                                        $$\Omega = [\omega_{jt}] = \begin{bmatrix}
+                                            \omega_{10} & \omega_{11} & \cdots & \omega_{1T}\\
+                                            \omega_{20} & \omega_{21} & \cdots & \omega_{2T}\\
+                                            \vdots & \vdots & \ddots & \vdots \\
+                                            \omega_{m_k0} & \omega_{m_k1} & \cdots & \omega_{m_kT}\\
+                                        \end{bmatrix}$$
+                                  
+                                      
+							</div>
+							
+						</div>	
+				</section>
+
+
+                  <section>
+					<div class="slide-title">
+						<h2>Validation gate: example</h2>
+					</div>
+					<div class="slide-content small">
+                   
+					<center>
+							<img src="../images/multitarget-gate-contest.png" width="700">
+                    </center>
+                  
+				</section>
+
+
+                <section>
+					<div class="slide-title">
+						<h2>Validation gate: example</h2>
+					</div>
+					<div class="slide-content small">
+                        <div class="two-col">
+					<div>
+							<img src="../images/multitarget-gate-contest.png" width="700">
+                    </div>
+                    <div>
+                        <b>Validation matrix:</b>
+                         $$\Omega = [\omega_{jt}] = \begin{bmatrix}
+                                            1 & 1 & 0\\
+                                            1 & 1 & 1\\
+                                            1 & 0 & 1 \\
+                                            1 & 0 & 1 \\
+                                        \end{bmatrix}$$
+                    </div>
+                        </div>
+				</section>
+
+
+                <section>
+					<div class="slide-title">
+						<h2>JPDAF: feasible joint events</h2>
+					</div>
+					<div class="slide-content small">
+					<center>
+                        <p class="lightup">
+						$$
+                            \chi := \cap_{j=1}^m \chi_{jt_j}
+                        $$
+                        </p>
+                        where
+                        $
+                            \chi_{jt_j}
+                        $
+                        is the event of measurement $j$ originated from target $t_j$.
+                        $$
+                            0\le t_j \le T
+                        $$
+                        <b>Measurement association indicator:</b>
+                        $$
+                            \tau_j(\chi) := \begin{cases}
+                                1, \quad \text{if } t_j > 1\\
+                                0, \quad \text{if } t_j = 0
+                            \end{cases}
+                        $$
+
+                                </center>
+					</div>
+				</section>
+
+
+                 <section>
+					<div class="slide-title">
+						<h2>JPDAF: feasible joint events</h2>
+					</div>
+					<div class="slide-content small">
+					<center>
+                        <p class="lightup">
+						$$
+                            \chi := \cap_{j=1}^m \chi_{jt_j}
+                        $$
+                        </p>
+                        where
+                        $
+                            \chi_{jt_j}
+                        $
+                        is the event of measurement $j$ originated from target $t_j$.
+                        $$
+                            0\le t_j \le T
+                        $$
+                        <b>Target association indicator:</b>
+                        $$
+                            \delta_t(\chi) := \begin{cases}
+                                1, \quad \text{if } t_j = t \text{ for some } j\\
+                                0, \quad \text{if } t_j \neq t \text{ for all } j
+                            \end{cases}
+                        $$
+
+                                </center>
+					</div>
+				</section>
+
+
+                
+                 <section>
+					<div class="slide-title">
+						<h2>JPDAF: feasible joint events</h2>
+					</div>
+					<div class="slide-content small">
+					<center>
+                      
+                        <b>Event association indicator:</b>
+                        $$
+                            \theta_{jt} := \begin{cases}
+                                1, \quad \text{if } \chi_{jt} \text{ occurs}\\
+                                0, \quad \text{otherwise}
+                            \end{cases}
+                        $$
+                        <p class="lightup">
+                         <b>Feasible Event Matrix:</b>
+                        $$
+                            \Theta(\chi) = [\theta_{jt}] = \begin{bmatrix}
+                                            \theta_{10} & \theta_{11} & \cdots & \theta_{1T}\\
+                                            \theta_{20} & \theta_{21} & \cdots & \theta_{2T}\\
+                                            \vdots & \vdots & \ddots & \vdots \\
+                                            \theta_{m_k0} & \theta_{m_k1} & \cdots & \theta_{m_kT}\\
+                                        \end{bmatrix}
+                        $$
+                        </p>
+
+                        
+
+                                </center>
+					</div>
+				</section>
+
+
+                
+                 <section>
+					<div class="slide-title">
+						<h2>JPDAF: feasible joint events</h2>
+					</div>
+					<div class="slide-content small">
+					<center>
+                        Given $ \Theta(\chi)$, one gets: 
+
+                        <p class="lightup">
+                     <b>Measurement association indicator:</b>
+                        $$
+                            \tau_j(\chi) = \sum_{t=1}^T \theta_{jt}
+                        $$
+                        </p>
+
+                        <p class="lightup">
+
+                          <b>Target association indicator:</b>
+                        $$
+                            \delta_t(\chi) = \sum_{j=1}^{m_k} \theta_{jt}
+                        $$
+                        </p>
+
+                                </center>
+					</div>
+				</section>
+
+
+
+
+                	<section>
+					<div class="slide-title">
+						<h2>JPDAF: feasible joint events</h2>
+					</div>
+					<div class="slide-content small">
+					<center>
+							<div>
+                                $$\chi_1$$
+								<svg viewBox="0 0 460 280" width="800">
+									<!-- measurements (left) -->
+									<circle cx="70" cy="70" r="22" fill="#fff" stroke="#334155"/><foreignObject x="48" y="60" width="44" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab c">$\mathbf{y}_1$</div></foreignObject>
+									<circle cx="70" cy="150" r="22" fill="#fff" stroke="#334155"/><foreignObject x="48" y="140" width="44" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab c">$\mathbf{y}_2$</div></foreignObject>
+									<circle cx="70" cy="230" r="22" fill="#fff" stroke="#334155"/><foreignObject x="48" y="220" width="44" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab c">$\mathbf{y}_3$</div></foreignObject>
+									<!-- targets (right) -->
+									<rect x="300" y="48" width="130" height="40" rx="6" fill="#f1f5f9" stroke="#64748b"/><text x="365" y="73" font-size="13" text-anchor="middle" fill="#334155">∅ clutter</text>
+									<rect x="300" y="128" width="130" height="40" rx="6" fill="#eef2ff" stroke="#1d4ed8"/><text x="365" y="153" font-size="13" text-anchor="middle" fill="#1d4ed8">Target 1</text>
+									<rect x="300" y="208" width="130" height="40" rx="6" fill="#fdecec" stroke="#dc2626"/><text x="365" y="233" font-size="13" text-anchor="middle" fill="#dc2626">Target 2</text>
+									<!-- edges: y_a->T1, y_b->T2, y_c->clutter -->
+									<line x1="92" y1="70" x2="300" y2="140" stroke="#1d4ed8" stroke-width="3"/>
+									<line x1="92" y1="150" x2="300" y2="222" stroke="#dc2626" stroke-width="3"/>
+									<line x1="92" y1="230" x2="300" y2="72" stroke="#334155" stroke-width="2"/>
+								</svg>
+								
+                                </center>
+					</div>
+				</section>
+
+				<!-- ============ JPDAF: FEASIBLE EVENT MATRICES ============ -->
+                	<section>
+					<div class="slide-title">
+						<h2>JPDAF: feasible joint events</h2>
+					</div>
+					<div class="slide-content small">
+
+                        <div class="two-col">
+							<div>
+                                $$\chi_1$$
+								<svg viewBox="0 0 460 280" width="600">
+									<!-- measurements (left) -->
+									<circle cx="70" cy="70" r="22" fill="#fff" stroke="#334155"/><foreignObject x="48" y="60" width="44" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab c">$\mathbf{y}_1$</div></foreignObject>
+									<circle cx="70" cy="150" r="22" fill="#fff" stroke="#334155"/><foreignObject x="48" y="140" width="44" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab c">$\mathbf{y}_2$</div></foreignObject>
+									<circle cx="70" cy="230" r="22" fill="#fff" stroke="#334155"/><foreignObject x="48" y="220" width="44" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab c">$\mathbf{y}_3$</div></foreignObject>
+									<!-- targets (right) -->
+									<rect x="300" y="48" width="130" height="40" rx="6" fill="#f1f5f9" stroke="#64748b"/><text x="365" y="73" font-size="13" text-anchor="middle" fill="#334155">∅ clutter</text>
+									<rect x="300" y="128" width="130" height="40" rx="6" fill="#eef2ff" stroke="#1d4ed8"/><text x="365" y="153" font-size="13" text-anchor="middle" fill="#1d4ed8">Target 1</text>
+									<rect x="300" y="208" width="130" height="40" rx="6" fill="#fdecec" stroke="#dc2626"/><text x="365" y="233" font-size="13" text-anchor="middle" fill="#dc2626">Target 2</text>
+									<!-- edges: y1->T1, y2->T2, y3->clutter -->
+									<line x1="92" y1="70" x2="300" y2="140" stroke="#1d4ed8" stroke-width="3"/>
+									<line x1="92" y1="150" x2="300" y2="222" stroke="#dc2626" stroke-width="3"/>
+									<line x1="92" y1="230" x2="300" y2="72" stroke="#334155" stroke-width="2"/>
+								</svg>
+
+
+					</div>
+                    <div>
+                        <b>Feasible Event Matrix:</b>
+                         $$
+                            \Theta(\chi_1) = [\theta_{jt}] = \begin{bmatrix}
+                                           0 & 1 & 0\\
+                                           0 & 0 & 1\\
+                                           1 & 0 & 0\\
+                                        \end{bmatrix}
+                        $$
+                    </div>
+                    </div>
+
+				</section>
+
+
+                	<section>
+					<div class="slide-title">
+						<h2>JPDAF: feasible joint events</h2>
+					</div>
+					<div class="slide-content small">
+
+                        <div class="two-col">
+							<div>
+                                $$\chi_2$$
+								<svg viewBox="0 0 460 280" width="600">
+									<!-- measurements (left) -->
+									<circle cx="70" cy="70" r="22" fill="#fff" stroke="#334155"/><foreignObject x="48" y="60" width="44" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab c">$\mathbf{y}_1$</div></foreignObject>
+									<circle cx="70" cy="150" r="22" fill="#fff" stroke="#334155"/><foreignObject x="48" y="140" width="44" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab c">$\mathbf{y}_2$</div></foreignObject>
+									<circle cx="70" cy="230" r="22" fill="#fff" stroke="#334155"/><foreignObject x="48" y="220" width="44" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab c">$\mathbf{y}_3$</div></foreignObject>
+									<!-- targets (right) -->
+									<rect x="300" y="48" width="130" height="40" rx="6" fill="#f1f5f9" stroke="#64748b"/><text x="365" y="73" font-size="13" text-anchor="middle" fill="#334155">∅ clutter</text>
+									<rect x="300" y="128" width="130" height="40" rx="6" fill="#eef2ff" stroke="#1d4ed8"/><text x="365" y="153" font-size="13" text-anchor="middle" fill="#1d4ed8">Target 1</text>
+									<rect x="300" y="208" width="130" height="40" rx="6" fill="#fdecec" stroke="#dc2626"/><text x="365" y="233" font-size="13" text-anchor="middle" fill="#dc2626">Target 2</text>
+									<!-- edges: y1->T2, y2->clutter, y3->T1 -->
+									<line x1="92" y1="70" x2="300" y2="222" stroke="#dc2626" stroke-width="3"/>
+									<line x1="92" y1="150" x2="300" y2="72" stroke="#334155" stroke-width="2"/>
+									<line x1="92" y1="230" x2="300" y2="140" stroke="#1d4ed8" stroke-width="3"/>
+								</svg>
+
+
+					</div>
+                    <div>
+                        <b>Feasible Event Matrix:</b>
+                         $$
+                            \Theta(\chi_2) = [\theta_{jt}] = \begin{bmatrix}
+                                           0 & 0 & 1\\
+                                           1 & 0 & 0\\
+                                           0 & 1 & 0\\
+                                        \end{bmatrix}
+                        $$
+                    </div>
+                    </div>
+
+				</section>
+
+
+                	<section>
+					<div class="slide-title">
+						<h2>JPDAF: feasible joint events</h2>
+					</div>
+					<div class="slide-content small">
+
+                        <div class="two-col">
+							<div>
+                                $$\chi_3$$
+								<svg viewBox="0 0 460 280" width="600">
+									<!-- measurements (left) -->
+									<circle cx="70" cy="70" r="22" fill="#fff" stroke="#334155"/><foreignObject x="48" y="60" width="44" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab c">$\mathbf{y}_1$</div></foreignObject>
+									<circle cx="70" cy="150" r="22" fill="#fff" stroke="#334155"/><foreignObject x="48" y="140" width="44" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab c">$\mathbf{y}_2$</div></foreignObject>
+									<circle cx="70" cy="230" r="22" fill="#fff" stroke="#334155"/><foreignObject x="48" y="220" width="44" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="flab c">$\mathbf{y}_3$</div></foreignObject>
+									<!-- targets (right) -->
+									<rect x="300" y="48" width="130" height="40" rx="6" fill="#f1f5f9" stroke="#64748b"/><text x="365" y="73" font-size="13" text-anchor="middle" fill="#334155">∅ clutter</text>
+									<rect x="300" y="128" width="130" height="40" rx="6" fill="#eef2ff" stroke="#1d4ed8"/><text x="365" y="153" font-size="13" text-anchor="middle" fill="#1d4ed8">Target 1</text>
+									<rect x="300" y="208" width="130" height="40" rx="6" fill="#fdecec" stroke="#dc2626"/><text x="365" y="233" font-size="13" text-anchor="middle" fill="#dc2626">Target 2</text>
+									<!-- edges: y1->clutter, y2->T1, y3->clutter (Target 2 undetected) -->
+									<line x1="92" y1="70" x2="300" y2="72" stroke="#334155" stroke-width="2"/>
+									<line x1="92" y1="150" x2="300" y2="140" stroke="#1d4ed8" stroke-width="3"/>
+									<line x1="92" y1="230" x2="300" y2="72" stroke="#334155" stroke-width="2"/>
+								</svg>
+
+
+					</div>
+                    <div>
+                        <b>Feasible Event Matrix:</b>
+                         $$
+                            \Theta(\chi_3) = [\theta_{jt}] = \begin{bmatrix}
+                                           1 & 0 & 0\\
+                                           0 & 1 & 0\\
+                                           1 & 0 & 0\\
+                                        \end{bmatrix}
+                        $$
+                    </div>
+                    </div>
+
+				</section>
+
+
+					<!-- ============ PDAF: ASSOCIATION PROBABILITIES (PDF p6) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>JPDAF: association probabilities</h2>
+					</div>
+					<div class="slide-content dense">
+						<p class="lightup"><b>Events:</b> 
+                            $$
+                          \chi_{jt_j}=\{y_{k,j} \text{ is originated from target }t_j\},\quad \forall j=1,\ldots,m_k
+                            $$
+                            </p>
+						<p align="center">
+                            <p>&nbsp;</p>
+                            <b>Marginal Event Posterior Probability:</b>
+                            <p class="lightup">
+							$$\beta_{jt} := \mathbb{P}( \chi_{jt_j} \mid Y^k), \qquad
+							  \sum_{j=0}^{m_k} \beta_{jt} = 1.$$
+                              </p>
+						</p>
+					
+				</section>
+
+
+					<!-- ============ PDAF: ASSOCIATION PROBABILITIES (PDF p6) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>JPDAF: association probabilities</h2>
+					</div>
+					<div class="slide-content dense">
+						<p class="lightup"><b>Feasible Joint Event:</b> 
+                            $$
+                          \chi=\cap_{j=1}^{m_k}\chi_{jt_j}
+                            $$
+                            </p>
+						<p align="center">
+                            <p>&nbsp;</p>
+                            <b>Joint Event Posterior Probability:</b>
+                            <p class="lightup">
+							$$
+							\mathbb{P}( \chi \mid Y^k)=\mathbb{P}( \chi \mid \{y_{k,1},\ldots,y_{k,m_k}\},m_k,Y^{k-1})\\
+							=\frac{1}{c}p(\{y_{k,1},\ldots,y_{k,m_k}\} \mid \chi ,m_k,Y^{k-1})\mathbb{P}( \chi \mid  m_k,Y^{k-1})\\
+							=\frac{1}{c}\prod_{j=1}^{m_k} p(y_{k,j}|\chi_{jt_j},m_k,Y^{k-1})\mathbb{P}( \chi \mid  m_k,Y^{k-1})
+							$$
+                              </p>
+						</p>
+					
+				</section>
+
+
+				
+					<!-- ============ PDAF: ASSOCIATION PROBABILITIES (PDF p6) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>JPDAF: association probabilities</h2>
+					</div>
+					<div class="slide-content dense">
+					
+						<p align="center">
+                            <b>Joint Event Posterior Probability:</b>
+                            <p class="lightup">
+							$$
+							\mathbb{P}( \chi \mid Y^k)=\frac{1}{c}\prod_{j=1}^{m_k} p(y_{k,j}|\chi_{jt_j},m_k,Y^{k-1})\mathbb{P}( \chi \mid  m_k,Y^{k-1})
+							$$
+                              </p>
+							  <p>
+								<ul>
+									<li>
+								Measurements associated with a target are Gaussian Distributed:
+
+								$$
+									t_j>0 :  p(y_{k,j}|\chi_{jt_j},m_k,Y^{k-1})=\mathcal{N}(y_{k,j};\hat{y}_{k|k-1}^{t_j},S_{k|k-1}^{t_j})
+								$$
+								</li>
+								<li>
+									Measurements associated with clutter are Uniform Distributed:
+
+								$$
+									t_j=0 :  p(y_{k,j}|\chi_{jt_j},m_k,Y^{k-1})=\frac{1}{V_k}
+								$$
+								</li>
+
+								</ul>
+
+							  </p>
+						</p>
+					
+				</section>
+
+
+							<!-- ============ PDAF: ASSOCIATION PROBABILITIES (PDF p6) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>JPDAF: association probabilities</h2>
+					</div>
+					<div class="slide-content dense">
+					
+						<p align="center">
+                            <b>Joint Event Posterior Probability:</b>
+                            <p class="lightup">
+							$$
+							\mathbb{P}( \chi \mid Y^k)=\frac{1}{c}\prod_{j=1}^{m_k} p(y_{k,j}|\chi_{jt_j},m_k,Y^{k-1})\mathbb{P}( \chi \mid  m_k,Y^{k-1})
+							$$
+                              </p>
+							  <p>&nbsp;</p>
+							  The Likelihood distribution conditioned with an association Event is
+							  <p class="lightup">
+							 
+							$$
+									p(y_{k,j}|\chi_{jt_j},m_k,Y^{k-1})=\begin{cases}
+									\mathcal{N}(y_{k,j};\hat{y}_{k|k-1}^{t_j},S_{k|k-1}^{t_j}),\quad \text{if }\tau_j(\chi)=1\\
+									V_k^{-1},\quad \text{if } \tau_j(\chi)=0
+									\end{cases}
+							$$
+
+							  </p>
+						</p>
+					
+				</section>
+
+
+									<!-- ============ PDAF: ASSOCIATION PROBABILITIES (PDF p6) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>JPDAF: association probabilities</h2>
+					</div>
+					<div class="slide-content dense">
+					
+						<p align="center">
+                            <b>Joint Event Prior Probability:</b>
+                            <p class="lightup">
+							$$
+							\mathbb{P}( \chi \mid  m_k,Y^{k-1})=?
+							$$
+                              </p>
+							  <p>&nbsp;</p>
+							Note that the number of false measurements in $\chi$ is
+							  <p class="lightup">
+							 
+							$$
+									\phi(\chi)=\sum_{j=1}^{m_k}[1-\tau_j(\chi)]
+							$$
+							  </p>
+							  Given $\phi(\chi)=\phi$ it will exists many $\chi$ (equally likely) that may have the same number of detected targets:
+							  $$
+							  	P_{m_k-\phi}^{m_k} = \frac{m_k!}{\phi!}
+							  $$
+						</p>
+					
+				</section>
+
+
+											<!-- ============ PDAF: ASSOCIATION PROBABILITIES (PDF p6) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>JPDAF: association probabilities</h2>
+					</div>
+					<div class="slide-content dense">
+					
+						<p align="center">
+                            <b>Joint Event Prior Probability:</b>
+                            <p class="lightup">
+							$$
+							\mathbb{P}( \chi \mid  m_k,Y^{k-1})=\mathbb{P}( \cap_{j=1}^{m_k}\chi_{jt_j} \mid  m_k,Y^{k-1})\\
+							=\prod_{j=1}^{m_k}\mathbb{P}( \chi_{jt_j} \mid  m_k,Y^{k-1})\\
+							=\underbrace{\mu_F(\phi)\prod_{t:\delta_t=0}(1-P_D^tP_G^t)}_{\text{Prob. of } \phi \text{ false meas.}}\underbrace{\prod_{t:\delta_t=1}P_D^tP_G^t\frac{1}{P_{m_k-\phi}^{m_k}}}_{\text{Prob. of } m_k-\phi \text{ detect.}}
+							$$
+                              </p>
+				where
+                            $$
+                                \mu_F(\phi)=e^{-\lambda V_k }\frac{(\lambda V_k)^\phi}{\phi!}
+                            $$
+					
+				</section>
+
+
+
+							<!-- ============ PDAF: ASSOCIATION PROBABILITIES (PDF p6) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>JPDAF: association probabilities</h2>
+					</div>
+					<div class="slide-content dense">
+					
+						<p align="center">
+                            <b>Joint Event Posterior Probability:</b>
+                            <p class="lightup">
+							$$
+							\mathbb{P}( \chi \mid Y^k)=\frac{1}{c}\prod_{j=1}^{m_k} p(y_{k,j}|\chi_{jt_j},m_k,Y^{k-1})\mathbb{P}( \chi \mid  m_k,Y^{k-1})\\
+							=\frac{1}{c}\underbrace{\prod_{j:\tau_j=1}\frac{\mathcal{N}_j^{t_j}}{P_G^t}}_{\text{Prob. T.O.}}\underbrace{V_k^{-\phi}}_{\text{Prob. no T.O.}}\underbrace{\mu_F(\phi)\prod_{t:\delta_t=0}(1-P_D^tP_G^t)}_{\text{Prob. of } \phi \text{ false meas.}}\underbrace{\prod_{t:\delta_t=1}P_D^tP_G^t\frac{\phi!}{m_k!}}_{\text{Prob. of } m_k-\phi \text{ detect.}}
+							$$
+                              </p>
+							  <p align="center">
+							Obs: T.O. is Target Originated acronym.
+							$$
+								\mathcal{N}_j^t=\mathcal{N}(y_{k,j};\hat{y}_{k|k-1}^{t},S_{k|k-1}^{t})
+							$$
+							  </p>
+						</p>
+					
+				</section>
+
+
+									<!-- ============ PDAF: ASSOCIATION PROBABILITIES (PDF p6) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>JPDAF: association probabilities</h2>
+					</div>
+					<div class="slide-content dense">
+					
+						<p align="center">
+                            <b>Joint Event Posterior Probability:</b>
+                            <p class="lightup">
+							$$
+							\mathbb{P}( \chi \mid Y^k)=\frac{1}{c}\prod_{j:\tau_j=1}\frac{\mathcal{N}_j^{t_j}}{P_G^t}V_k^{-\phi}e^{-\lambda V_k }\frac{(\lambda V_k)^\phi}{\phi!}\prod_{t:\delta_t=0}(1-P_D^tP_G^t)\prod_{t:\delta_t=1}P_D^tP_G^t\frac{\phi!}{m_k!}\\
+							=\frac{e^{-\lambda V_k }(\lambda)^\phi}{m_k!c}\prod_{j:\tau_j=1}\frac{\mathcal{N}_j^{t_j}}{P_G^t}\prod_{t:\delta_t=0}(1-P_D^tP_G^t)\prod_{t:\delta_t=1}P_D^tP_G^t\\
+							=\frac{(\lambda)^\phi}{\tilde{c}}\prod_{j:\tau_j=1}\frac{\mathcal{N}_j^{t_j}}{P_G^t}\prod_{t:\delta_t=0}(1-P_D^tP_G^t)\prod_{t:\delta_t=1}P_D^tP_G^t\\
+							$$
+                              </p>
+					
+						</p>
+					
+				</section>
+
+				
+									<!-- ============ PDAF: ASSOCIATION PROBABILITIES (PDF p6) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>JPDAF: association probabilities</h2>
+					</div>
+					<div class="slide-content dense">
+					
+						<p align="center">
+                            <b>Joint Event Posterior Probability:</b>
+                            <p class="lightup">
+							$$
+							\mathbb{P}( \chi \mid Y^k)=\frac{(\lambda)^\phi}{\tilde{c}}\prod_{j:\tau_j=1}\frac{\mathcal{N}_j^{t_j}}{P_G^t}\prod_{t:\delta_t=0}(1-P_D^tP_G^t)\prod_{t:\delta_t=1}P_D^tP_G^t\\
+							$$
+						 </p>
+	Finally, the marginal event posterior is 
+							<p class="lightup">
+							$$
+								\beta_{jt}=\sum_{\chi} \mathbb{P}( \chi \mid Y^k)\theta_{jt},\quad \forall j=1,\ldots,m_k; t=0,\ldots,T\\
+								\beta_{0t}=1-\sum_{j=1}^{m_k} \beta_{jt}\quad \forall t=0,\ldots,T
+							$$
+							</p>
+                             
+					
+						</p>
+					
+				</section>
+
+
+				
+				  	<!-- ============ PDAF: COMBINED INNOVATION (PDF p7) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>PDAF: state update</h2>
+					</div>
+					<div class="slide-content dense">
+                         We want the posterior state distribution
+						<div class="box">
+                          
+							$$
+                                p(x_k^t|Y^k)=\sum_{j} p(x_k^t|\chi,Y^k)\mathbb{P}(\chi|Y^k)\theta_{jt}
+                            $$
+                           
+						</div>
+                        <p>&nbsp;</p>
+                         So, the posteriori state distribution is a Gaussian Mixture
+                              <p>&nbsp;</p>
+                            $$
+                             \boxed{\; p(x_k^t|Y^k)=\sum_j \beta_{jt}p(x_k^t|\chi_{jt},Y^k)}
+                             $$
+						
+                            </center>
+					
+					</div>
+				</section>
+
+
+                    	<!-- ============ PDAF: COMBINED INNOVATION (PDF p7) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>Gaussian Mixture</h2>
+					</div>
+					<div class="slide-content dense">
+                        <p class="box">
+                            <span class="box-title">Moment-matching for Gaussian Mixtures</span>
+                       For any mixture $\sum_i w_i\mathcal{N}(\mu_i,\Sigma_i)$ with $\sum_i w_i=1$, the mean and covariance are
+                       $$
+  \mu=\sum_i w_i\mu_i,\\
+  \Sigma=\sum_i w_i\Bigl[\Sigma_i+(\mu_i-\mu)(\mu_i-\mu)^\trp\Bigr]
+$$
+</p>
+
+Thus,
+$$
+        \hat{x}_{k|k}^t=\sum_{j}\beta_{jt}\hat{x}_{k|k}^{jt} \\
+        P_{k|k}^t=\sum_{j} \beta_{jt}\Bigl[P_{k|k}^{jt}+(\hat{x}_{k|k}^{jt}-\hat{x}_{k|k}^t)(\hat{x}_{k|k}^{jt}-\hat{x}_{k|k}^t)^\trp\Bigr]
+$$
+
+					
+					</div>
+				</section>
+
+
+                		<section>
+					<div class="slide-title">
+						<h2>Gaussian Mixture</h2>
+					</div>
+					<div class="slide-content dense">
+                        <p class="box">
+                            <span class="box-title">Moment-matching for Gaussian Mixtures</span>
+                       For any mixture $\sum_i w_i\mathcal{N}(\mu_i,\Sigma_i)$ with $\sum_i w_i=1$, the mean and covariance are
+                       $$
+  \mu=\sum_i w_i\mu_i,\\
+  \Sigma=\sum_i w_i\Bigl[\Sigma_i+(\mu_i-\mu)(\mu_i-\mu)^\trp\Bigr]
+$$
+</p>
+
+Thus,
+$$
+        \hat{x}_{k|k}^t=\hat{x}_{k|k-1}^t+K_k^t\Bigl(\sum_{j}\beta_{jt}(y_{k,j}-\hat{y}_{k|k-1}^t)\Bigr) \\
+        P_{k|k}^t=\sum_{j} \beta_{jt}\Bigl[P_{k|k}^{jt}+(\hat{x}_{k|k}^{jt}-\hat{x}_{k|k}^t)(\hat{x}_{k|k}^{jt}-\hat{x}_{k|k}^t)^\trp\Bigr]
+	
+$$
+
+					
+					</div>
+				</section>
+
+
+				           		<section>
+					<div class="slide-title">
+						<h2>JPDAF: target state update</h2>
+					</div>
+					<div class="slide-content dense">
+<p class="box">
+$$
+\begin{align}
+	\nu_{jt}&=y_{k,j}-\hat{y}_{k|k-1}^t\\
+	\nu_k^t &= \sum_{j}\beta_{jt}\nu_{jt}\\
+        \hat{x}_{k|k}^t&=\hat{x}_{k|k-1}^t+K_k^t\nu^t_k \\
+        P_{k|k}^t&=\beta_{0t}P_{k|k-1}^t+(1-\beta_{0t})P_{k|k}^{t,c}+\tilde{P}^t_k\\
+			 P_k^{t,c} &= (I - K_k^tH)P_{k|k-1}^t\\
+                            \tilde{P}_k^t &= K_k^t\!\Big[\textstyle\sum_{j=1}^{m_k} \beta_{jt}\boldsymbol{\nu}_{jt}(\boldsymbol{\nu}_{jt})^\trp
+							  - \boldsymbol{\nu}_k^t(\boldsymbol{\nu}_k^t)^{\trp}\Big]K_k^{\trp} \succeq 0
+							  \end{align}\\
+							  \forall t=0,\ldots, T
+	$$
+
+</p>
+
+
+					
+					</div>
+				</section>
+
+
+
+
+              
+				
+
+				<!-- ============ CONCLUSIONS (PDF p14) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>Conclusions</h2>
+					</div>
+					<div class="slide-content dense">
+						<div class="box">
+							<span class="box-title">Summary</span>
+							<ul>
+								<li>PDA turns a hard <i>discrete</i> choice into a <i>soft</i> probabilistic weighting.</li>
+								<li><b>PDAF</b>: gate &rarr; weights $\beta_i$ &rarr; combined innovation &rarr; update with an
+									<i>inflated</i> (spread-of-innovations) covariance.</li>
+								<li><b>JPDAF</b>: enumerate feasible joint events, marginalize to $\beta_{jt}$, then update each
+									target by the PDAF equations &mdash; correctly sharing contested measurements.</li>
+								<li>Practical backbone of tracking in clutter; typically deployed inside an <b>IMM</b>.</li>
+							</ul>
+						</div>
+						
+					</div>
+				</section>
+
+				<!-- ============ REFERENCES (PDF p15) ============ -->
+				<section>
+					<div class="slide-title">
+						<h2>References</h2>
+					</div>
+					<div class="slide-content smaller">
+						<ul>
+							<li>Y. Bar-Shalom, E. Tse, &ldquo;Tracking in a cluttered environment with probabilistic data association,&rdquo; <i>Automatica</i>, 1975.</li>
+							<li>T. Fortmann, Y. Bar-Shalom, M. Scheffe, &ldquo;Sonar tracking of multiple targets using joint probabilistic data association,&rdquo; <i>IEEE J. Oceanic Eng.</i>, 1983.</li>
+							<li>Y. Bar-Shalom, T. Fortmann, <i>Tracking and Data Association</i>, Academic Press, 1988.</li>
+							<li>Y. Bar-Shalom, F. Daum, J. Huang, &ldquo;The probabilistic data association filter,&rdquo; <i>IEEE Control Systems Magazine</i>, 2009.</li>
+							<li>Y. Bar-Shalom, X. R. Li, T. Kirubarajan, <i>Estimation with Applications to Tracking and Navigation</i>, Wiley, 2001.</li>
+						</ul>
+						
+					</div>
+				</section>
+
+				<!-- ============ CLOSING (existing) ============ -->
+				<section>
+					<div class="slide-content">
+						<center>
+							<p>&nbsp;</p>
+							<p>&nbsp;</p>
+							<p>&nbsp;</p>
+						<h2>Until next time!</h2>
+					</center>
+					</div>
+				</section>
+
+				<!------------------------>
+			</div>
+		</div>
+
+		<script src="../dist/reveal.js"></script>
+		<script src="../plugin/notes/notes.js"></script>
+		<script src="../plugin/markdown/markdown.js"></script>
+		<script src="../plugin/highlight/highlight.js"></script>
+		<script src="../plugin/math/math.js"></script>
+		<script src="../init.js"></script>
+		<!-- handwriting / annotation over slides (self-contained, offline). Press C to show the pen toolbar. -->
+		<script src="../plugin/handwriting/plugin.js"></script>
+	</body>
+</html>

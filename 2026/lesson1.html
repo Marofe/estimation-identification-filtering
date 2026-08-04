@@ -1,0 +1,1388 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>SEL5917 - Estimation, Identification and Stochastic Filtering</title>
+
+		<link rel="stylesheet" href="../dist/reset.css">
+		<link rel="stylesheet" href="../dist/reveal.css">
+		<link rel="stylesheet" href="../dist/theme/white.css" id="theme">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="../plugin/highlight/monokai.css" id="highlight-theme">
+		<link rel="stylesheet" href="../style.css">
+	</head>
+	<body>
+		
+		<div class="reveal">
+			<div class="slides">
+				
+				<section data-hide-slide-number="true" data-transition="slide">
+					<div class="logo"><img src="../images/sel.png"/> </div>
+					<div class="logo2"><img src="../images/Logo EESC-USP_top.png"/> </div>
+					<div class="title">
+					<h2>Introduction to the course:<Br> Estimation, Identification and Stochastic Filtering<br>SEL5917</h2>
+					</div>
+					<div class="author">
+					<h3>Prof. Dr. Marcos Rogério Fernandes</h3>
+				</div>
+					<div class="advisor">
+					
+					<p style="text-align: center;font-size: 0.8em;">August 04, 2026</p>
+				</div>
+
+				</section>
+				<section>
+
+				<div class="slide-title">
+					<h2>Objectives:</h2>
+				</div>
+				<p>&nbsp;</p>
+				<div class="slide-content">
+					<p>The objectives of this class are:
+						<ul>
+							<li><b>Introduce the course</b>: structure and evaluation methods;</li> 
+							<li><b>Overview</b> of the topics of the course;</li> 
+							<li><b>Introduction</b> of probability theory concepts.</li> 
+							</ul>
+						
+						</p>
+						</div>
+
+			</section>
+
+
+		
+
+
+			
+			<section>
+				<div class="slide-title">
+					<h2>SEL5917 - Estimation, Identification and Stochastic Filtering</h2>
+				</div>
+				<div class="slide-content">
+					<center>
+						<p>&nbsp;</p>
+						<h3>Meetings:</h3>
+						<p><ul>
+							<li>Every tuesday at 10:00 A.M.</li>
+						</ul>
+						
+					</p>
+					<p>Location: ROOM 3 - SEL/EESC</p>
+						<p>&nbsp;</p>
+						
+					
+					<p>Contact: marofe@usp.br</p>
+			
+					
+				</center>
+
+				</div>
+
+			</section>
+
+
+			<section>
+				<div class="slide-title">
+					<h2>Topics</h2>
+				</div>
+				
+				<div class="slide-content">
+
+					<ul>
+						<li><b>Probability Theory and Stochastic Process;</b></li>
+						<li><b>Estimation Theory: ML, MAP, MMSE;</b></li>
+						<li><b>System Identification methods: ARX, ARMAX, etc;</b></li>
+						<li><b>Bayesian Filtering and Smoothing;</b></li>
+						<li><b>Classical Kalman Filter/Smoother;</b></li>
+						<li><b>Extended and Unscented Kalman Filter/Smoother;</b></li>
+						<li><b>Particle Filters/Smoothing;</b></li>
+						<li><b>Applications in navigation and tracking systems.</b></li>
+						
+					</ul>
+					
+						
+
+				</div>
+
+			</section>
+
+
+				<section>
+				<div class="slide-title">
+					<h2>Advanced Topics</h2>
+				</div>
+				<p>&nbsp;</p>
+				<p>&nbsp;</p>
+				<div class="slide-content">
+
+					<ul>
+					
+						<li><b>Lie Group Theory;</b></li>
+						<li><b>Invariant Kalman Filtering;</b></li>
+					</ul>
+					
+						
+
+				</div>
+
+			</section>
+
+
+			<section>
+				<div class="slide-title">
+					<h2>Assessment</h2>
+				</div>
+				<div class="slide-content">
+					<p>&nbsp;</p>
+					<p>Computational Task in MATLAB/Simulink and theoretical exercises:</p>
+				
+						
+						<p align="center">
+							$T_1,T_2,...T_n \Rightarrow T=\frac{T_1+T_2+\cdots+T_n}{n}$</li>
+						
+			</p>
+				<p>Final Project:</p>
+				
+				<p align="center">
+				$
+					P: 0\le P \le 10
+				$
+				</p>
+
+
+				<p>The final score is given by the average:$$MF=\frac{T+P}{2}$$
+	
+					 </p>					
+
+				</div>
+
+			</section>
+
+
+
+			<section>
+				<div class="slide-title">
+					<h2>Grade</h2>
+				</div>
+				<div class="slide-content">
+	<p>&nbsp;</p>
+					<table border="1">
+						<tr>
+							<th>Score (0-10)</th>
+							<th>Letter Grade</th>
+						</tr>
+						<tr>
+							<td>8.5 – 10.0</td>
+							<td>A (Excellent)</td>
+						</tr>
+						<tr>
+							<td>7.0 – 8.4</td>
+							<td>B (Good)</td>
+						</tr>
+						<tr>
+							<td>5.0 – 6.9</td>
+							<td>C (Satisfactory)</td>
+						</tr>
+						<tr>
+							<td>Below 5.0</td>
+							<td>R (Fail)</td>
+						</tr>
+					</table>
+									
+					<p align="center">Obs: At least 75% attendance.</p>
+				</div>
+
+			</section>
+		
+
+
+			<section  data-transition="slide">
+				<div class="slide-title">
+					<h2>Content</h2>
+				</div>
+				<div class="slide-content">
+					<center>
+
+					<a href="https://edisciplinas.usp.br/course/view.php?id=142806" target="_blank">
+						<div style="background-color: rgb(55, 147, 201);border-radius: 50%;"><img src="../images/edisciplina.png" width="400"></div>
+						https://edisciplinas.usp.br/course/view.php?id=142806</a>
+						<p>&nbsp;</p>	
+						<ul>
+							<li>Slides;</li>
+							<li>Class notes;</li>
+							<li>Matlab scripts;</li>
+							<li>References, etc...</li>
+						</ul>
+					
+										
+				</center>
+
+				</div>
+
+			</section>
+
+			<section  data-transition="slide">
+				<div class="slide-title">
+					<h2>
+					Basic References
+					</h2>
+				</div>
+				<div class="slide-content">
+					<center>
+											<ul>
+							[1] <a href="https://users.aalto.fi/~ssarkka/pub/bfs_book_2023_online.pdf" target="_blank">Särkkä, S.; Bayesian Filtering and Smoothing. Cambridge University Press, Cambridge, 2nd, 2023. </a><Br>
+
+[2] Y. Bar Shalom, X. R. Li and T. Kirubarajan, “Estimation with Applications to Tracking and Navigation,” Wiley & Sons, New York, 2001.<Br>
+
+[3] Ljung, L. System Identification: Theory for the User. 2nd Edition, Prentice Hall PTR, Upper Saddle River, 1999.<Br>
+
+[4] Thrun, S., Burgard, W., Fox, D.; Probabilistic robotics. Cambridge, Mass.: MIT Press, 2005.<Br>
+
+[5] Challa S, Morelande MR, Mušicki D, Evans RJ. Fundamentals of Object Tracking. Cambridge University Press; 2011.<Br>
+						</ul>
+
+				</center>
+
+				</div>
+
+			</section>
+
+
+
+			<section  data-transition="slide">
+				<div class="slide-title">
+					<h2>Questions?</h2>
+				</div>
+				<div class="slide-content">
+					<center>
+					<img src="../images/duvida.jpg" width="800">
+					
+					
+					
+				</center>
+
+				</div>
+
+			</section>
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Matlab Course</h2>
+				</div>
+				<div class="slide-content">
+					<center>
+				<img src="../images/matlab_onramp.png" width="650"><br>
+				<a href="https://matlabacademy.mathworks.com/details/matlab-onramp/gettingstarted" target="_blank">https://matlabacademy.mathworks.com/details/matlab-onramp/gettingstarted</a>
+			</center>
+						</div>
+
+			</section>
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Introduction: what is probability?</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+<p class="lightup">
+Probability is modeling of uncertainty with data!
+</p>
+<p>
+Example:
+</p>
+<ul>
+	<li>Gas molecules, turbulences, etc</li>
+	<li>Weather</li>
+	<li>Human behavior</li>
+	<li>Stock prices</li>
+	<li>Measurement noise</li>
+</ul>
+					</div>
+<p></p>
+				</div>
+
+						
+
+			</section>
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Introduction: what is probability?</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">Classical probability, as stated by Laplace, defines the probability of an event as the
+ratio of favourable to total equally likely outcomes.
+<p class="lightup">
+$$
+						P(A)=\frac{\text{\# ways of happening A}}{\text{\# total of possible events}}
+$$
+</p>
+Example:
+Rolling a dice: 
+$$
+	\Omega=\{1,2,3,4,5,6\} \Rightarrow P(A=i)=\frac{1}{6},\quad i \in{1,\ldots,6}
+$$
+					</div>
+<p></p>
+				</div>
+
+						
+
+			</section>
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Introduction: what is probability?</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">Classical probability, as stated by Laplace, defines the probability of an event as the
+ratio of favourable to total equally likely outcomes.
+<p class="lightup">
+$$
+						P(A)=\frac{\text{\# ways of happening A}}{\text{\# total of possible events}}
+$$
+</p>
+	<p>&nbsp;</p>
+<div class="box warn">
+	<center>
+Not adequate for infinite
+sample spaces and continuous quantities!
+</center>
+</div>
+					</div>
+<p></p>
+				</div>
+
+						
+
+			</section>
+
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Introduction: what is probability?</h2>
+				</div>
+				<div class="slide-content">
+					<div class=""> The resolution is due to Kolmogorov that identified
+probability with a measure on a suitable collection of subsets of a sample
+space.
+<p>&nbsp;</p>
+<p class="lightup">
+$$
+						P(A)=\int_A d\mu (A)
+$$
+
+Probability measures the likelihood of some random event happening
+</p>
+
+					</div>
+				</div>
+	
+						
+
+			</section>
+
+
+
+			
+			<section>
+
+				<div class="slide-title">
+					<h2>Samples Spaces</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box"> 
+						<span class="box-title">Definition:</span>
+						A <b>sample space</b> $\Omega$ is a non-empty set whose elements
+$\omega\in\Omega$ are called <b>outcomes</b> (or sample points). A subset
+$A\subseteq\Omega$ that we wish to assign a probability is called an
+<b>event</b>. When $\omega\in A$ we say the event $A$ occurs.
+</p>
+					</div>
+					Example: a dice
+					<div class="two-col">
+						
+						<div>$$
+						\Omega = \{1,2,3,4,5,6\}
+					$$</div>
+					<div><img src="../images/dice.png" width="100"></div>
+					</div>
+				
+				</div>
+	
+						
+
+			</section>
+
+
+				
+			<section>
+
+				<div class="slide-title">
+					<h2>Set operations</h2>
+				</div>
+				<div class="slide-content">
+			
+					
+	Set operations translate directly into the language of events: 
+<p>&nbsp;</p>
+	<ul>
+		<li>$A\cup B$ is
+"$A$ or $B$";</li>
+<li>$A\cap B$ is "$A$ and $B$";</li>
+<li>$A^c=\Omega\setminus A$ is "not
+$A$";</li>
+<li>$A\cap B=\varnothing$ means the events are
+<b>mutually exclusive.</b></li>
+	</ul>
+				</div>
+	
+						
+
+			</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>$\sigma$-Algebras</h2>
+				</div>
+				<div class="slide-content">
+			
+				
+<div class="box">
+	<span class="box-title">Definition:</span>
+A collection $\mathcal{F}$ of subsets of $\Omega$ is a
+$\sigma$-algebra (or $\sigma$-field) if
+<ul>
+	<li>$\Omega \in\mathcal{F}$;</li>
+	<li>$A\in\mathcal{F} \implies A^c\in\mathcal{F}$;</li>
+	<li>$A_1,A_2,\dots\in\mathcal{F} \implies \bigcup_{n=1}^{\infty}A_n\in\mathcal{F}$.</li>
+</ul>
+<br>
+The pair $(\Omega,\mathcal{F})$ is called a measurable space and the members of
+$\mathcal{F}$ are the measurable sets (events).
+</div>
+				</div>
+	
+						
+
+			</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Borel $\sigma$-Algebras</h2>
+				</div>
+				<div class="slide-content">
+			
+				
+<div class="box">
+	<span class="box-title">Definition:</span>
+The <b>Borel</b> $\sigma$-algebra on $\R$ is
+$\mathcal{B}(\R)=\sigma(\{(a,b):a < b\})$, the $\sigma$-algebra generated by the <b>open
+intervals</b>. Its members are the <b>Borel sets</b>. Equivalently one may
+generate $\mathcal{B}(\R)$ from the half-lines $\{(-\infty,x]:x\in\R\}$; this
+equivalence underlies the use of <b>distribution functions</b>.
+</div>
+				</div>
+	
+						
+
+			</section>
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Measure</h2>
+				</div>
+				<div class="slide-content">
+			
+				
+<div class="box">
+	<span class="box-title">Definition:</span>
+Let $(\Omega,\mathcal{F})$ be a measurable space. A measure is a function
+$\mu:\Fscr\to[0,\infty]$ such that
+<ul>
+	<li>$\mu(\varnothing)=0$;</li>
+	<li>for any
+        sequence $\{A_n\}_{n\ge1}$ of pairwise disjoint sets in
+        $\Fscr$,
+        \[
+          \mu\!\Big(\bigsqcup_{n=1}^{\infty}A_n\Big)
+             =\sum_{n=1}^{\infty}\mu(A_n).
+        \]</li>
+</ul>
+</div>
+				</div>
+	
+						
+
+			</section>
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Probability Measure</h2>
+				</div>
+				<div class="slide-content">
+	<p>&nbsp;</p>		
+				
+<div class="box">
+
+	<span class="box-title">Definition:</span>
+Let $(\Omega,\mathcal{F})$ be a measurable space. A measure 
+$\mu:\Fscr\to[0,\infty]$ such that $\mu(\Omega)=1$ is called a <b>probability
+measure</b> and is usually denoted $\mathbb{P}$.
+</div>
+
+				</div>
+	
+						
+
+			</section>
+
+
+			
+				<section>
+
+				<div class="slide-title">
+					<h2>Kolmogorov's Axioms</h2>
+				</div>
+				<div class="slide-content">
+		
+<div class="box">
+	<span class="box-title">Kolmogorov's Axioms:</span>
+A probability measure $\Prob$ on
+$(\Omega,\Fscr)$ satisfies
+\[
+\begin{align*}
+\text{(P1)}\ \ & \Prob(A)\ge 0,\\
+\text{(P2)}\ \  & \Prob(\Om)=1,\\
+\text{(P3)}\ \  & \Prob\!\Big(\bigsqcup_{n}A_n\Big)=\sum_{n}\Prob(A_n), \text{for pairwise disjoint } A_n.
+\end{align*}
+\]
+ The triple $(\Om,\Fscr,\Prob)$ is a
+<b>probability space</b>.
+</div>
+				</div>
+	
+						
+
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Consequences of Kolmogorov's Axioms</h2>
+				</div>
+				<div class="slide-content">
+		
+<div class="box">
+	<span class="box-title">Proposition:</span>
+Let $(\Om,\Fscr,\Prob)$ be a probability space and $A,B\in\Fscr$. Then
+$$
+\begin{align}
+\Prob(A^c) &= 1-\Prob(A), \\
+\Prob(\varnothing) &= 0, \\
+A\subseteq B &\implies \Prob(A)\le \Prob(B), \\
+\Prob(A\cup B) &= \Prob(A)+\Prob(B)-\Prob(A\cap B). 
+\end{align}
+$$
+</div>
+				</div>
+	
+						
+
+			</section>
+
+
+
+
+				
+
+
+			
+					
+					<section>
+
+				<div class="slide-title">
+					<h2>Multiplication Rule</h2>
+				</div>
+				<div class="slide-content">
+		
+<div class="box">
+	<span class="box-title">Proposition:</span>
+	For events $A_1,\dots,A_n$ with $\Prob(A_1\cap\dots\cap A_{n-1})>0$,
+\[
+\Prob\Big(\bigcap_{i=1}^{n}A_i\Big)\\
+=\Prob(A_1)\,\Prob(A_2\mid A_1)\,\Prob(A_3\mid A_1\cap A_2)
+\cdots \Prob\Big(A_n\ \Big|\ \bigcap_{i=1}^{n-1}A_i\Big).
+\]
+</div>
+
+				</div>
+	
+						
+
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Independence</h2>
+				</div>
+				<div class="slide-content">
+		
+<div class="box">
+	<span class="box-title">Definition:</span>
+	Events $A,B$ are independent if
+$$\Prob(A\cap B)=\Prob(A)\,\Prob(B).$$
+A family $\{A_i\}_{i\in I}$ is
+(mutually) independent if for every finite subset
+$J\subseteq I$, $$\Prob(\bigcap_{i\in J}A_i)=\prod_{i\in J}\Prob(A_i).$$
+</div>
+
+				</div>
+	
+						
+
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Independence of R. V.</h2>
+				</div>
+				<div class="slide-content">
+		
+<div class="box">
+	<span class="box-title">Definition:</span>
+	Random variables $X,Y$ are independent if 
+	$$\Prob_{(X,Y)}=\Prob_X\otimes\Prob_Y.$$ 
+For densities this reads $$f_{X,Y}(x,y)=f_X(x)f_Y(y).$$
+</div>
+
+				</div>
+	
+						
+
+			</section>
+
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>The Law of Total Probability</h2>
+				</div>
+				<div class="slide-content">
+		
+<div class="box">
+	<span class="box-title">Definition:</span>
+	A countable family $\{B_1,B_2,\dots\}\subseteq\Fscr$ is a <b>partition</b> of
+$\Om$ if the $B_i$ are pairwise disjoint and $\bigcup_i B_i=\Om$.
+</div>
+<center>
+<img src="../images/partition.png" width="400">
+</center>
+
+				</div>
+	
+						
+
+			</section>
+			
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>The Law of Total Probability</h2>
+				</div>
+				<div class="slide-content">
+		
+<div class="box">
+	<span class="box-title">Theorem:</span>
+	Let $\{B_i\}$ be a partition of $\Om$ with $\Prob(B_i)>0$ for all $i$. Then for
+every event $A$,
+\[
+\Prob(A)=\sum_{i}\Prob(A\mid B_i)\,\Prob(B_i).
+\]
+</div>
+
+				</div>
+	
+						
+
+			</section>
+
+
+
+			
+						<section>
+
+				<div class="slide-title">
+					<h2>The Law of Total Probability</h2>
+				</div>
+				<div class="slide-content">
+		
+<center>
+<img src="../images/partition_a.png" width="600">
+</center>
+
+				</div>
+	
+						
+
+			</section>
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Conditional Probability</h2>
+				</div>
+				<div class="slide-content">
+		
+<div class="box">
+	<span class="box-title">Definition:</span>
+	Let $B\in\Fscr$ with $\Prob(B)>0$. The conditional probability of $A$
+given $B$ is
+\[
+  \Prob(A\mid B)=\frac{\Prob(A\cap B)}{\Prob(B)}.
+\]
+</div>
+For fixed $B$ with $\Prob(B)>0$, the map $A\mapsto\Prob(A\mid B)$ is a
+probability measure on $(\Om,\Fscr)$!
+				</div>
+	
+						
+
+			</section>
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>The Bayesian Rule for Two Events</h2>
+				</div>
+				<div class="slide-content">
+		Given two events $A,B\in\Omega$, we have
+<div class="box">
+\[
+\Prob(A|B)=\frac{\Prob(B|A)\Prob(A)}{\Prob(B)}
+\]
+
+</div>
+Example:
+
+<center>Probability of raining today given that rained yesterday?
+	$$
+	A=\{\text{raining today}\}\\
+	B=\{\text{rained yesterday}\}
+	$$
+</center>
+				</div>
+	
+						
+
+			</section>
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>The Bayesian Vocabulary</h2>
+				</div>
+				<div class="slide-content">
+		
+<div class="box">
+	With hypothesis $B$ and data $A$,
+\[
+\underbrace{\Prob(B\mid A)}_{\text{posterior}}
+\ = \frac{\underbrace{\Prob(A\mid B)}_{\text{likelihood}}\ \cdot\
+\underbrace{\Prob(B)}_{\text{prior}}}{\underbrace{P(A)}_{\text{evidence}}}
+,
+\]
+
+</div>
+
+				</div>
+	
+						
+
+			</section>
+
+
+
+			
+							<section>
+
+				<div class="slide-title">
+					<h2>The Bayesian Rule for Three Events</h2>
+				</div>
+				<div class="slide-content">
+		Given three events $A,B,C\in\Omega$, we have
+<div class="box">
+\[
+\Prob(A|B,C)=\frac{\Prob(B|A,C)\Prob(A|C)}{\Prob(B|C)}
+\]
+
+</div>
+<center>Probability of raining today given that rained yesterday and it is summer?
+	$$
+	A=\{\text{raining today}\}\\
+	B=\{\text{rained yesterday}\}\\
+	C=\{\text{it is summer}\}
+	$$
+</center>
+				</div>
+	
+						
+
+			</section>
+
+
+			
+						<section>
+
+				<div class="slide-title">
+					<h2>The Bayes' Rule</h2>
+				</div>
+				<div class="slide-content">
+		
+<div class="box">
+	<span class="box-title">Theorem:</span>
+	Let $\{B_i\}$ be a partition of $\Om$ with $\Prob(B_i)>0$, and let $A$ be an
+event with $\Prob(A)>0$. Then
+\[
+\boxed{\ \Prob(B_k\mid A)
+   =\frac{\Prob(A\mid B_k)\,\Prob(B_k)}
+          {\displaystyle\sum_i \Prob(A\mid B_i)\,\Prob(B_i)}\ }.
+\]
+</div>
+
+				</div>
+	
+						
+
+			</section>
+
+
+
+							
+
+
+			
+		<section>
+
+				<div class="slide-title">
+					<h2>Random Variables</h2>
+				</div>
+				<div class="slide-content">
+		
+<div class="box">
+	<span class="box-title">Definition:</span>
+Let $(\Om,\Fscr,\Prob)$ be a probability space. A function
+$X:\Om\to\R$ is a random variable if it is
+$\Fscr$-measurable, meaning
+$$
+  X^{-1}(B)=\{\om\in\Om : X(\om)\in B\}\in\Fscr
+  \\\text{for every } B\in\Bscr(\R).
+$$
+</div>
+				</div>
+	
+						
+
+			</section>
+
+
+				<section>
+					<div class="slide-title">
+						<h2>Intuition behind a Random Variables</h2>
+					</div>
+					<div class="slide-content" style="font-size: 0.85em;">
+						<p class="lightup">A <b>Random Variable (R.V.)</b> $X$ is a function that associates a real number for each outcome of a random experiment</p>
+						
+						<div style="text-align: center; margin-top: 15px;">
+							<svg width="100%" height="360" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" style="max-width: 960px; display: inline-block;">
+								<!-- Defs for markers and gradients -->
+								<defs>
+									<!-- Axis arrowheads -->
+									<marker id="axis-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+										<path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#000000" />
+									</marker>
+									<!-- Mapping arrowheads -->
+									<marker id="map-arrow-1" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+										<path d="M 0 2 L 8 5 L 0 8 z" fill="#000000" />
+									</marker>
+									<marker id="map-arrow-2" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+										<path d="M 0 2 L 8 5 L 0 8 z" fill="#000000" />
+									</marker>
+									<!-- Blob gradient -->
+									<linearGradient id="blob-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+										<stop offset="0%" stop-color="#ef4444" stop-opacity="0.1" />
+										<stop offset="100%" stop-color="#ef4444" stop-opacity="0.02" />
+									</linearGradient>
+								</defs>
+
+								<!-- Left: Event Space Omega -->
+								<!-- Blob path -->
+								<path d="M 90,140 C 90,70 180,50 250,90 C 320,130 310,210 250,240 C 190,270 90,220 90,140 Z" fill="url(#blob-grad)" stroke="#ef4444" stroke-width="2.5" />
+								
+								<!-- Omega Label -->
+								<text x="115" y="95" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="bold" fill="#991b1b" font-style="italic">Ω</text>
+								<text x="180" y="270" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="600" fill="#475569" text-anchor="middle">Sample Space (Ω)</text>
+
+								<!-- Other elements in Omega (unmapped) -->
+								<circle cx="130" cy="170" r="4" fill="#94a3b8" opacity="0.6" />
+								<circle cx="180" cy="100" r="4" fill="#94a3b8" opacity="0.6" />
+								<circle cx="250" cy="130" r="4" fill="#94a3b8" opacity="0.6" />
+								<circle cx="210" cy="150" r="4" fill="#94a3b8" opacity="0.6" />
+								<circle cx="160" cy="200" r="4" fill="#94a3b8" opacity="0.6" />
+
+								<!-- Selected elements to map -->
+								<!-- w_1 -->
+								<circle cx="150" cy="130" r="6" fill="#4f46e5" />
+								<text x="132" y="134" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-style="italic" font-weight="bold" fill="#4f46e5">ω₁</text>
+
+								<!-- w_2 -->
+								<circle cx="210" cy="180" r="6" fill="#d97706" />
+								<text x="192" y="184" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-style="italic" font-weight="bold" fill="#d97706">ω₂</text>
+
+								<!-- Right: Real Line R -->
+								<!-- Axis line -->
+								<line x1="420" y1="150" x2="720" y2="150" stroke="#000000" stroke-width="2.5" marker-end="url(#axis-arrow)" marker-start="url(#axis-arrow)" />
+								
+								<!-- Axis Label R -->
+								<text x="735" y="156" font-family="Cambria, 'Times New Roman', serif" font-size="24" font-weight="bold" fill="#1e293b">ℝ</text>
+								<text x="570" y="270" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="600" fill="#475569" text-anchor="middle">Real line (ℝ)</text>
+
+								<!-- Origin Tick -->
+								<line x1="570" y1="142" x2="570" y2="158" stroke="#475569" stroke-width="2" />
+								<text x="570" y="176" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#64748b" text-anchor="middle">0</text>
+
+								<!-- Mapped Point 1: X(w_1) -->
+								<circle cx="500" cy="150" r="6" fill="#4f46e5" />
+								<text x="500" y="176" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="#4f46e5" text-anchor="middle">X(ω₁)</text>
+
+								<!-- Mapped Point 2: X(w_2) -->
+								<circle cx="650" cy="150" r="6" fill="#d97706" />
+								<text x="650" y="176" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="#d97706" text-anchor="middle">X(ω₂)</text>
+
+								<!-- Mapping curves -->
+								<!-- Curve 1 (w_1 -> X(w_1)) -->
+								<path d="M 156,128 C 230,68 390,68 494,144" stroke="#000000" stroke-width="2" stroke-dasharray="5,4" fill="none" marker-end="url(#map-arrow-1)" />
+								
+								<!-- Curve 2 (w_2 -> X(w_2)) -->
+								<path d="M 216,182 C 310,230 530,230 644,158" stroke="#000000" stroke-width="2" stroke-dasharray="5,4" fill="none" marker-end="url(#map-arrow-2)" />
+
+								<!-- Mapping Function Labels -->
+								<text x="330" y="78" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="bold" font-style="italic" fill="#000000">X</text>
+								<text x="430" y="210" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="bold" font-style="italic" fill="#000000">X</text>
+
+								<!-- Title/Explanation -->
+								<text x="400" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="bold" fill="#1e293b" text-anchor="middle">Map X: Ω → ℝ</text>
+							</svg>
+						</div>
+					</div>
+				</section>
+
+
+
+
+			
+						<section>
+
+				<div class="slide-title">
+					<h2>Expectation (Lebesgue Integral)</h2>
+				</div>
+				<div class="slide-content">
+		
+<div class="box">
+	<span class="box-title">Theorem:</span>
+For a measurable $g:\R\to\R$ with $\E|g(X)|<\infty$,
+\[
+  \E[g(X)]=\int_{\R}g(x)\dif\Prob_X(x)
+\]
+
+</div>
+Here,
+$$
+	\Prob_X(B) = \Prob (X\in B) (\text{distribution})
+$$
+				</div>
+	
+						
+
+			</section>
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>Expectation (Lebesgue Integral)</h2>
+				</div>
+				<div class="slide-content">
+		
+<div class="box">
+	<span class="box-title">Theorem:</span>
+For a measurable $g:\R\to\R$ with $\E|g(X)|<\infty$,
+\[
+  \E[g(X)]
+  =\begin{cases}
+     \displaystyle\sum_i g(x_i)\,p_X(x_i), & X\text{ discrete},\\[8pt]
+     \displaystyle\int_{-\infty}^{\infty}g(x)\,f_X(x)\dif x, & X\text{ abs.\ continuous.}
+   \end{cases}
+\]
+</div>
+				</div>
+	
+						
+
+			</section>
+
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>Mean and Variance</h2>
+				</div>
+				<div class="slide-content">
+		
+<div class="box">
+	<span class="box-title">Mean:</span>
+\[
+  \E[X]=\int_{\Om}X\dif\Prob_X
+\]
+</div>
+
+<div class="box">
+	<span class="box-title">Variance:</span>
+\[
+  \Var(X)=\E[(X-\E[X])^2]=\E[X^2]-(\E[X])^2\ge 0 
+\]
+</div>
+				</div>
+	
+						
+
+			</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>The Sampled Mean and Variance</h2>
+				</div>
+				<div class="slide-content">
+		
+<div class="box">
+	<span class="box-title">Mean:</span>
+\[
+  \E[X]=\int_{\Om}X\dif\Prob=\lim_{N\to \infty} \frac{1}{N}\sum_iX_i=\mu
+\]
+</div>
+
+<div class="box">
+	<span class="box-title">Variance:</span>
+\[
+  \Var(X)=\E[(X-\E[X])^2]=\lim_{N\to\infty} \frac{1}{N}(X_i-\mu)^2
+\]
+</div>
+				</div>
+	
+						
+
+			</section>
+
+
+
+
+
+
+			
+						<section>
+
+				<div class="slide-title">
+					<h2>Expectation Properties</h2>
+				</div>
+				<div class="slide-content">
+		
+<div class="box">
+	<span class="box-title">Theorem:</span>
+	For integrable $X,Y$ and $a,b\in\R$, we have
+\[
+  \E[aX+bY]= a\E[X]+b\E[y] (\text{linearity})
+\]
+and 
+\[
+X\le Y \Rightarrow \E[X]\le E[Y] (\text{monotonicity})
+\]
+</div>
+
+In addition, if $X$ and $Y$ are independent then 
+$$
+	\E[XY]=\E[X]\E[Y]
+$$
+				</div>
+	
+						
+
+			</section>
+
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Covariance</h2>
+				</div>
+				<div class="slide-content">
+		
+<div class="box">
+	<span class="box-title">Theorem:</span>
+	For integrable $X,Y$, we have
+\[
+  \text{Cov}(X,Y)= \E[(X-\E[X])(Y-\E[Y])]
+\]
+</div>
+
+Note that, 
+$$
+	 \text{Cov}(X,Y)= \E[XY]-\E[X]\E[Y]
+$$
+Therefore, if $X$ and $Y$ are independent we have 
+$$
+	\text{Cov}(X,Y)=0.
+$$
+				</div>
+	
+						
+
+			</section>
+
+
+
+
+			
+			<section>
+
+				<div class="slide-title">
+					<h2>Covariance</h2>
+				</div>
+				<div>
+					<center><img src="../images/covariance_ilustration.png" width="800"></center>
+				</div>
+	
+						
+
+			</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Covariance vs Variance</h2>
+				</div>
+				<div class="slide-content">
+		
+<div class="box">
+	<span class="box-title">Theorem:</span>
+	For integrable $X$, we have
+\[
+  \text{Var}(X)= \Cov(X,X)
+\]
+</div>
+
+Moreover,
+$$
+	 \text{Var}(X+Y)= \Var(X)+\Var(Y)+2\Cov(X,Y)
+$$
+Therefore, if $X$ and $Y$ are independent we have 
+$$
+	\text{Var}(X+Y)=\Var(X)+\Var(Y).
+$$
+				</div>
+	
+						
+
+			</section>
+
+
+
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Correlation</h2>
+				</div>
+				<div class="slide-content">
+		
+<div class="box">
+\[
+  \Corr(X,Y)=\frac{\Cov(X,Y)}{\sqrt{\Var(X)\Var(Y)}}
+\]
+</div>
+In this way, we have 
+$$
+	-1\le \Corr(X,Y) \le 1
+$$
+Also, we can show that 
+$$
+	\Corr(aX+b,cY+d)=\Corr(X,Y)
+$$
+
+
+				</div>
+	
+						
+
+			</section>
+
+
+			
+			<section>
+
+				<div class="slide-title">
+					<h2>Random Variables in $\R^n$</h2>
+				</div>
+				<div class="slide-content">
+		Let $\vec{X}\in\R^n$, then the density of $\vec{X}$ is
+<div class="box">
+\[
+  \Prob_{\vec{X}}(B)=\Prob(\vec{X}\in B)
+\]
+</div>
+Accordingly, the expectation is 
+$$
+	\E[\vec{X}]=\int_{\Omega \subseteq \R^n}  \vec{X} d\Prob_{\vec{X}}
+$$
+
+
+
+				</div>
+	
+						
+
+			</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Gaussian Random Variables in $\R^n$</h2>
+				</div>
+				<div class="slide-content">
+<div class="box">
+	<span class="box-title">Definition:</span>
+	A R.V. $\vec{X}\in\R^n$ is called <b>Gaussian Distributed</b> if 
+	$$
+\Prob_{\vec{X}}(A)=\int_A \frac{1}{\sqrt{(2\pi)^n |\Sigma|}}\exp\Bigl(-\frac{1}{2}\|X-\mu\|_{\Sigma^{-1}}^2\Bigr)d\vec{X}
+$$
+</div>
+Here,
+$$
+\begin{align*}
+	\|X-\mu\|_{\Sigma^{-1}}^2&=(X-\mu)^\trp \Sigma^{-1}(X-\mu)\\
+	\mu&=\E[\vec{X}]\\
+	\Sigma &= \Cov(\vec{X})
+	\end{align*}
+$$
+
+
+
+				</div>
+	
+						
+
+			</section>
+
+
+
+			
+				<section>
+
+				<div class="slide-title">
+					<h2>Gaussian Random Variables in $\R^n$</h2>
+				</div>
+				<div class="slide-content">
+					<center>
+					<img src="../images/2d_gaussian.gif" width="700">
+</center>
+				</div>
+	
+						
+
+			</section>
+
+		
+			<section>
+		
+				<div class="slide-content">
+					<center>
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+					<h2>Until next time!</h2>
+				</center>
+				</div>
+
+			</section>
+
+
+
+
+				
+
+
+
+				<!------------------------>
+			</div>
+		</div>
+
+		
+
+		<script src="../dist/reveal.js"></script>
+		<script src="../plugin/notes/notes.js"></script>
+		<script src="../plugin/markdown/markdown.js"></script>
+		<script src="../plugin/highlight/highlight.js"></script>
+		<script src="../plugin/math/math.js"></script>
+		<script src="../init.js"></script>
+		<script src="../plugin/handwriting/plugin.js"></script>
+	</body>
+</html>
+
+</p>
