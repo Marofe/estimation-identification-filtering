@@ -24,6 +24,7 @@
 	"\\stairs": "\\star",
 	"\\Fscr": "\\mathcal{F}",
 	"\\Bscr": "\\mathcal{B}",
+	"\\Escr": "\\mathcal{E}",
 	"\\Prob": "\\mathbb{P}",
 	"\\Om": "\\Omega",
 	"\\om": "\\omega",

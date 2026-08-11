@@ -526,7 +526,7 @@ $\mu:\Fscr\to[0,\infty]$ such that
         sequence $\{A_n\}_{n\ge1}$ of pairwise disjoint sets in
         $\Fscr$,
         \[
-          \mu\!\Big(\bigsqcup_{n=1}^{\infty}A_n\Big)
+          \mu\!\Big(\bigcup_{n=1}^{\infty}A_n\Big)
              =\sum_{n=1}^{\infty}\mu(A_n).
         \]</li>
 </ul>
@@ -577,7 +577,7 @@ $(\Omega,\Fscr)$ satisfies
 \begin{align*}
 \text{(P1)}\ \ & \Prob(A)\ge 0,\\
 \text{(P2)}\ \  & \Prob(\Om)=1,\\
-\text{(P3)}\ \  & \Prob\!\Big(\bigsqcup_{n}A_n\Big)=\sum_{n}\Prob(A_n), \text{for pairwise disjoint } A_n.
+\text{(P3)}\ \  & \Prob\!\Big(\bigcup_{n}A_n\Big)=\sum_{n}\Prob(A_n), \text{for pairwise disjoint } A_n.
 \end{align*}
 \]
  The triple $(\Om,\Fscr,\Prob)$ is a
@@ -926,7 +926,7 @@ $$
 
 				<section>
 					<div class="slide-title">
-						<h2>Intuition behind a Random Variables</h2>
+						<h2>Intuition behind Random Variables</h2>
 					</div>
 					<div class="slide-content" style="font-size: 0.85em;">
 						<p class="lightup">A <b>Random Variable (R.V.)</b> $X$ is a function that associates a real number for each outcome of a random experiment</p>
@@ -1310,13 +1310,13 @@ $$
 	<span class="box-title">Definition:</span>
 	A R.V. $\vec{X}\in\R^n$ is called <b>Gaussian Distributed</b> if 
 	$$
-\Prob_{\vec{X}}(A)=\int_A \frac{1}{\sqrt{(2\pi)^n |\Sigma|}}\exp\Bigl(-\frac{1}{2}\|X-\mu\|_{\Sigma^{-1}}^2\Bigr)d\vec{X}
+\Prob_{\vec{X}}(A)=\int_A \frac{1}{\sqrt{(2\pi)^n |\Sigma|}}\exp\Bigl(-\frac{1}{2}\|x-\mu\|_{\Sigma^{-1}}^2\Bigr)d\vec{x}
 $$
 </div>
 Here,
 $$
 \begin{align*}
-	\|X-\mu\|_{\Sigma^{-1}}^2&=(X-\mu)^\trp \Sigma^{-1}(X-\mu)\\
+	\|x-\mu\|_{\Sigma^{-1}}^2&=(x-\mu)^\trp \Sigma^{-1}(x-\mu)\\
 	\mu&=\E[\vec{X}]\\
 	\Sigma &= \Cov(\vec{X})
 	\end{align*}
