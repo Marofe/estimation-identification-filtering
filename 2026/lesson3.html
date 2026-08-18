@@ -1,0 +1,2345 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>SEL5917 - Estimation, Identification and Stochastic Filtering</title>
+
+		<link rel="stylesheet" href="../dist/reset.css">
+		<link rel="stylesheet" href="../dist/reveal.css">
+		<link rel="stylesheet" href="../dist/theme/white.css" id="theme">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="../plugin/highlight/monokai.css" id="highlight-theme">
+		<link rel="stylesheet" href="../style.css">
+	</head>
+	<body>
+		
+		<div class="reveal">
+			<div class="slides">
+				
+				<section data-hide-slide-number="true" data-transition="slide">
+					<div class="logo"><img src="../images/sel.png"/> </div>
+					<div class="logo2"><img src="../images/Logo EESC-USP_top.png"/> </div>
+					<div class="title">
+					<h2>Estimation Theory<br>SEL5917</h2>
+					</div>
+					<div class="author">
+					<h3>Prof. Dr. Marcos Rogério Fernandes</h3>
+				</div>
+					<div class="advisor">
+					
+					<p style="text-align: center;font-size: 0.8em;">August 18, 2026</p>
+				</div>
+
+				</section>
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Objectives:</h2>
+				</div>
+				<p>&nbsp;</p>
+				<div class="slide-content">
+					<p>The objectives of this class are:
+						<ul>
+							<li>Introduction to the Estimation Theory</li> 
+							<li>Maximum Likelihood Estimator (ML)</li>		
+							<li>Maximum A Posteriori Estimator (MAP)</li>
+							<li>MMSE Estimator</li>
+							</ul>
+						
+						</p>
+						</div>
+
+			</section>
+
+
+		
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Introduction: Estimation Theory</h2>
+				</div>
+				<div class="slide-content">
+				
+<p class="lightup">
+Estimation is the process of inferring the value of a quantity of interest from indirect, inaccurate and uncertain observations.
+</p>
+
+Given a dataset $Y^N=\{y_1,\ldots,y_N\}$, such that
+$$
+	y_k=h(x)+\varepsilon_k
+$$
+where $x\in\mathbb{R}^n$. We want to obtain the best estimate of $x$ regarding some performance metric
+<p class="lightup">
+$$
+		\hat{x}=\arg\min_x L(x)
+$$
+</p>
+<p>
+
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+					
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Introduction: Estimation Theory</h2>
+				</div>
+				<div class="slide-content">
+				
+<p class="lightup">
+$$
+		\hat{x}=\arg\min_x L(x)
+$$
+</p>
+<center>
+Note that $x$ can be a <b>static</b> or <b>time-varying</b> parameter!
+</center>
+<p>&nbsp;</p>
+<ul>
+	<li>$x$ is static: parameter estimation ($x=\theta$)</li>
+	<li>$%$ is time-varying: state estimation ($x=x_k$) </li>
+</ul>
+<p>
+
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+				
+Given a dataset $Y^N=\{y_1,\ldots,y_N\}$, such that
+$$
+	y_k=h(\theta)+\varepsilon_k
+$$
+where $\theta\in\mathbb{R}^n$.  We want to obtain the estimate of $\theta$ that maximizes the <b>Likelihood distribution</b>:
+<p class="lightup">
+$$
+		\hat{\theta}=\arg\max_\theta p(Y^{N}|\theta)
+$$
+</p>
+<p>
+
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+							<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+				
+Given a dataset $Y^N=\{y_1,\ldots,y_N\}$, such that
+$$
+	y_k=h(\theta)+\varepsilon_k
+$$
+where $\theta\in\mathbb{R}^n$.  We want to obtain the estimate of $\theta$ that maximizes the <b>Likelihood distribution</b>:
+<p class="lightup">
+$$
+		\hat{\theta}=\arg\max_\theta p(y_1,y_2,\ldots,y_N|\theta)
+$$
+</p>
+<p>
+
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+								<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+				
+Given a dataset $Y^k=\{y_1,\ldots,y_N\}$, such that
+$$
+	y_k=h(\theta)+\varepsilon_k
+$$
+where $\theta\in\mathbb{R}^n$.  We want to obtain the estimate of $\theta$ that maximizes the <b>Likelihood distribution</b>:
+<p class="lightup">
+$$
+		\hat{\theta}=\arg\max_\theta \prod_{k=1}^N p(y_k|\theta)
+$$
+
+</p>
+obs: assuming that $\{\varepsilon_k\}$ are <b>independent</b>.
+<p>
+
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+
+			
+								<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+				
+Given a dataset $Y^k=\{y_1,\ldots,y_N\}$, such that
+$$
+	y_k=h(\theta)+\varepsilon_k
+$$
+where $\theta\in\mathbb{R}^n$.  We want to obtain the estimate of $\theta$ that maximizes the <b>Likelihood distribution</b>:
+<p class="lightup">
+$$
+		\hat{\theta}=\arg\max_\theta \prod_{k=1}^N \mathcal{N}(y_k;h(\theta),R)
+$$
+
+</p>
+obs: assuming that $\{\varepsilon_k\}$ are <b>independent</b> and <b>Gaussian distributed</b> $\varepsilon_k\sim\mathcal{N}(0,R)$.
+<p>
+
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+										<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+<p class="lightup">
+$$
+		\hat{\theta}=\arg\max_\theta \prod_{k=1}^N \mathcal{N}(y_k;h(\theta),R)
+$$
+
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>maximum</b> of this function?</center>
+<p>
+
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+											<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+<p class="lightup">
+$$
+		\hat{\theta}=\arg\max_\theta \prod_{k=1}^N \frac{1}{\sqrt{(2\pi)^n|R|}}\exp\Bigl[-\frac{1}{2}\|y_k-h(\theta)\|^2_{R^{-1}}\Bigr]
+$$
+
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>maximum</b> of this function?</center>
+<p>
+
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+											<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+<p class="lightup">
+$$
+		\hat{\theta}=\arg\max_\theta \Bigl(\frac{1}{\sqrt{(2\pi)^n|R|}}\Bigr)^N \exp\Bigl[-\sum_{k=1}^N\frac{1}{2}\|y_k-h(\theta)\|^2_{R^{-1}}\Bigr]
+$$
+
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>maximum</b> of this function?</center>
+<p>
+
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+											<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+<p class="lightup">
+
+$$
+		\hat{\theta}=\arg\max_\theta\exp\Bigl[-\sum_{k=1}^N\frac{1}{2}\|y_k-h(\theta)\|^2_{R^{-1}}\Bigr]
+$$
+
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>maximum</b> of this function?</center>
+<p>
+
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+				
+
+			
+											<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+<p class="lightup">
+$$
+		\hat{\theta}=\arg\max_\theta\exp\Bigl[-\sum_{k=1}^N\frac{1}{2}\|y_k-h(\theta)\|^2_{R^{-1}}\Bigr]
+$$
+
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>maximum</b> of this function?</center>
+<p>
+
+</p>
+Note that 
+<p class="lightup">
+$$
+	\arg\max_\theta \exp(-\phi(\theta)) =\arg\min_\theta \phi(\theta)
+$$
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+
+			
+											<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+<p class="lightup">
+		Weighted Nonlinear Least Squares (WNLS)
+$$
+		\hat{\theta}=\arg\min_\theta\sum_{k=1}^N\frac{1}{2}\|y_k-h(\theta)\|^2_{R^{-1}}
+$$
+
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>minimum</b> of this function?</center>
+<p>
+
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+			
+
+			
+											<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case</center>
+<p class="lightup">
+	Weighted Least Squares (WLS)
+$$
+		\hat{\theta}=\arg\min_\theta\sum_{k=1}^N\frac{1}{2}\|y_k-H\theta\|^2_{R^{-1}}
+$$
+
+</p>
+<center>
+Obs: if $\theta\in\mathbb{R}^n$ and $y_k\in\mathbb{R}^p$, thus $H\in\mathbb{R}^{p\times n}$. 
+</center>
+<p>&nbsp;</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>minimum</b> of this function?</center>
+<p>
+	
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case</center>
+<p class="lightup">
+	Least Squares (LS)
+$$
+		\hat{\theta}=\arg\min_\theta\sum_{k=1}^N\frac{1}{2}\|y_k-H\theta\|^2
+$$
+
+</p>
+<center>
+Obs: if $\theta\in\mathbb{R}^n$ and $y_k\in\mathbb{R}^p$, thus $H\in\mathbb{R}^{p\times n}$. 
+</center>
+<p>&nbsp;</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>minimum</b> of this function?</center>
+<p>
+	
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+											<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case</center>
+<p class="lightup">
+$$
+		\hat{\theta}=\arg\min_\theta\underbrace{\sum_{k=1}^N\frac{1}{2}\|y_k-H\theta\|^2_{R^{-1}}}_{L(\theta)}
+$$
+
+</p>
+<center>
+Obs: if $\theta\in\mathbb{R}^n$ and $y_k\in\mathbb{R}^p$, thus $H\in\mathbb{R}^{p\times n}$. 
+</center>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>minimum</b> of this function?</center>
+<p>
+	
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+			
+											<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case</center>
+<p class="lightup">
+$$
+		\hat{\theta}=\arg\min_\theta L(\theta)
+$$
+</p>
+where 
+$$
+L(\theta)=\sum_{k=1}^N\frac{1}{2}\|y_k-H\theta\|^2_{R^{-1}}
+$$
+<center>
+Note that $L(\theta)$ is <b>convex!</b>
+
+</center>
+<p>
+	
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case</center>
+<p class="lightup">
+$$
+		\hat{\theta}=\arg\min_\theta L(\theta)
+$$
+</p>
+where 
+<p class="lightup">
+$$
+\hat{\theta}:\frac{\partial}{\partial \theta} L(\theta)=0
+$$
+</p>
+<p>
+	
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+			
+			<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case</center>
+<p class="lightup">
+$$
+		\hat{\theta}=\arg\min_\theta L(\theta)
+$$
+</p>
+where 
+<p class="lightup">
+$$
+\hat{\theta}:\frac{\partial}{\partial \theta}\Bigl( \sum_{k=1}^N\frac{1}{2}\|y_k-H\theta\|^2_{R^{-1}}\Bigr)=0
+$$
+</p>
+<p>
+	
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case</center>
+<p class="lightup">
+$$
+		\hat{\theta}=\arg\min_\theta L(\theta)
+$$
+</p>
+where 
+<p class="lightup">
+$$
+\hat{\theta}:\Bigl( \sum_{k=1}^N\frac{1}{2}\frac{\partial}{\partial \theta}\|y_k-H\theta\|^2_{R^{-1}}\Bigr)=0
+$$
+</p>
+<p>
+	
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case</center>
+<p class="lightup">
+$$
+\frac{\partial}{\partial \theta}\|y_k-H\theta\|^2_{R^{-1}}=\frac{\partial}{\partial \theta}(y_k-H\theta)^\trp R^{-1}(y_k-H\theta)
+$$
+</p>
+<p>
+	
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+						<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case</center>
+<p class="lightup">
+$$
+\frac{\partial}{\partial \theta}\|y_k-H\theta\|^2_{R^{-1}}=\frac{\partial}{\partial \theta}(y_k-H\theta)^\trp R^{-1}(y_k-H\theta)
+$$
+</p>
+$$
+\Rightarrow \frac{\partial}{\partial \theta}\Bigl[y_k^\trp R^{-1} y_k -2y_k^\trp R^{-1} H\theta+ \theta^\trp  H^\trp R^{-1}H\theta\Bigr]
+$$
+<p>
+	
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+			
+						<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case</center>
+<p class="lightup">
+$$
+\frac{\partial}{\partial \theta}\|y_k-H\theta\|^2_{R^{-1}}=\frac{\partial}{\partial \theta}(y_k-H\theta)^\trp R^{-1}(y_k-H\theta)
+$$
+</p>
+$$
+\Rightarrow \frac{\partial}{\partial \theta}\Bigl[-2y_k^\trp R^{-1} H\theta+ \theta^\trp  H^\trp R^{-1}H\theta\Bigr]
+$$
+<p>
+	
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+				
+						<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case</center>
+<p class="lightup">
+$$
+\frac{\partial}{\partial \theta}\|y_k-H\theta\|^2_{R^{-1}}=\frac{\partial}{\partial \theta}(y_k-H\theta)^\trp R^{-1}(y_k-H\theta)
+$$
+</p>
+$$
+\Rightarrow \frac{\partial}{\partial \theta}\Bigl[-2y_k^\trp R^{-1} H\theta+ \theta^\trp  H^\trp R^{-1}H\theta\Bigr]
+$$
+<p class="lightup">
+	Derivative properties
+	$$
+	\frac{\partial }{\partial \theta} a^\trp \theta = a,\quad 	\frac{\partial }{\partial \theta} \theta^\trp A\theta = (A+A^\trp )\theta
+	$$
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+						<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case</center>
+<p class="lightup">
+	$$
+	\frac{\partial}{\partial \theta}\|y_k-H\theta\|^2_{R^{-1}}=-2H^\trp R^{-1}y_k+2H^\trp R^{-1}H\theta 
+	$$
+</p>
+Thus,
+<p class="lightup">
+$$
+\hat{\theta}:\Bigl( \sum_{k=1}^N\frac{1}{2}\frac{\partial}{\partial \theta}\|y_k-H\theta\|^2_{R^{-1}}\Bigr)=0
+$$
+</p>
+		</div>
+
+						
+
+			</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case</center>
+<p class="lightup">
+	$$
+	\frac{\partial}{\partial \theta}\|y_k-H\theta\|^2_{R^{-1}}=-2H^\trp R^{-1}y_k+2H^\trp R^{-1}H\theta 
+	$$
+</p>
+Thus,
+<p class="lightup">
+$$
+\hat{\theta}: \sum_{k=1}^N\frac{1}{2}\Bigl[-2H^\trp R^{-1}y_k+2H^\trp R^{-1}H\theta\Bigr]=0
+$$
+</p>
+		</div>
+
+						
+
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case</center>
+<p class="lightup">
+	$$
+	\frac{\partial}{\partial \theta}\|y_k-H\theta\|^2_{R^{-1}}=-2H^\trp R^{-1}y_k+2H^\trp R^{-1}H\theta 
+	$$
+</p>
+Thus,
+<p class="lightup">
+$$
+\sum_{k=1}^N\Bigl[-H^\trp R^{-1}y_k+H^\trp R^{-1}H\hat{\theta}\Bigr]=0
+$$
+</p>
+		</div>
+
+						
+
+			</section>
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case</center>
+<p class="lightup">
+	$$
+	\frac{\partial}{\partial \theta}\|y_k-H\theta\|^2_{R^{-1}}=-2H^\trp R^{-1}y_k+2H^\trp R^{-1}H\theta 
+	$$
+</p>
+Thus,
+<p class="lightup">
+$$
+\sum_{k=1}^N H^\trp R^{-1}H\hat{\theta}=\sum_{k=1}^N H^\trp R^{-1}y_k
+$$
+</p>
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case</center>
+<p class="lightup">
+	$$
+	\frac{\partial}{\partial \theta}\|y_k-H\theta\|^2_{R^{-1}}=-2H^\trp R^{-1}y_k+2H^\trp R^{-1}H\theta 
+	$$
+</p>
+Thus,
+<p class="lightup">
+$$
+NH^\trp R^{-1}H\hat{\theta}= H^\trp R^{-1}\sum_{k=1}^Ny_k
+$$
+</p>
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case</center>
+					If $H^\trp R^{-1} H \succ 0 $, thus
+<p class="lightup">
+	<b>ML Estimator:</b>
+	$$
+	\hat{\theta}= (H^\trp R^{-1}H)^{-1}H^\trp R^{-1}\frac{1}{N}\sum_{k=1}^Ny_k
+	$$
+</p>
+		</div>
+
+						
+
+			</section>
+
+
+			
+	
+											<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Non-linear case</center>
+<p class="lightup">
+$$
+		\hat{\theta}=\arg\min_\theta\sum_{k=1}^N\frac{1}{2}\|y_k-h(\theta)\|^2_{R^{-1}}
+$$
+
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>minimum</b> of this function?</center>
+<p>
+
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+
+
+			
+											<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Non-linear case</center>
+<p class="lightup">
+	Linearization
+$$
+		h(\theta)\approx h(\theta_0)+\underbrace{\frac{\partial}{\partial \theta} h(\theta)|_{\theta=\theta_0}}_{H}(\theta-\theta_0)
+$$
+
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Non-linear case</center>
+<p class="lightup">
+	Linearization
+$$
+		h(\theta)\approx h(\theta_0)+H(\theta-\theta_0)
+$$
+
+</p>
+Thus,
+<p class="lightup">
+$$
+		\hat{\theta}:=\arg\min_\theta\sum_{k=1}^N\frac{1}{2}\|y_k-h(\theta_0)-H(\theta-\theta_0)\|^2_{R^{-1}}
+$$
+
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Non-linear case</center>
+<p class="lightup">
+	Linearization
+$$
+		h(\theta)\approx h(\theta_0)+H(\theta-\theta_0)
+$$
+
+</p>
+Thus,
+<p class="lightup">
+$$
+		\hat{\theta}:=\arg\min_\theta\sum_{k=1}^N\frac{1}{2}\|\underbrace{y_k-h(\theta_0)}_{z_k}-H\underbrace{(\theta-\theta_0)}_{v}\|^2_{R^{-1}}
+$$
+
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+			
+											<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Non-linear case</center>
+<p class="lightup">
+$$
+		\hat{v}=\arg\min_v\sum_{k=1}^N\frac{1}{2}\|z_k-Hv\|^2_{R^{-1}}
+$$
+
+</p>
+where
+$$
+\begin{aligned}
+	H&:=\frac{\partial }{\partial \theta}h(\theta)\Bigr|_{\theta=\theta_0}\\
+	v&:=\theta-\theta_0
+\end{aligned}
+$$
+
+		</div>
+
+						
+
+			</section>
+
+
+
+											<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Non-linear case</center>
+<p class="lightup">
+$$
+		\hat{v}=(H^\trp R^{-1}H)^{-1}H^\trp R^{-1}\frac{1}{N}\sum_{k=1}^Nz_k
+$$
+
+</p>
+where
+$$
+\begin{aligned}
+	H&:=\frac{\partial }{\partial \theta}h(\theta)\Bigr|_{\theta=\theta_0}\\
+	v&:=\theta-\theta_0
+\end{aligned}
+$$
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+											<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Non-linear case</center>
+<p class="lightup">
+	ML Estimator (Linearized)
+$$
+		\hat{\theta}=\theta_0+(H^\trp R^{-1}H)^{-1}H^\trp R^{-1}\frac{1}{N}\sum_{k=1}^N(y_k-h(\theta_0))
+$$
+
+</p>
+where
+$$
+\begin{aligned}
+	H&:=\frac{\partial }{\partial \theta}h(\theta)\Bigr|_{\theta=\theta_0}\\
+\end{aligned}
+$$
+
+		</div>
+
+						
+
+			</section>
+
+
+
+
+												<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Non-linear case</center>
+<p class="lightup">
+	Iterated ML Estimator (Linearized)
+$$
+\hat{\theta}^0=\theta_0\\
+		\hat{\theta}^{j+1}=\hat{\theta}^j+(H_j^\trp R^{-1}H_j)^{-1}H_j^\trp R^{-1}\frac{1}{N}\sum_{k=1}^N(y_k-h(\hat{\theta}^j))
+$$
+
+</p>
+where
+$$
+\begin{aligned}
+	H_j&:=\frac{\partial }{\partial \theta}h(\theta)\Bigr|_{\theta=\hat{\theta}^j}\\
+\end{aligned}
+$$
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Non-linear case</center>
+					Let 
+
+					$$
+						y_k=h_k(\theta)+\varepsilon_k,\quad \varepsilon_k \sim\mathcal{N}(0,R_k)
+					$$
+<p class="lightup">
+$$
+		\hat{\theta}=\arg\min_\theta\sum_{k=1}^N\frac{1}{2}\|y_k-h_k(\theta)\|^2_{R_k^{-1}}
+$$
+
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>minimum</b> of this function?</center>
+<p>
+
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+			
+				Note that 
+				$$
+\sum_{k=1}^N\frac{1}{2}\|y_k-h_k(\theta)\|^2_{R_k^{-1}}	= \frac{1}{2}\|y - h(\theta)\|^2_{\mathcal{R}^{-1}}
+				$$
+				where 
+				$$
+					y:=\begin{bmatrix}
+					y_1\\
+					y_2\\
+					\vdots \\
+					y_N
+					\end{bmatrix},\quad h(\theta):=\begin{bmatrix}
+					h_1(\theta)\\
+					h_2(\theta)\\
+					\vdots \\
+					h_N(\theta)
+					\end{bmatrix},\quad \mathcal{R}:=\text{blkdiag}(R_1,R_2,\ldots,R_N)
+				$$
+		</div>
+
+						
+
+			</section>
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Non-linear case</center>
+<p class="lightup">
+$$
+		\hat{\theta}=\arg\min_\theta\frac{1}{2}\|y-h(\theta)\|^2_{\mathcal{R}^{-1}}
+$$
+
+</p>where 
+				$$
+					y:=\begin{bmatrix}
+					y_1\\
+					y_2\\
+					\vdots \\
+					y_N
+					\end{bmatrix},\quad h(\theta):=\begin{bmatrix}
+					h_1(\theta)\\
+					h_2(\theta)\\
+					\vdots \\
+					h_N(\theta)
+					\end{bmatrix},\quad \mathcal{R}:=\text{blkdiag}(R_1,R_2,\ldots,R_N)
+				$$
+
+		</div>
+
+						
+</section>
+
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Non-linear case</center>
+<p class="lightup">
+$$
+		\hat{\theta}=\arg\min_\theta\frac{1}{2}\|y-h(\theta)\|^2_{\mathcal{R}^{-1}}
+$$
+
+</p>where 
+				$$
+					y:=\begin{bmatrix}
+					y_1\\
+					y_2\\
+					\vdots \\
+					y_N
+					\end{bmatrix},\quad h(\theta):=\begin{bmatrix}
+					h_1(\theta)\\
+					h_2(\theta)\\
+					\vdots \\
+					h_N(\theta)
+					\end{bmatrix},\quad \mathcal{R}:=\text{blkdiag}(R_1,R_2,\ldots,R_N)
+				$$
+
+		</div>
+
+						
+</section>
+
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Non-linear case</center>
+<p class="lightup">
+$$
+		\hat{\theta}=\arg\min_\theta\frac{1}{2}\|y-h(\theta_0)+\frac{\partial}{\partial \theta}h(\theta)\Bigr|_{\theta=\theta_0}(\theta-\theta_0)\|^2_{\mathcal{R}^{-1}}
+$$
+
+</p>where 
+				$$
+					y:=\begin{bmatrix}
+					y_1\\
+					y_2\\
+					\vdots \\
+					y_N
+					\end{bmatrix},\quad h(\theta):=\begin{bmatrix}
+					h_1(\theta)\\
+					h_2(\theta)\\
+					\vdots \\
+					h_N(\theta)
+					\end{bmatrix},\quad \mathcal{R}:=\text{blkdiag}(R_1,R_2,\ldots,R_N)
+				$$
+
+		</div>
+
+						
+</section>
+
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Non-linear case</center>
+<p class="lightup">
+$$
+		\hat{v}=\arg\min_v\frac{1}{2}\|z+\mathcal{H}v\|^2_{\mathcal{R}^{-1}}
+$$
+
+</p>where 
+				$$
+				z:=\begin{bmatrix}
+					y_1-h_1(\theta_0)\\
+					y_2-h_2(\theta_0)\\
+					\vdots \\
+					y_N-h_N(\theta_0)
+					\end{bmatrix},
+					\quad
+					\mathcal{H}:=\begin{bmatrix}
+H_1\\ 
+\vdots \\
+H_N
+\end{bmatrix},\quad H_k=\frac{\partial}{\partial \theta}h_k(\theta)\Bigr|_{\theta=\theta_0}
+				$$
+
+		</div>
+
+						
+</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Non-linear case</center>
+<p class="lightup">
+	ML Estimator
+$$
+		\hat{v}=(\mathcal{H}^\trp \mathcal{R}^{-1}\mathcal{H})^{-1}\mathcal{H}^\trp \mathcal{R}^{-1}z
+$$
+
+</p>
+$$
+	z:=\begin{bmatrix}
+					y_1-h_1(\theta_0)\\
+					y_2-h_2(\theta_0)\\
+					\vdots \\
+					y_N-h_N(\theta_0)
+					\end{bmatrix},
+					\quad
+					\mathcal{H}:=\begin{bmatrix}
+H_1\\ 
+\vdots \\
+H_N
+\end{bmatrix},\quad H_k=\frac{\partial}{\partial \theta}h_k(\theta)\Bigr|_{\theta=\theta_0}
+$$
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+	<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Non-linear case</center>
+<p class="lightup">
+	ML Estimator
+$$
+		\hat{\theta}=\theta_0+(\mathcal{H}^\trp \mathcal{R}^{-1}\mathcal{H})^{-1}\mathcal{H}^\trp \mathcal{R}^{-1}z
+$$
+
+</p>
+$$
+	z:=\begin{bmatrix}
+					y_1-h_1(\theta_0)\\
+					y_2-h_2(\theta_0)\\
+					\vdots \\
+					y_N-h_N(\theta_0)
+					\end{bmatrix},
+					\quad
+					\mathcal{H}:=\begin{bmatrix}
+H_1\\ 
+\vdots \\
+H_N
+\end{bmatrix},\quad H_k=\frac{\partial}{\partial \theta}h_k(\theta)\Bigr|_{\theta=\theta_0}
+$$
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Non-linear case</center>
+<p class="lightup">
+	Iterated ML Estimator
+$$
+		\hat{\theta}^{j+1}=\theta^j+(\mathcal{H}_j^\trp \mathcal{R}^{-1}\mathcal{H}_j)^{-1}\mathcal{H}_j^\trp \mathcal{R}^{-1}z^j
+$$
+
+</p>
+$$
+	z^j:=\begin{bmatrix}
+					y_1-h_1(\theta^j)\\
+					y_2-h_2(\theta^j)\\
+					\vdots \\
+					y_N-h_N(\theta^j)
+					\end{bmatrix},
+					\quad
+					\mathcal{H}_j:=\begin{bmatrix}
+H_1\\ 
+\vdots \\
+H_N
+\end{bmatrix},\quad H_k=\frac{\partial}{\partial \theta}h_k(\theta)\Bigr|_{\theta=\theta^j}
+$$
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+
+			
+												<section>
+
+				<div class="slide-title">
+					<h2>Example: Angle-only measurements</h2>
+				</div>
+				<div class="slide-content">
+
+					$$
+\begin{aligned}
+y_k &= \tan^{-1}\left(\frac{y - y_p(k)}{x - x_p(k)}\right) + \varepsilon_k,\quad \varepsilon_k\sim\mathcal{N}(0,\sigma_R^2) \\
+&= h(\theta, x_p(k)) + \varepsilon_k \quad k = 1, 2, 3
+\end{aligned}
+					$$
+
+					Here, 
+					$$
+					\theta = \begin{bmatrix}
+					x\\
+					y
+					\end{bmatrix},\quad x_p(k) = \begin{bmatrix}
+					x_p(k)\\
+					y_p(k)
+					\end{bmatrix}
+					$$
+					<p>&nbsp;</p>
+					<p class="lightup">
+						What is the ML estimate of $\theta$?
+					</p>
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+			<section>
+
+				<div class="slide-title">
+					<h2>Example: Angle-only measurements</h2>
+				</div>
+				<div class="slide-content">
+
+				<center>
+					Solution
+					</center>
+					$$
+					y=\begin{bmatrix}
+					y_1 \\
+					y_2 \\
+					y_3
+					\end{bmatrix},\quad \mathcal{H}=\begin{bmatrix}
+					H_1\\
+					H_2\\
+					H_3
+					\end{bmatrix},\quad \mathcal{R}=\begin{bmatrix}
+					\sigma_R^2 & 0 & 0 \\
+					0 & \sigma_R^2 & 0 \\
+					0 & 0 & \sigma_R^2
+					\end{bmatrix}
+					$$	
+					Note that 
+					$$
+					H_k=\frac{\partial}{\partial \theta}h(\theta,x_p(k))\Bigr|_{\theta=\theta_0}=\begin{bmatrix}
+					\frac{\partial h_k}{\partial x} & \frac{\partial h_k}{\partial y}
+					\end{bmatrix}\Bigr|_{\theta=\theta_0}
+					$$
+		</div>
+
+						
+
+			</section>
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Example: Angle-only measurements</h2>
+				</div>
+				<div class="slide-content">
+
+				<center>
+					Solution
+					</center>
+					$$
+					y=\begin{bmatrix}
+					y_1 \\
+					y_2 \\
+					y_3
+					\end{bmatrix},\quad \mathcal{H}=\begin{bmatrix}
+					H_1\\
+					H_2\\
+					H_3
+					\end{bmatrix},\quad \mathcal{R}=\begin{bmatrix}
+					\sigma_R^2 & 0 & 0 \\
+					0 & \sigma_R^2 & 0 \\
+					0 & 0 & \sigma_R^2
+					\end{bmatrix}
+					$$	
+					Note that 
+					$$
+					\mathcal{H}=\begin{bmatrix}
+					\frac{\partial h_1}{\partial x} & \frac{\partial h_1}{\partial y}\\
+					\frac{\partial h_2}{\partial x} & \frac{\partial h_2}{\partial y}\\
+					\frac{\partial h_3}{\partial x} & \frac{\partial h_3}{\partial y}
+					\end{bmatrix}\Bigr|_{\theta=\theta_0}
+					$$
+		</div>
+
+						
+
+			</section>
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Maximum A Posteriori (MAP)</h2>
+				</div>
+				<div class="slide-content">
+					Consider the measurement model
+					$$
+						y_k=h_k(\theta)+\varepsilon_k,\quad \varepsilon_k\sim\mathcal{N}(0,R_k)
+					$$
+and a <b>prior distribution</b>
+<p class="lightup">
+	$$
+		\theta \sim p(\theta)
+	$$
+</p>
+The MAP estimator is defined as  
+<p class="lightup">
+$$
+	\hat{\theta}^\text{MAP}:=\max_\theta p(\theta|Y^N)
+$$
+</p>
+			
+		</div>
+
+						
+
+			</section>
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Maximum A Posteriori (MAP)</h2>
+				</div>
+				<div class="slide-content">
+			
+Applying the Bayes' rule
+<p class="lightup">
+$$
+	\hat{\theta}^\text{MAP}:=\max_\theta \frac{p(Y^N|\theta)p(\theta)}{p(Y^N)}
+$$
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>maximum</b> of this function?</center>
+			
+		</div>
+
+						
+
+			</section>
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>Maximum A Posteriori (MAP)</h2>
+				</div>
+				<div class="slide-content">
+			
+Applying the Bayes' rule
+<p class="lightup">
+$$
+	\hat{\theta}^\text{MAP}:=\max_\theta p(Y^N|\theta)p(\theta)
+$$
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>maximum</b> of this function?</center>			
+		</div>
+
+						
+
+			</section>
+
+
+								<section>
+
+				<div class="slide-title">
+					<h2>Maximum A Posteriori (MAP)</h2>
+				</div>
+				<div class="slide-content">
+			
+Applying the Bayes' rule
+<p class="lightup">
+$$
+	\hat{\theta}^\text{MAP}:=\max_\theta p(y_1,y_2,\ldots,y_N|\theta)p(\theta)
+$$
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>maximum</b> of this function?</center>
+			
+		</div>
+
+						
+
+			</section>
+
+
+			
+								<section>
+
+				<div class="slide-title">
+					<h2>Maximum A Posteriori (MAP)</h2>
+				</div>
+				<div class="slide-content">
+			
+Applying the Bayes' rule
+<p class="lightup">
+$$
+	\hat{\theta}^\text{MAP}:=\max_\theta \prod_{k=1}^Np(y_k|\theta)p(\theta)
+$$
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>maximum</b> of this function?</center>
+			
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+								<section>
+
+				<div class="slide-title">
+					<h2>Maximum A Posteriori (MAP)</h2>
+				</div>
+				<div class="slide-content">
+			if $\varepsilon_k\sim\mathcal{N}(0,R_k)$ and $\theta\sim\mathcal{N}(\theta_0,P_0)$, then
+
+<p class="lightup">
+$$
+	\hat{\theta}^\text{MAP}:=\max_\theta \prod_{k=1}^N\mathcal{N}(y_k;h_k(\theta),R_k)\mathcal{N}(\theta;\theta_0,P_0)
+$$
+</p>
+		<center><b>Optimization problem:</b><br>
+	How to find the <b>maximum</b> of this function?</center>	
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+								<section>
+
+				<div class="slide-title">
+					<h2>Maximum A Posteriori (MAP)</h2>
+				</div>
+				<div class="slide-content">
+			if $\varepsilon\sim\mathcal{N}(0,R_k)$ and $\theta\sim\mathcal{N}(\theta_0,P_0)$, then
+
+<p class="lightup">
+$$
+	\hat{\theta}^\text{MAP}:=\max_\theta \alpha \exp\Bigl[-\sum_{k=1}^N\frac{1}{2}\|y_k-h_k(\theta)\|^2_{R_k^{-1}}-\frac{1}{2}\|\theta-\theta_0\|^2_{P_0^{-1}}\Bigr]
+$$
+</p>
+	<center><b>Optimization problem:</b><br>
+	How to find the <b>maximum</b> of this function?</center>		
+		</div>
+
+						
+
+			</section>
+
+
+
+						
+								<section>
+
+				<div class="slide-title">
+					<h2>Maximum A Posteriori (MAP)</h2>
+				</div>
+				<div class="slide-content">
+			if $\varepsilon\sim\mathcal{N}(0,R_k)$ and $\theta\sim\mathcal{N}(\theta_0,P_0)$, then
+
+<p class="lightup">
+$$
+	\hat{\theta}^\text{MAP}:=\min_\theta \sum_{k=1}^N\frac{1}{2}\|y_k-h_k(\theta)\|^2_{R_k^{-1}}+\frac{1}{2}\|\theta-\theta_0\|^2_{P_0^{-1}}
+$$
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>minimum</b> of this function?</center>
+			
+		</div>
+
+						
+
+			</section>
+
+
+
+									<section>
+
+				<div class="slide-title">
+					<h2>Maximum A Posteriori (MAP)</h2>
+				</div>
+				<div class="slide-content">
+			if $\varepsilon\sim\mathcal{N}(0,R_k)$ and $\theta\sim\mathcal{N}(\theta_0,P_0)$, then
+
+<p class="lightup">
+$$
+	\hat{\theta}^\text{MAP}:=\min_\theta \frac{1}{2}\|y-h(\theta)\|^2_{\mathcal{R}^{-1}}+\frac{1}{2}\|\theta-\theta_0\|^2_{P_0^{-1}}
+$$
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>minimum</b> of this function?</center>
+			
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+									<section>
+
+				<div class="slide-title">
+					<h2>Maximum A Posteriori (MAP)</h2>
+				</div>
+				<div class="slide-content">
+			if $\varepsilon\sim\mathcal{N}(0,R_k)$ and $\theta\sim\mathcal{N}(\theta_0,P_0)$, then
+
+<p class="lightup">
+	Regularized Nonlinear Least Squares (RNLS)
+$$
+	\hat{\theta}^\text{MAP}:=\min_\theta \frac{1}{2}\|y-h(\theta)\|^2_{\mathcal{R}^{-1}}+\underbrace{\frac{1}{2}\|\theta-\theta_0\|^2_{P_0^{-1}}}_{\text{regularization}}
+$$
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>minimum</b> of this function?</center>
+			
+		</div>
+
+						
+
+			</section>
+
+
+
+									<section>
+
+				<div class="slide-title">
+					<h2>Maximum A Posteriori (MAP)</h2>
+				</div>
+				<div class="slide-content">
+			if $\varepsilon\sim\mathcal{N}(0,R_k)$ and $\theta\sim\mathcal{N}(\theta_0,P_0)$, then
+
+<p class="lightup">
+	Regularized Nonlinear Least Squares (RNLS)
+$$
+	\hat{\theta}^\text{MAP}:=\min_\theta \frac{1}{2}\|y-h(\theta_0)-\mathcal{H}(\theta-\theta_0)\|^2_{\mathcal{R}^{-1}}+\underbrace{\frac{1}{2}\|\theta-\theta_0\|^2_{P_0^{-1}}}_{\text{regularization}}
+$$
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>minimum</b> of this function?</center>
+			
+		</div>
+
+						
+
+			</section>
+
+
+									<section>
+
+				<div class="slide-title">
+					<h2>Maximum A Posteriori (MAP)</h2>
+				</div>
+				<div class="slide-content">
+			if $\varepsilon\sim\mathcal{N}(0,R_k)$ and $\theta\sim\mathcal{N}(\theta_0,P_0)$, then
+
+<p class="lightup">
+	Regularized Nonlinear Least Squares (RNLS)
+$$
+	\hat{\theta}^\text{MAP}:=\min_\theta \frac{1}{2}\|\underbrace{y-h(\theta_0)}_{z}-\mathcal{H}\underbrace{(\theta-\theta_0)}_{v}\|^2_{\mathcal{R}^{-1}}+\underbrace{\frac{1}{2}\|\theta-\theta_0\|^2_{P_0^{-1}}}_{\text{regularization}}
+$$
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>minimum</b> of this function?</center>
+			
+		</div>
+
+						
+
+			</section>
+
+
+
+
+			
+									<section>
+
+				<div class="slide-title">
+					<h2>Maximum A Posteriori (MAP)</h2>
+				</div>
+				<div class="slide-content">
+			if $\varepsilon\sim\mathcal{N}(0,R_k)$ and $\theta\sim\mathcal{N}(\theta_0,P_0)$, then
+
+<p class="lightup">
+	Regularized Nonlinear Least Squares (RNLS)
+$$
+	\hat{v}^\text{MAP}:=\min_v \underbrace{\frac{1}{2}\|z-\mathcal{H}v\|^2_{\mathcal{R}^{-1}}+\frac{1}{2}\|v\|^2_{P_0^{-1}}}_{L^\text{MAP}(v)}
+$$
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>minimum</b> of this function?</center>
+			
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+			
+									<section>
+
+				<div class="slide-title">
+					<h2>Maximum A Posteriori (MAP)</h2>
+				</div>
+				<div class="slide-content">
+			if $\varepsilon\sim\mathcal{N}(0,R_k)$ and $\theta\sim\mathcal{N}(\theta_0,P_0)$, then
+
+<p class="lightup">
+	Regularized Nonlinear Least Squares (RNLS)
+$$
+	\hat{v}^\text{MAP}:=\min_v \underbrace{\frac{1}{2}\|z-\mathcal{H}v\|^2_{\mathcal{R}^{-1}}+\frac{1}{2}\|v\|^2_{P_0^{-1}}}_{L^\text{MAP}(v)}
+$$
+</p>
+$$
+	\hat{v}^\text{MAP}:\frac{\partial}{\partial v}L^\text{MAP}(v)=0
+$$
+			
+		</div>
+
+						
+
+			</section>
+
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Maximum A Posteriori (MAP)</h2>
+				</div>
+				<div class="slide-content">
+			if $\varepsilon\sim\mathcal{N}(0,R_k)$ and $\theta\sim\mathcal{N}(\theta_0,P_0)$, then
+
+<p class="lightup">
+	Regularized Nonlinear Least Squares (RNLS)
+$$
+	\hat{v}^\text{MAP}:=\min_v \underbrace{\frac{1}{2}\|z-\mathcal{H}v\|^2_{\mathcal{R}^{-1}}+\frac{1}{2}\|v\|^2_{P_0^{-1}}}_{L^\text{MAP}(v)}
+$$
+</p>
+$$
+	(P_0^{-1}+\mathcal{H}^\trp\mathcal{R}^{-1}\mathcal{H})\hat{v}^\text{MAP}-\mathcal{H}^\trp \mathcal{R}^{-1}z=0
+$$
+			
+		</div>
+
+						
+
+			</section>
+
+
+			
+			<section>
+
+				<div class="slide-title">
+					<h2>Maximum A Posteriori (MAP)</h2>
+				</div>
+				<div class="slide-content">
+			if $\varepsilon\sim\mathcal{N}(0,R_k)$ and $\theta\sim\mathcal{N}(\theta_0,P_0)$, then
+
+<p class="lightup">
+	Regularized Nonlinear Least Squares (RNLS)
+$$
+	\hat{v}^\text{MAP}:=\min_v \underbrace{\frac{1}{2}\|z-\mathcal{H}v\|^2_{\mathcal{R}^{-1}}+\frac{1}{2}\|v\|^2_{P_0^{-1}}}_{L^\text{MAP}(v)}
+$$
+</p>
+Therefore,
+$$
+	\hat{v}^\text{MAP}=(P_0^{-1}+\mathcal{H}^\trp\mathcal{R}^{-1}\mathcal{H})^{-1}\mathcal{H}^\trp \mathcal{R}^{-1}z
+$$
+			
+		</div>
+
+						
+
+			</section>
+
+
+			
+			
+			<section>
+
+				<div class="slide-title">
+					<h2>Maximum A Posteriori (MAP)</h2>
+				</div>
+				<div class="slide-content">
+			if $\varepsilon\sim\mathcal{N}(0,R_k)$ and $\theta\sim\mathcal{N}(\theta_0,P_0)$, then
+
+<p class="lightup">
+	Regularized Nonlinear Least Squares (RNLS)
+$$
+	\hat{v}^\text{MAP}:=\min_v \underbrace{\frac{1}{2}\|z-\mathcal{H}v\|^2_{\mathcal{R}^{-1}}+\frac{1}{2}\|v\|^2_{P_0^{-1}}}_{L^\text{MAP}(v)}
+$$
+</p>
+Therefore,
+$$
+	\hat{\theta}^\text{MAP}=\theta_0+(P_0^{-1}+\mathcal{H}^\trp\mathcal{R}^{-1}\mathcal{H})^{-1}\mathcal{H}^\trp \mathcal{R}^{-1}z
+$$
+			
+		</div>
+
+						
+
+			</section>
+
+
+			<section>
+
+				<div class="slide-title">
+			<h2>Mimimum Mean Square Error (MMSE)</h2>
+				</div>
+				<div class="slide-content">
+					<center>Non-linear case</center>
+					Let 
+
+					$$
+						y_k=h_k(\theta)+\varepsilon_k
+					$$
+<p class="lightup">
+$$
+		\hat{\theta}^\text{MMSE}=\arg\min_{\hat{\theta}}\mathbb{E}[\|\theta-\hat{\theta}\|_2^2\bigr| Y^N]
+$$
+
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>minimum</b> of this function?</center>
+<p>
+
+</p>
+
+		</div>
+
+
+		
+	</section>
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Mimimum Mean Square Error (MMSE)</h2>
+				</div>
+				<div class="slide-content">
+					<center>Non-linear case</center>
+					Let 
+
+					$$
+						y_k=h_k(\theta)+\varepsilon_k
+					$$
+<p class="lightup">
+$$
+		\hat{\theta}^\text{MMSE}=\arg\min_{\hat{\theta}}\underbrace{\mathbb{E}[\|\theta-\hat{\theta}\|_2^2\bigr| Y^N]}_{L^\text{MMSE}(\theta)}
+$$
+
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>minimum</b> of this function?</center>
+<p>
+
+</p>
+
+		</div>
+
+	</section>
+
+
+
+	
+					<section>
+
+				<div class="slide-title">
+					<h2>Mimimum Mean Square Error (MMSE)</h2>
+				</div>
+				<div class="slide-content">
+					<center>Non-linear case</center>
+					Let 
+
+					$$
+						y_k=h_k(\theta)+\varepsilon_k
+					$$
+<p class="lightup">
+$$
+		\hat{\theta}^\text{MMSE}=\arg\min_{\hat{\theta}}\underbrace{\int\|\theta-\hat{\theta}\|_2^2 p(\theta | Y^N)d\theta}_{L^\text{MMSE}(\theta)}
+$$
+
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>minimum</b> of this function?</center>
+<p>
+
+</p>
+
+		</div>
+
+	</section>
+
+
+
+	
+					<section>
+
+				<div class="slide-title">
+					<h2>Mimimum Mean Square Error (MMSE)</h2>
+				</div>
+				<div class="slide-content">
+							
+<p class="lightup">
+$$
+		\int\|\theta-\hat{\theta}\|_2^2 p(\theta | Y^N)d\theta = \int \Bigl(\theta^\trp \theta -2\theta^\trp \hat{\theta}+\hat{\theta}^\trp \hat{\theta}\Bigr)p(\theta|Y^N)d\theta
+$$
+</p>
+So,
+$$
+	\Rightarrow \int \frac{\partial}{\partial \hat{\theta}}(\theta^\trp \theta -2\theta^\trp \hat{\theta}+\hat{\theta}^\trp \hat{\theta})p(\theta|Y^N)d\theta=0\\
+	\Rightarrow \int (-2\theta+2\hat{\theta})p(\theta|Y^N)d\theta=0\\
+	\Rightarrow \int \hat{\theta} p(\theta|Y^N)d\theta=\int \theta p(\theta|Y^N)d\theta
+$$
+
+<p>
+
+</p>
+
+		</div>
+
+	</section>
+
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Mimimum Mean Square Error (MMSE)</h2>
+				</div>
+				<div class="slide-content">
+							
+<p class="lightup">
+$$
+		\int\|\theta-\hat{\theta}\|_2^2 p(\theta | Y^N)d\theta = \int \Bigl(\theta^\trp \theta -2\theta^\trp \hat{\theta}+\hat{\theta}^\trp \hat{\theta}\Bigr)p(\theta|Y^N)d\theta
+$$
+</p>
+So,
+$$
+	\Rightarrow \int \frac{\partial}{\partial \hat{\theta}}(\theta^\trp \theta -2\theta^\trp \hat{\theta}+\hat{\theta}^\trp \hat{\theta})p(\theta|Y^N)d\theta=0\\
+	\Rightarrow \int (-2\theta+2\hat{\theta})p(\theta|Y^N)d\theta=0\\
+	\Rightarrow \hat{\theta} \int  p(\theta|Y^N)d\theta=\int \theta p(\theta|Y^N)d\theta
+$$
+
+<p>
+
+</p>
+
+		</div>
+
+	</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Mimimum Mean Square Error (MMSE)</h2>
+				</div>
+				<div class="slide-content">
+							
+<p class="lightup">
+$$
+		\int\|\theta-\hat{\theta}\|_2^2 p(\theta | Y^N)d\theta = \int \Bigl(\theta^\trp \theta -2\theta^\trp \hat{\theta}+\hat{\theta}^\trp \hat{\theta}\Bigr)p(\theta|Y^N)d\theta
+$$
+</p>
+So,
+$$
+	\Rightarrow \int \frac{\partial}{\partial \hat{\theta}}(\theta^\trp \theta -2\theta^\trp \hat{\theta}+\hat{\theta}^\trp \hat{\theta})p(\theta|Y^N)d\theta=0\\
+	\Rightarrow \int (-2\theta+2\hat{\theta})p(\theta|Y^N)d\theta=0\\
+	\Rightarrow \hat{\theta} =\int \theta p(\theta|Y^N)d\theta
+$$
+
+<p>
+
+</p>
+
+		</div>
+
+	</section>
+
+
+
+	
+				<section>
+
+				<div class="slide-title">
+					<h2>Mimimum Mean Square Error (MMSE)</h2>
+				</div>
+				<div class="slide-content">
+							
+<p class="lightup">
+$$
+		\int\|\theta-\hat{\theta}\|_2^2 p(\theta | Y^N)d\theta = \int \Bigl(\theta^\trp \theta -2\theta^\trp \hat{\theta}+\hat{\theta}^\trp \hat{\theta}\Bigr)p(\theta|Y^N)d\theta
+$$
+</p>
+So,
+$$
+	\Rightarrow \int \frac{\partial}{\partial \hat{\theta}}(\theta^\trp \theta -2\theta^\trp \hat{\theta}+\hat{\theta}^\trp \hat{\theta})p(\theta|Y^N)d\theta=0\\
+	\Rightarrow \int (-2\theta+2\hat{\theta})p(\theta|Y^N)d\theta=0\\
+	\Rightarrow \hat{\theta} =\mathbb{E}[\theta |Y^N]
+$$
+
+<p>
+
+</p>
+
+		</div>
+
+	</section>
+
+
+
+		<section>
+
+				<div class="slide-title">
+			<h2>Mimimum Mean Square Error (MMSE)</h2>
+				</div>
+				<div class="slide-content">
+			
+					Let 
+
+					$$
+						y_k=h_k(\theta)+\varepsilon_k
+					$$
+<p class="lightup">
+$$
+		\hat{\theta}^\text{MMSE}=\arg\min_{\hat{\theta}}\mathbb{E}[\|\theta-\hat{\theta}\|_2^2\bigr| Y^N]
+$$
+
+</p>
+<center><b>The optimal solution is</b><br>
+<p class="lightup">
+	$$
+	\hat{\theta}^\text{MMSE}=\mathbb{E}[\theta|Y^N]=\int \theta p(\theta|Y^N)d\theta
+	$$
+</p>
+</center>
+<p>
+
+</p>
+
+		</div>
+
+
+		
+	</section>
+
+
+
+		<section>
+
+				<div class="slide-title">
+			<h2>Mimimum Mean Square Error (MMSE)</h2>
+				</div>
+				<div class="slide-content">
+
+<center><b>The optimal solution is</b><br>
+<p class="lightup">
+	$$
+	\hat{\theta}^\text{MMSE}=\mathbb{E}[\theta|Y^N]=\int \theta \frac{p(Y^N|\theta)p(\theta)}{p(Y^N)}d\theta
+	$$
+</p>
+<p>&nbsp;</p>
+Obs:
+For linear models and Gaussian noises the MMSE is the same as the MAP!
+</center>
+<p>
+
+</p>
+
+		</div>
+
+
+		
+	</section>
+
+
+	<section>
+
+				<div class="slide-title">
+			<h2>Summary</h2>
+				</div>
+				<div class="slide-content">
+					<ul>
+						<li>ML:
+							$$
+								\hat{\theta}=\theta_0+(\mathcal{H}^\trp \mathcal{R}^{-1}\mathcal{H})^{-1}\mathcal{H}^\trp \mathcal{R}^{-1}z
+							$$
+						</li>
+						<li>MAP:
+							$$
+								\hat{\theta}=\theta_0+(P_0^{-1}+\mathcal{H}^\trp \mathcal{R}^{-1}\mathcal{H})^{-1}\mathcal{H}^\trp \mathcal{R}^{-1}z
+							$$
+						</li>
+						<li>MMSE:
+							$$
+							\hat{\theta}=\mathbb{E}[\theta|Y^N]=\int \theta p(\theta|Y^N)d\theta
+							$$
+						</li>
+					</ul>
+
+		</div>
+
+
+		
+	</section>
+
+
+		
+			<section>
+		
+				<div class="slide-content">
+					<center>
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+					<h2>Until next time!</h2>
+				</center>
+				</div>
+
+			</section>
+
+
+
+
+				
+
+
+
+				<!------------------------>
+			</div>
+		</div>
+
+		
+
+		<script src="../dist/reveal.js"></script>
+		<script src="../plugin/notes/notes.js"></script>
+		<script src="../plugin/markdown/markdown.js"></script>
+		<script src="../plugin/highlight/highlight.js"></script>
+		<script src="../plugin/math/math.js"></script>
+		<script src="../init.js"></script>
+		<script src="../plugin/handwriting/plugin.js"></script>
+	</body>
+</html>
+
+</p>
