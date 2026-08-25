@@ -260,9 +260,7 @@ $$
 					<center>Linear case (New measurement)</center>
 					Thus,
 					$$
-						\mathcal{M}_{N+1}:=\mathcal{H}_{N+1}\mathcal{R}_{N+1}^{-1}\mathcal{H}_{N+1}^\trp\\
-						
-
+						\mathcal{M}_{N+1}:=\mathcal{H}_{N+1}^\trp\mathcal{R}_{N+1}^{-1}\mathcal{H}_{N+1}\succ 0
 					$$
 
 
@@ -288,7 +286,7 @@ $$
 					Thus,
 					$$
 						\mathcal{M}_{N+1}:=\begin{bmatrix}\mathcal{H}_N\\ H_{N+1}\end{bmatrix}^\trp\begin{bmatrix}\mathcal{R}^{-1}_{N} & 0 \\
-						0 & R_{N+1}^{-1}\end{bmatrix}\begin{bmatrix}\mathcal{H}_N\\ H_{N+1}\end{bmatrix}\\
+						0 & R_{N+1}^{-1}\end{bmatrix}\begin{bmatrix}\mathcal{H}_N\\ H_{N+1}\end{bmatrix}\succ 0
 						
 
 					$$
@@ -315,8 +313,7 @@ $$
 					<center>Linear case (New measurement)</center>
 					Thus,
 					$$
-						\mathcal{M}_{N+1}:=\underbrace{\mathcal{H}^\trp_N \mathcal{R}^{-1}_N \mathcal{H}_N}_{\mathcal{M}_N}+H_{N+1}^\trp R^{-1}_{N+1}H_{N+1}
-
+						\mathcal{M}_{N+1}:=\underbrace{\mathcal{H}^\trp_N \mathcal{R}^{-1}_N \mathcal{H}_N}_{\mathcal{M}_N}+H_{N+1}^\trp R^{-1}_{N+1}H_{N+1}\succ 0
 					$$
 
 
@@ -340,7 +337,6 @@ $$
 					Thus,
 					$$
 						\mathcal{M}_{N+1}:=\mathcal{M}_N+H_{N+1}^\trp R^{-1}_{N+1}H_{N+1}
-
 					$$
 
 					and 
@@ -368,11 +364,13 @@ $$
 				<div class="slide-content">
 					<p>&nbsp;</p>
 				<div class="box">
-					<span class="box-title">Lemma: (Woodbury matrix identit)</span>
+					<span class="box-title">Lemma: (Woodbury matrix identity)</span>
 					Given $A$ and $C$ non-singular matrices, then for any $U$ and $V$ of compatible dimensions, we have
+					<p>&nbsp;</p>
 					$$
 					 (A+UCV)^{-1}=A^{-1}-A^{-1}U(C^{-1}+VA^{-1}U)^{-1}VA^{-1}
 					$$
+					<p>&nbsp;</p>
 				</div>
 				
 
@@ -432,7 +430,8 @@ $$
 
 					and 
 					$$
-						\mathcal{M}_{N+1}^{-1}=\mathcal{M}_N^{-1}-\mathcal{M}_N^{-1}H_{N+1}^\trp(R_{N+1}+H_{N+1}\mathcal{M}_N^{-1}H_{N+1})^{-1}H_{N+1}\mathcal{M}_N^{-1}
+						\mathcal{M}_{N+1}^{-1}=\mathcal{M}_N^{-1}
+						-\mathcal{M}_N^{-1}H_{N+1}^\trp(R_{N+1}+H_{N+1}\mathcal{M}_N^{-1}H_{N+1}^\trp)^{-1}H_{N+1}\mathcal{M}_N^{-1}
 					$$
 
 
@@ -461,7 +460,7 @@ $$
 
 					and 
 					$$
-						\mathcal{M}_{N+1}^{-1}=[I-\mathcal{M}_N^{-1}H_{N+1}^\trp(R_{N+1}+H_{N+1}\mathcal{M}_N^{-1}H_{N+1})^{-1}H_{N+1}]\mathcal{M}_N^{-1}
+						\mathcal{M}_{N+1}^{-1}=[I-\mathcal{M}_N^{-1}H_{N+1}^\trp(R_{N+1}+H_{N+1}\mathcal{M}_N^{-1}H_{N+1}^\trp)^{-1}H_{N+1}]\mathcal{M}_N^{-1}
 					$$
 
 
@@ -491,7 +490,7 @@ $$
 
 					and 
 					$$
-						\mathcal{M}_{N+1}^{-1}=[I-\underbrace{\mathcal{M}_N^{-1}H_{N+1}^\trp(R_{N+1}+H_{N+1}\mathcal{M}_N^{-1}H_{N+1})^{-1}}_{K_{N+1}}H_{N+1}]\mathcal{M}_N^{-1}
+						\mathcal{M}_{N+1}^{-1}=[I-\underbrace{\mathcal{M}_N^{-1}H_{N+1}^\trp(R_{N+1}+H_{N+1}\mathcal{M}_N^{-1}H_{N+1}^\trp)^{-1}}_{K_{N+1}}H_{N+1}]\mathcal{M}_N^{-1}
 					$$
 
 
@@ -526,7 +525,7 @@ $$
 					$$
 with 
 $$
-K_{N+1}:=\mathcal{M}_N^{-1}H_{N+1}^\trp(R_{N+1}+H_{N+1}\mathcal{M}_N^{-1}H_{N+1})^{-1}
+K_{N+1}:=\mathcal{M}_N^{-1}H_{N+1}^\trp(R_{N+1}+H_{N+1}\mathcal{M}_N^{-1}H_{N+1}^\trp)^{-1}
 	$$
 
 <p>
@@ -691,9 +690,7 @@ $$
 </section>
 
 
-
-
-<section>
+	<section>
 
 				<div class="slide-title">
 					<h2>Maximum Likelihood Estimation</h2>
@@ -708,7 +705,37 @@ $$
 <p class="lightup">
 
 $$
-		\hat{\theta}_{N+1}=[I-K_{N+1}H_{N+1}]\mathcal{M}_{N}^{-1}(\mathcal{H}_{N}^\trp \mathcal{R}^{-1}_{N}Y_{N}\\+H_{N+1}^\trp R^{-1}_{N+1}y_{N+1})
+		\hat{\theta}_{N+1}=\mathcal{M}_{N+1}^{-1}\mathcal{H}_{N}^\trp \mathcal{R}^{-1}_{N}Y_{N}+\mathcal{M}_{N+1}^{-1}H_{N+1}^\trp R^{-1}_{N+1}y_{N+1}
+$$
+
+</p>
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+	<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+					Given
+					$$
+						\{y_1,y_2,\ldots,y_N,y_{N+1}\}
+					$$
+					The the ML Estimator is
+<p class="lightup">
+
+$$
+		\hat{\theta}_{N+1}=\underbrace{\mathcal{M}_{N+1}^{-1}}_{[I-K_{N+1}H_{N+1}]\mathcal{M}_{N}^{-1}}\mathcal{H}_{N}^\trp \mathcal{R}^{-1}_{N}Y_{N}+\underbrace{\mathcal{M}_{N+1}^{-1}H_{N+1}^\trp R^{-1}_{N+1}}_{K_{N+1}}y_{N+1}
 $$
 
 </p>
@@ -740,14 +767,11 @@ $$
 <p class="lightup">
 
 $$
-	\hat{\theta}_{N+1}=[I-K_{N+1}H_{N+1}](\mathcal{M}_{N}^{-1}\mathcal{H}_{N}^\trp \mathcal{R}^{-1}_{N}Y_{N}+\\\mathcal{M}_{N}^{-1}H_{N+1}^\trp R^{-1}_{N+1}y_{N+1})
+	\hat{\theta}_{N+1}=[I-K_{N+1}H_{N+1}]\mathcal{M}_{N}^{-1}\mathcal{H}_{N}^\trp \mathcal{R}^{-1}_{N}Y_{N}+K_{N+1}y_{N+1}
 $$
 
 </p>
 
-<p>
-
-</p>
 
 		</div>
 
@@ -771,20 +795,16 @@ $$
 <p class="lightup">
 
 $$
-	\hat{\theta}_{N+1}=[I-K_{N+1}H_{N+1}](\underbrace{\mathcal{M}_{N}^{-1}\mathcal{H}_{N}^\trp \mathcal{R}^{-1}_{N}Y_{N}}_{\hat{\theta}_N}+\\\underbrace{\mathcal{M}_{N}^{-1}H_{N+1}^\trp R^{-1}_{N+1}}_{K_{N+1}}y_{N+1})
+	\hat{\theta}_{N+1}=[I-K_{N+1}H_{N+1}]\underbrace{\mathcal{M}_{N}^{-1}\mathcal{H}_{N}^\trp \mathcal{R}^{-1}_{N}Y_{N}}_{\hat{\theta}_N}+K_{N+1}y_{N+1}
 $$
 
 </p>
 
-<p>
-
-</p>
 
 		</div>
 
 						
 </section>
-
 
 
 <section>
@@ -802,19 +822,17 @@ $$
 <p class="lightup">
 
 $$
-	\hat{\theta}_{N+1}=[I-K_{N+1}H_{N+1}](\hat{\theta}_N+K_{N+1}y_{N+1})
+	\hat{\theta}_{N+1}=[I-K_{N+1}H_{N+1}]\hat{\theta}_N+K_{N+1}y_{N+1}
 $$
 
 </p>
 
-<p>
-
-</p>
 
 		</div>
 
 						
 </section>
+
 
 
 
@@ -899,7 +917,7 @@ $$
 <p>
 Recall that 
 $$
-	K_{N+1}:=\mathcal{M}_N^{-1}H_{N+1}^\trp(R_{N+1}+H_{N+1}\mathcal{M}_N^{-1}H_{N+1})^{-1}\\
+	K_{N+1}:=\mathcal{M}_N^{-1}H_{N+1}^\trp(R_{N+1}+H_{N+1}\mathcal{M}_N^{-1}H_{N+1}^\trp)^{-1}\\
 	=\mathcal{M}_{N+1}^{-1}H_{N+1}^\trp R_{N+1}^{-1}
 $$
 and 
@@ -926,7 +944,7 @@ Let
 <p class="">
 
 $$
-	P_N:=\mathcal{M}_N^{-1}
+	P_N:=\mathcal{M}_N^{-1}\succ 0
 $$
 
 </p>
@@ -936,7 +954,7 @@ Recursive Form
 $$
 \begin{aligned}
 \hat{\theta}_{N+1}&=\hat{\theta}_N+K_{N+1}(y_{N+1}-H_{N+1}\hat{\theta}_N)\\
-K_{N+1}&=P_{N+1}H_{N+1}^\trp R_{N+1}^{-1}\\
+K_{N+1}&=P_NH_{N+1}^\trp(R_{N+1}+H_{N+1}P_NH_{N+1})^{-1}\\
 P_{N+1}&=[I-K_{N+1}H_{N+1}]P_N
 \end{aligned}
 $$
@@ -1005,7 +1023,7 @@ We want to find
 				
 Given a dataset
 $$
-	Y^N:=\{y_1,y_2,\ldots,y_N,y_{N+1}\},
+	Y^{N+1}:=\{y_1,y_2,\ldots,y_N,y_{N+1}\},
 $$
 and a prior distribution
 $$
@@ -1034,7 +1052,7 @@ We want to find
 				
 Given a dataset
 $$
-	Y^N:=\{y_1,y_2,\ldots,y_N,y_{N+1}\},
+	Y^{N+1}:=\{y_1,y_2,\ldots,y_N,y_{N+1}\},
 $$
 and a prior distribution
 $$
@@ -1063,7 +1081,7 @@ We want to find
 				
 Given a dataset
 $$
-	Y^N:=\{y_1,y_2,\ldots,y_N,y_{N+1}\},
+	Y^{N+1}:=\{y_1,y_2,\ldots,y_N,y_{N+1}\},
 $$
 and a prior distribution
 $$
@@ -1092,7 +1110,7 @@ We want to find
 				
 Given a dataset
 $$
-	Y^N:=\{y_1,y_2,\ldots,y_N,y_{N+1}\},
+	Y^{N+1}:=\{y_1,y_2,\ldots,y_N,y_{N+1}\},
 $$
 and a prior distribution
 $$
@@ -1121,7 +1139,7 @@ We want to find
 				
 Given a dataset
 $$
-	Y^N:=\{y_1\},
+	Y^1:=\{y_1\},
 $$
 and a prior distribution
 $$
@@ -1151,7 +1169,7 @@ The posterior is
 				
 Given a dataset
 $$
-	Y^N:=\{y_1,y_2\},
+	Y^2:=\{y_1,y_2\},
 $$
 and a prior distribution
 $$
@@ -1180,7 +1198,7 @@ The posterior is
 				
 Given a dataset
 $$
-	Y^N:=\{y_1,y_2,y_3\},
+	Y^3:=\{y_1,y_2,y_3\},
 $$
 and a prior distribution
 $$
@@ -1430,36 +1448,6 @@ $$
 
 
 </section>
-
-
-<section>
-
-				<div class="slide-title">
-					<h2>Exercise: Recursive 2D GNSS Positioning</h2>
-				</div>
-				<div class="slide-content">
-					<p style="font-size:0.62em;">Unknown antenna position $\theta=(x_a,y_a)$, 3 satellites $S_k$ at known positions, pseudoranges $$\rho_k=\|\theta-S_k\|+\varepsilon_k,\quad \varepsilon_k\sim\mathcal{N}(0,R_k)$$ arriving <b>sequentially</b>.</p>
-<p class="lightup" style="font-size:0.8em;">
-$$
-\underbrace{\rho_k-\rho_{0,k}}_{\Delta\rho_k}=H_k\,\Delta\theta+\varepsilon_k,\quad H_k=\frac{\partial \rho_k}{\partial\theta}\Big|_{\theta_0}
-$$
-</p>
-					<p style="font-size:0.6em;">Linearize around a nominal point $\theta_0$, then apply the recursive ML estimator from this class, one satellite at a time.</p>
-				</div>
-
-
-</section>
-
-
-
-
-
-
-
-
-
-
-
 
 		
 			<section>
