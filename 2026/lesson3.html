@@ -1588,7 +1588,7 @@ and a <b>prior distribution</b>
 The MAP estimator is defined as  
 <p class="lightup">
 $$
-	\hat{\theta}^\text{MAP}:=\max_\theta p(\theta|Y^N)
+	\hat{\theta}^\text{MAP}:=\arg\max_\theta p(\theta|Y^N)
 $$
 </p>
 			
@@ -1609,7 +1609,7 @@ $$
 Applying the Bayes' rule
 <p class="lightup">
 $$
-	\hat{\theta}^\text{MAP}:=\max_\theta \frac{p(Y^N|\theta)p(\theta)}{p(Y^N)}
+	\hat{\theta}^\text{MAP}:=\arg\max_\theta \frac{p(Y^N|\theta)p(\theta)}{p(Y^N)}
 $$
 </p>
 <center><b>Optimization problem:</b><br>
@@ -1632,7 +1632,7 @@ $$
 Applying the Bayes' rule
 <p class="lightup">
 $$
-	\hat{\theta}^\text{MAP}:=\max_\theta p(Y^N|\theta)p(\theta)
+	\hat{\theta}^\text{MAP}:=\arg\max_\theta p(Y^N|\theta)p(\theta)
 $$
 </p>
 <center><b>Optimization problem:</b><br>
@@ -1654,7 +1654,7 @@ $$
 Applying the Bayes' rule
 <p class="lightup">
 $$
-	\hat{\theta}^\text{MAP}:=\max_\theta p(y_1,y_2,\ldots,y_N|\theta)p(\theta)
+	\hat{\theta}^\text{MAP}:=\arg\max_\theta p(y_1,y_2,\ldots,y_N|\theta)p(\theta)
 $$
 </p>
 <center><b>Optimization problem:</b><br>
@@ -1678,7 +1678,7 @@ $$
 Applying the Bayes' rule
 <p class="lightup">
 $$
-	\hat{\theta}^\text{MAP}:=\max_\theta \prod_{k=1}^Np(y_k|\theta)p(\theta)
+	\hat{\theta}^\text{MAP}:=\arg\max_\theta \prod_{k=1}^Np(y_k|\theta)p(\theta)
 $$
 </p>
 <center><b>Optimization problem:</b><br>
@@ -1703,7 +1703,7 @@ $$
 
 <p class="lightup">
 $$
-	\hat{\theta}^\text{MAP}:=\max_\theta \prod_{k=1}^N\mathcal{N}(y_k;h_k(\theta),R_k)\mathcal{N}(\theta;\theta_0,P_0)
+	\hat{\theta}^\text{MAP}:=\arg\max_\theta \prod_{k=1}^N\mathcal{N}(y_k;h_k(\theta),R_k)\mathcal{N}(\theta;\theta_0,P_0)
 $$
 </p>
 		<center><b>Optimization problem:</b><br>
@@ -1727,7 +1727,7 @@ $$
 
 <p class="lightup">
 $$
-	\hat{\theta}^\text{MAP}:=\max_\theta \alpha \exp\Bigl[-\sum_{k=1}^N\frac{1}{2}\|y_k-h_k(\theta)\|^2_{R_k^{-1}}-\frac{1}{2}\|\theta-\theta_0\|^2_{P_0^{-1}}\Bigr]
+	\hat{\theta}^\text{MAP}:=\arg\max_\theta \alpha \exp\Bigl[-\sum_{k=1}^N\frac{1}{2}\|y_k-h_k(\theta)\|^2_{R_k^{-1}}-\frac{1}{2}\|\theta-\theta_0\|^2_{P_0^{-1}}\Bigr]
 $$
 </p>
 	<center><b>Optimization problem:</b><br>
@@ -1751,7 +1751,7 @@ $$
 
 <p class="lightup">
 $$
-	\hat{\theta}^\text{MAP}:=\min_\theta \sum_{k=1}^N\frac{1}{2}\|y_k-h_k(\theta)\|^2_{R_k^{-1}}+\frac{1}{2}\|\theta-\theta_0\|^2_{P_0^{-1}}
+	\hat{\theta}^\text{MAP}:=\arg\min_\theta \sum_{k=1}^N\frac{1}{2}\|y_k-h_k(\theta)\|^2_{R_k^{-1}}+\frac{1}{2}\|\theta-\theta_0\|^2_{P_0^{-1}}
 $$
 </p>
 <center><b>Optimization problem:</b><br>
@@ -1775,7 +1775,7 @@ $$
 
 <p class="lightup">
 $$
-	\hat{\theta}^\text{MAP}:=\min_\theta \frac{1}{2}\|y-h(\theta)\|^2_{\mathcal{R}^{-1}}+\frac{1}{2}\|\theta-\theta_0\|^2_{P_0^{-1}}
+	\hat{\theta}^\text{MAP}:=\arg\min_\theta \frac{1}{2}\|y-h(\theta)\|^2_{\mathcal{R}^{-1}}+\frac{1}{2}\|\theta-\theta_0\|^2_{P_0^{-1}}
 $$
 </p>
 <center><b>Optimization problem:</b><br>
@@ -1786,82 +1786,6 @@ $$
 						
 
 			</section>
-
-
-
-			
-									<section>
-
-				<div class="slide-title">
-					<h2>Maximum A Posteriori (MAP)</h2>
-				</div>
-				<div class="slide-content">
-			if $\varepsilon\sim\mathcal{N}(0,R_k)$ and $\theta\sim\mathcal{N}(\theta_0,P_0)$, then
-
-<p class="lightup">
-	Regularized Nonlinear Least Squares (RNLS)
-$$
-	\hat{\theta}^\text{MAP}:=\min_\theta \frac{1}{2}\|y-h(\theta)\|^2_{\mathcal{R}^{-1}}+\underbrace{\frac{1}{2}\|\theta-\theta_0\|^2_{P_0^{-1}}}_{\text{regularization}}
-$$
-</p>
-<center><b>Optimization problem:</b><br>
-	How to find the <b>minimum</b> of this function?</center>
-			
-		</div>
-
-						
-
-			</section>
-
-
-
-									<section>
-
-				<div class="slide-title">
-					<h2>Maximum A Posteriori (MAP)</h2>
-				</div>
-				<div class="slide-content">
-			if $\varepsilon\sim\mathcal{N}(0,R_k)$ and $\theta\sim\mathcal{N}(\theta_0,P_0)$, then
-
-<p class="lightup">
-	Regularized Nonlinear Least Squares (RNLS)
-$$
-	\hat{\theta}^\text{MAP}:=\min_\theta \frac{1}{2}\|y-h(\theta_0)-\mathcal{H}(\theta-\theta_0)\|^2_{\mathcal{R}^{-1}}+\underbrace{\frac{1}{2}\|\theta-\theta_0\|^2_{P_0^{-1}}}_{\text{regularization}}
-$$
-</p>
-<center><b>Optimization problem:</b><br>
-	How to find the <b>minimum</b> of this function?</center>
-			
-		</div>
-
-						
-
-			</section>
-
-
-									<section>
-
-				<div class="slide-title">
-					<h2>Maximum A Posteriori (MAP)</h2>
-				</div>
-				<div class="slide-content">
-			if $\varepsilon\sim\mathcal{N}(0,R_k)$ and $\theta\sim\mathcal{N}(\theta_0,P_0)$, then
-
-<p class="lightup">
-	Regularized Nonlinear Least Squares (RNLS)
-$$
-	\hat{\theta}^\text{MAP}:=\min_\theta \frac{1}{2}\|\underbrace{y-h(\theta_0)}_{z}-\mathcal{H}\underbrace{(\theta-\theta_0)}_{v}\|^2_{\mathcal{R}^{-1}}+\underbrace{\frac{1}{2}\|\theta-\theta_0\|^2_{P_0^{-1}}}_{\text{regularization}}
-$$
-</p>
-<center><b>Optimization problem:</b><br>
-	How to find the <b>minimum</b> of this function?</center>
-			
-		</div>
-
-						
-
-			</section>
-
 
 
 
@@ -1877,7 +1801,83 @@ $$
 <p class="lightup">
 	Regularized Nonlinear Least Squares (RNLS)
 $$
-	\hat{v}^\text{MAP}:=\min_v \underbrace{\frac{1}{2}\|z-\mathcal{H}v\|^2_{\mathcal{R}^{-1}}+\frac{1}{2}\|v\|^2_{P_0^{-1}}}_{L^\text{MAP}(v)}
+	\hat{\theta}^\text{MAP}:=\arg\min_\theta \frac{1}{2}\|y-h(\theta)\|^2_{\mathcal{R}^{-1}}+\underbrace{\frac{1}{2}\|\theta-\theta_0\|^2_{P_0^{-1}}}_{\text{regularization}}
+$$
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>minimum</b> of this function?</center>
+			
+		</div>
+
+						
+
+			</section>
+
+
+
+									<section>
+
+				<div class="slide-title">
+					<h2>Maximum A Posteriori (MAP)</h2>
+				</div>
+				<div class="slide-content">
+			if $\varepsilon\sim\mathcal{N}(0,R_k)$ and $\theta\sim\mathcal{N}(\theta_0,P_0)$, then
+
+<p class="lightup">
+	Regularized Nonlinear Least Squares (RNLS)
+$$
+	\hat{\theta}^\text{MAP}:=\arg\min_\theta \frac{1}{2}\|y-h(\theta_0)-\mathcal{H}(\theta-\theta_0)\|^2_{\mathcal{R}^{-1}}+\underbrace{\frac{1}{2}\|\theta-\theta_0\|^2_{P_0^{-1}}}_{\text{regularization}}
+$$
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>minimum</b> of this function?</center>
+			
+		</div>
+
+						
+
+			</section>
+
+
+									<section>
+
+				<div class="slide-title">
+					<h2>Maximum A Posteriori (MAP)</h2>
+				</div>
+				<div class="slide-content">
+			if $\varepsilon\sim\mathcal{N}(0,R_k)$ and $\theta\sim\mathcal{N}(\theta_0,P_0)$, then
+
+<p class="lightup">
+	Regularized Nonlinear Least Squares (RNLS)
+$$
+	\hat{\theta}^\text{MAP}:=\arg\min_\theta \frac{1}{2}\|\underbrace{y-h(\theta_0)}_{z}-\mathcal{H}\underbrace{(\theta-\theta_0)}_{v}\|^2_{\mathcal{R}^{-1}}+\underbrace{\frac{1}{2}\|\theta-\theta_0\|^2_{P_0^{-1}}}_{\text{regularization}}
+$$
+</p>
+<center><b>Optimization problem:</b><br>
+	How to find the <b>minimum</b> of this function?</center>
+			
+		</div>
+
+						
+
+			</section>
+
+
+
+
+			
+									<section>
+
+				<div class="slide-title">
+					<h2>Maximum A Posteriori (MAP)</h2>
+				</div>
+				<div class="slide-content">
+			if $\varepsilon\sim\mathcal{N}(0,R_k)$ and $\theta\sim\mathcal{N}(\theta_0,P_0)$, then
+
+<p class="lightup">
+	Regularized Nonlinear Least Squares (RNLS)
+$$
+	\hat{v}^\text{MAP}:=\arg\min_v \underbrace{\frac{1}{2}\|z-\mathcal{H}v\|^2_{\mathcal{R}^{-1}}+\frac{1}{2}\|v\|^2_{P_0^{-1}}}_{L^\text{MAP}(v)}
 $$
 </p>
 <center><b>Optimization problem:</b><br>
@@ -1904,7 +1904,7 @@ $$
 <p class="lightup">
 	Regularized Nonlinear Least Squares (RNLS)
 $$
-	\hat{v}^\text{MAP}:=\min_v \underbrace{\frac{1}{2}\|z-\mathcal{H}v\|^2_{\mathcal{R}^{-1}}+\frac{1}{2}\|v\|^2_{P_0^{-1}}}_{L^\text{MAP}(v)}
+	\hat{v}^\text{MAP}:=\arg\min_v \underbrace{\frac{1}{2}\|z-\mathcal{H}v\|^2_{\mathcal{R}^{-1}}+\frac{1}{2}\|v\|^2_{P_0^{-1}}}_{L^\text{MAP}(v)}
 $$
 </p>
 $$
@@ -1930,7 +1930,7 @@ $$
 <p class="lightup">
 	Regularized Nonlinear Least Squares (RNLS)
 $$
-	\hat{v}^\text{MAP}:=\min_v \underbrace{\frac{1}{2}\|z-\mathcal{H}v\|^2_{\mathcal{R}^{-1}}+\frac{1}{2}\|v\|^2_{P_0^{-1}}}_{L^\text{MAP}(v)}
+	\hat{v}^\text{MAP}:=\arg\min_v \underbrace{\frac{1}{2}\|z-\mathcal{H}v\|^2_{\mathcal{R}^{-1}}+\frac{1}{2}\|v\|^2_{P_0^{-1}}}_{L^\text{MAP}(v)}
 $$
 </p>
 $$
@@ -1956,7 +1956,7 @@ $$
 <p class="lightup">
 	Regularized Nonlinear Least Squares (RNLS)
 $$
-	\hat{v}^\text{MAP}:=\min_v \underbrace{\frac{1}{2}\|z-\mathcal{H}v\|^2_{\mathcal{R}^{-1}}+\frac{1}{2}\|v\|^2_{P_0^{-1}}}_{L^\text{MAP}(v)}
+	\hat{v}^\text{MAP}:=\arg\min_v \underbrace{\frac{1}{2}\|z-\mathcal{H}v\|^2_{\mathcal{R}^{-1}}+\frac{1}{2}\|v\|^2_{P_0^{-1}}}_{L^\text{MAP}(v)}
 $$
 </p>
 Therefore,
@@ -1984,7 +1984,7 @@ $$
 <p class="lightup">
 	Regularized Nonlinear Least Squares (RNLS)
 $$
-	\hat{v}^\text{MAP}:=\min_v \underbrace{\frac{1}{2}\|z-\mathcal{H}v\|^2_{\mathcal{R}^{-1}}+\frac{1}{2}\|v\|^2_{P_0^{-1}}}_{L^\text{MAP}(v)}
+	\hat{v}^\text{MAP}:=\arg\min_v \underbrace{\frac{1}{2}\|z-\mathcal{H}v\|^2_{\mathcal{R}^{-1}}+\frac{1}{2}\|v\|^2_{P_0^{-1}}}_{L^\text{MAP}(v)}
 $$
 </p>
 Therefore,

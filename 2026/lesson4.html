@@ -1,0 +1,1501 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>SEL5917 - Estimation, Identification and Stochastic Filtering</title>
+
+		<link rel="stylesheet" href="../dist/reset.css">
+		<link rel="stylesheet" href="../dist/reveal.css">
+		<link rel="stylesheet" href="../dist/theme/white.css" id="theme">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="../plugin/highlight/monokai.css" id="highlight-theme">
+		<link rel="stylesheet" href="../style.css">
+	</head>
+	<body>
+		
+		<div class="reveal">
+			<div class="slides">
+				
+				<section data-hide-slide-number="true" data-transition="slide">
+					<div class="logo"><img src="../images/sel.png"/> </div>
+					<div class="logo2"><img src="../images/Logo EESC-USP_top.png"/> </div>
+					<div class="title">
+					<h2>Estimation Theory - part 2 <br>SEL5917</h2>
+					</div>
+					<div class="author">
+					<h3>Prof. Dr. Marcos Rogério Fernandes</h3>
+				</div>
+					<div class="advisor">
+					
+					<p style="text-align: center;font-size: 0.8em;">August 25, 2026</p>
+				</div>
+
+				</section>
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Objectives:</h2>
+				</div>
+				<p>&nbsp;</p>
+				<div class="slide-content">
+					<p>The objectives of this class are:
+						<ul>
+							<li>Recursive ML Estimation;</li> 
+							<li>Bayesian Recursive Estimation;</li>	
+							<li>Efficiency and Consistency;</li>	
+							<li>Cramer Rao Low Bound;</li>
+							<li>Outlier Effects.</li>
+							
+							</ul>
+						
+						</p>
+						</div>
+
+			</section>
+
+
+		
+
+			
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case</center>
+					Let 
+
+					$$
+						y_k=H_k\theta+\varepsilon_k,\quad \varepsilon_k \sim\mathcal{N}(0,R_k)
+					$$
+<p class="lightup">
+$$
+		\hat{\theta}^\text{ML}=\arg\min_\theta\sum_{k=1}^N\frac{1}{2}\|y_k-H_k\theta\|^2_{R_k^{-1}}
+$$
+
+</p>
+
+<p>
+
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+			
+				Note that 
+				$$
+\sum_{k=1}^N\frac{1}{2}\|y_k-H_k\theta\|^2_{R_k^{-1}}	= \frac{1}{2}\|y - \mathcal{H}\theta\|^2_{\mathcal{R}^{-1}}
+				$$
+				where 
+				$$
+					y:=\begin{bmatrix}
+					y_1\\
+					y_2\\
+					\vdots \\
+					y_N
+					\end{bmatrix},\quad \mathcal{H}:=\begin{bmatrix}
+					H_1\\
+					H_2\\
+					\vdots \\
+					H_N
+					\end{bmatrix},\quad \mathcal{R}:=\text{blkdiag}(R_1,R_2,\ldots,R_N)
+				$$
+		</div>
+
+						
+
+			</section>
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case</center>
+<p class="lightup">
+$$
+		\hat{\theta}=\arg\min_\theta\frac{1}{2}\|y-\mathcal{H}\theta\|^2_{\mathcal{R}^{-1}}
+$$
+
+</p>where 
+				$$
+					y:=\begin{bmatrix}
+					y_1\\
+					y_2\\
+					\vdots \\
+					y_N
+					\end{bmatrix},\quad \mathcal{H}:=\begin{bmatrix}
+					H_1\\
+					H_2\\
+					\vdots \\
+					H_N
+					\end{bmatrix},\quad \mathcal{R}:=\text{blkdiag}(R_1,R_2,\ldots,R_N)
+				$$
+
+		</div>
+
+						
+</section>
+
+
+
+
+
+	<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case</center>
+					Given
+					$$
+						\{y_1,y_2,\ldots,y_N\}
+					$$
+					The the ML Estimator is
+<p class="lightup">
+
+$$
+		\hat{\theta}_N=(\mathcal{H}_N^\trp \mathcal{R}^{-1}_N\mathcal{H}_N)^{-1}\mathcal{H}_N^\trp \mathcal{R}^{-1}_NY_N
+$$
+
+</p>
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+	<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+					Given
+					$$
+						\{y_1,y_2,\ldots,y_N,y_{N+1}\}
+					$$
+					The the ML Estimator is
+<p class="lightup">
+
+$$
+		\hat{\theta}_{N+1}=(\mathcal{H}^\trp_{N+1} \mathcal{R}^{-1}_{N+1}\mathcal{H}_{N+1})^{-1}\mathcal{H}_{N+1}^\trp \mathcal{R}^{-1}_{N+1}Y_{N+1}
+$$
+
+</p>
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+					Note that
+					$$
+						\mathcal{H}_{N+1}=\begin{bmatrix}\mathcal{H}_N\\H_{N+1}\end{bmatrix},\quad Y_{N+1}=\begin{bmatrix}Y^N\\ y_{N+1}\end{bmatrix},
+					$$
+and 
+$$
+\mathcal{R}_{N+1}=blkdiag(\mathcal{R}_N,R_{N+1})
+$$
+					
+
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+					Thus,
+					$$
+						\mathcal{M}_{N+1}:=\mathcal{H}_{N+1}\mathcal{R}_{N+1}^{-1}\mathcal{H}_{N+1}^\trp\\
+						
+
+					$$
+
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+					Thus,
+					$$
+						\mathcal{M}_{N+1}:=\begin{bmatrix}\mathcal{H}_N\\ H_{N+1}\end{bmatrix}^\trp\begin{bmatrix}\mathcal{R}^{-1}_{N} & 0 \\
+						0 & R_{N+1}^{-1}\end{bmatrix}\begin{bmatrix}\mathcal{H}_N\\ H_{N+1}\end{bmatrix}\\
+						
+
+					$$
+
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+					Thus,
+					$$
+						\mathcal{M}_{N+1}:=\underbrace{\mathcal{H}^\trp_N \mathcal{R}^{-1}_N \mathcal{H}_N}_{\mathcal{M}_N}+H_{N+1}^\trp R^{-1}_{N+1}H_{N+1}
+
+					$$
+
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+					Thus,
+					$$
+						\mathcal{M}_{N+1}:=\mathcal{M}_N+H_{N+1}^\trp R^{-1}_{N+1}H_{N+1}
+
+					$$
+
+					and 
+					$$
+						\mathcal{M}_{N+1}^{-1}=(\mathcal{M}_N+H_{N+1}^\trp R^{-1}_{N+1}H_{N+1})^{-1}
+					$$
+
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Lemma of the Matrix Inverse</h2>
+				</div>
+				<div class="slide-content">
+					<p>&nbsp;</p>
+				<div class="box">
+					<span class="box-title">Lemma:</span>
+					Given $A$ and $C$ non-singular matrices, then for any $U$ and $V$ of compatible dimensions, we have
+					$$
+					 (A+UCV)^{-1}=A^{-1}-A^{-1}U(C^{-1}+VA^{-1}U)^{-1}VA^{-1}
+					$$
+				</div>
+				
+
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+					Thus,
+					$$
+						\mathcal{M}_{N+1}:=\mathcal{M}_N+H_{N+1}^\trp R^{-1}_{N+1}H_{N+1}
+
+					$$
+
+					and 
+					$$
+						\mathcal{M}_{N+1}^{-1}=(\underbrace{\mathcal{M}_N}_{A}+\underbrace{H_{N+1}^\trp}_{U} \underbrace{R^{-1}_{N+1}}_{C}\underbrace{H_{N+1}}_{V})^{-1}
+					$$
+
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+					Thus,
+					$$
+						\mathcal{M}_{N+1}:=\mathcal{M}_N+H_{N+1}^\trp R^{-1}_{N+1}H_{N+1}
+
+					$$
+
+					and 
+					$$
+						\mathcal{M}_{N+1}^{-1}=\mathcal{M}_N^{-1}-\mathcal{M}_N^{-1}H_{N+1}^\trp(R_{N+1}+H_{N+1}\mathcal{M}_N^{-1}H_{N+1})^{-1}H_{N+1}\mathcal{M}_N^{-1}
+					$$
+
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+					Thus,
+					$$
+						\mathcal{M}_{N+1}:=\mathcal{M}_N+H_{N+1}^\trp R^{-1}_{N+1}H_{N+1}
+
+					$$
+
+					and 
+					$$
+						\mathcal{M}_{N+1}^{-1}=[I-\mathcal{M}_N^{-1}H_{N+1}^\trp(R_{N+1}+H_{N+1}\mathcal{M}_N^{-1}H_{N+1})^{-1}H_{N+1}]\mathcal{M}_N^{-1}
+					$$
+
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+					Thus,
+					$$
+						\mathcal{M}_{N+1}:=\mathcal{M}_N+H_{N+1}^\trp R^{-1}_{N+1}H_{N+1}
+
+					$$
+
+					and 
+					$$
+						\mathcal{M}_{N+1}^{-1}=[I-\underbrace{\mathcal{M}_N^{-1}H_{N+1}^\trp(R_{N+1}+H_{N+1}\mathcal{M}_N^{-1}H_{N+1})^{-1}}_{K_{N+1}}H_{N+1}]\mathcal{M}_N^{-1}
+					$$
+
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+					Thus,
+					$$
+						\mathcal{M}_{N+1}:=\mathcal{M}_N+H_{N+1}^\trp R^{-1}_{N+1}H_{N+1}
+
+					$$
+
+					and 
+					$$
+						\mathcal{M}_{N+1}^{-1}=[I-K_{N+1}H_{N+1}]\mathcal{M}_N^{-1}
+					$$
+with 
+$$
+K_{N+1}:=\mathcal{M}_N^{-1}H_{N+1}^\trp(R_{N+1}+H_{N+1}\mathcal{M}_N^{-1}H_{N+1})^{-1}
+	$$
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+					Thus,
+					$$
+						\mathcal{M}_{N+1}:=\mathcal{M}_N+H_{N+1}^\trp R^{-1}_{N+1}H_{N+1}
+
+					$$
+
+					and 
+					$$
+						\mathcal{M}_{N+1}^{-1}=[I-K_{N+1}H_{N+1}]\mathcal{M}_N^{-1}
+					$$
+with 
+$$
+K_{N+1}:=\mathcal{M}_{N+1}^{-1}H_{N+1}^\trp R_{N+1}^{-1}
+	$$
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+					Also, note that
+					$$
+						\mathcal{H}_{N+1}^\trp \mathcal{R}^{-1}_{N+1}Y_{N+1}=
+						\begin{bmatrix}\mathcal{H}_N\\H_{N+1}\end{bmatrix}^\trp\begin{bmatrix}\mathcal{R}^{-1}_N & 0 \\
+						0 & R^{-1}_{N+1}\end{bmatrix}\begin{bmatrix}Y_N\\ y_{N+1}\end{bmatrix}
+
+					$$
+
+					
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+					Also, note that
+					$$
+						\mathcal{H}_{N+1}^\trp \mathcal{R}^{-1}_{N+1}Y_{N+1}=
+						\begin{bmatrix}\mathcal{H}_N\\H_{N+1}\end{bmatrix}^\trp\begin{bmatrix}\mathcal{R}^{-1}_N & 0 \\
+						0 & R^{-1}_{N+1}\end{bmatrix}\begin{bmatrix}Y_N\\ y_{N+1}\end{bmatrix}\\
+						=\mathcal{H}_N^\trp \mathcal{R}_N^{-1}Y_N +H_{N+1}R_{N+1}^{-1}y_{N+1}
+
+					$$
+
+					
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+	<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+					Given
+					$$
+						\{y_1,y_2,\ldots,y_N,y_{N+1}\}
+					$$
+					The the ML Estimator is
+<p class="lightup">
+
+$$
+		\hat{\theta}_{N+1}=(\underbrace{\mathcal{H}^\trp_{N+1} \mathcal{R}^{-1}_{N+1}\mathcal{H}_{N+1}}_{\mathcal{M}_{N+1}})^{-1}\mathcal{H}_{N+1}^\trp \mathcal{R}^{-1}_{N+1}Y_{N+1}
+$$
+
+</p>
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+	<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+					Given
+					$$
+						\{y_1,y_2,\ldots,y_N,y_{N+1}\}
+					$$
+					The the ML Estimator is
+<p class="lightup">
+
+$$
+		\hat{\theta}_{N+1}=\mathcal{M}_{N+1}^{-1}(\mathcal{H}_{N}^\trp \mathcal{R}^{-1}_{N}Y_{N}+H_{N+1}^\trp R^{-1}_{N+1}y_{N+1})
+$$
+
+</p>
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+					Given
+					$$
+						\{y_1,y_2,\ldots,y_N,y_{N+1}\}
+					$$
+					The the ML Estimator is
+<p class="lightup">
+
+$$
+		\hat{\theta}_{N+1}=[I-K_{N+1}H_{N+1}]\mathcal{M}_{N}^{-1}(\mathcal{H}_{N}^\trp \mathcal{R}^{-1}_{N}Y_{N}\\+H_{N+1}^\trp R^{-1}_{N+1}y_{N+1})
+$$
+
+</p>
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+					Given
+					$$
+						\{y_1,y_2,\ldots,y_N,y_{N+1}\}
+					$$
+					The the ML Estimator is
+<p class="lightup">
+
+$$
+	\hat{\theta}_{N+1}=[I-K_{N+1}H_{N+1}](\mathcal{M}_{N}^{-1}\mathcal{H}_{N}^\trp \mathcal{R}^{-1}_{N}Y_{N}+\\\mathcal{M}_{N}^{-1}H_{N+1}^\trp R^{-1}_{N+1}y_{N+1})
+$$
+
+</p>
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+					Given
+					$$
+						\{y_1,y_2,\ldots,y_N,y_{N+1}\}
+					$$
+					The the ML Estimator is
+<p class="lightup">
+
+$$
+	\hat{\theta}_{N+1}=[I-K_{N+1}H_{N+1}](\underbrace{\mathcal{M}_{N}^{-1}\mathcal{H}_{N}^\trp \mathcal{R}^{-1}_{N}Y_{N}}_{\hat{\theta}_N}+\\\underbrace{\mathcal{M}_{N}^{-1}H_{N+1}^\trp R^{-1}_{N+1}}_{K_{N+1}}y_{N+1})
+$$
+
+</p>
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+					Given
+					$$
+						\{y_1,y_2,\ldots,y_N,y_{N+1}\}
+					$$
+					The the ML Estimator is
+<p class="lightup">
+
+$$
+	\hat{\theta}_{N+1}=[I-K_{N+1}H_{N+1}](\hat{\theta}_N+K_{N+1}y_{N+1})
+$$
+
+</p>
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+					Given
+					$$
+						\{y_1,y_2,\ldots,y_N,y_{N+1}\}
+					$$
+					The the ML Estimator is
+<p class="lightup">
+
+$$
+	\hat{\theta}_{N+1}=\hat{\theta}_N-K_{N+1}H_{N+1}\hat{\theta}_N+K_{N+1}y_{N+1}
+$$
+
+</p>
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+					Given
+					$$
+						\{y_1,y_2,\ldots,y_N,y_{N+1}\}
+					$$
+					The the ML Estimator is
+<p class="lightup">
+
+$$
+	\hat{\theta}_{N+1}=\hat{\theta}_N+K_{N+1}(y_{N+1}-H_{N+1}\hat{\theta}_N)
+$$
+
+</p>
+
+<p>
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+				
+<p class="lightup">
+
+$$
+	\hat{\theta}_{N+1}=\hat{\theta}_N+K_{N+1}(y_{N+1}-H_{N+1}\hat{\theta}_N)
+$$
+
+</p>
+
+<p>
+Recall that 
+$$
+	K_{N+1}:=\mathcal{M}_N^{-1}H_{N+1}^\trp(R_{N+1}+H_{N+1}\mathcal{M}_N^{-1}H_{N+1})^{-1}\\
+	=\mathcal{M}_{N+1}^{-1}H_{N+1}^\trp R_{N+1}^{-1}
+$$
+and 
+$$
+	\mathcal{M}_{N+1}^{-1}=[I-K_{N+1}H_{N+1}]\mathcal{M}_N^{-1}
+$$
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Maximum Likelihood Estimation</h2>
+				</div>
+				<div class="slide-content">
+					<center>Linear case (New measurement)</center>
+Let 				
+<p class="">
+
+$$
+	P_N:=\mathcal{M}_N^{-1}
+$$
+
+</p>
+Thus,
+<p class="lightup">
+Recursive Form
+$$
+\begin{aligned}
+\hat{\theta}_{N+1}&=\hat{\theta}_N+K_{N+1}(y_{N+1}-H_{N+1}\hat{\theta}_N)\\
+K_{N+1}&=P_{N+1}H_{N+1}^\trp R_{N+1}^{-1}\\
+P_{N+1}&=[I-K_{N+1}H_{N+1}]P_N
+\end{aligned}
+$$
+</p>
+
+		</div>
+
+
+</section>
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Convergence: Batch vs Recursive ML</h2>
+				</div>
+				<div class="slide-content">
+					<center>$y_k=\theta_1 x_k+\theta_2+\varepsilon_k$</center>
+					
+					<center>
+					<img src="../images/ml_recursive_vs_batch.gif" width="1100">
+					</center>
+					
+				</div>
+
+
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Recursive Bayesian Estimation</h2>
+				</div>
+				<div class="slide-content">
+
+Given a dataset
+$$
+	Y^N:=\{y_1,y_2,\ldots,y_N\},
+$$
+and a prior distribution
+$$
+\theta\sim p(\theta)
+$$
+We want to find
+<p class="lightup">
+	$$
+		p(\theta|Y^N)=\frac{p(Y^N|\theta)p(\theta)}{p(Y^N)}
+	$$
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Recursive Bayesian Estimation</h2>
+				</div>
+				<div class="slide-content">
+				
+Given a dataset
+$$
+	Y^N:=\{y_1,y_2,\ldots,y_N,y_{N+1}\},
+$$
+and a prior distribution
+$$
+\theta\sim p(\theta)
+$$
+We want to find
+<p class="lightup">
+	$$
+		p(\theta|Y^{N+1})=\frac{p(Y^{N+1}|\theta)p(\theta)}{p(Y^{N+1})}
+	$$
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Recursive Bayesian Estimation</h2>
+				</div>
+				<div class="slide-content">
+				
+Given a dataset
+$$
+	Y^N:=\{y_1,y_2,\ldots,y_N,y_{N+1}\},
+$$
+and a prior distribution
+$$
+\theta\sim p(\theta)
+$$
+We want to find
+<p class="lightup">
+	$$
+		p(\theta|Y^{N+1})=\frac{p(y_{N+1},Y^{N}|\theta)p(\theta)}{p(y_{N+1},Y^{N})}
+	$$
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Recursive Bayesian Estimation</h2>
+				</div>
+				<div class="slide-content">
+				
+Given a dataset
+$$
+	Y^N:=\{y_1,y_2,\ldots,y_N,y_{N+1}\},
+$$
+and a prior distribution
+$$
+\theta\sim p(\theta)
+$$
+We want to find
+<p class="lightup">
+	$$
+		p(\theta|Y^{N+1})=\frac{p(y_{N+1}|Y^{N},\theta)p(Y^N|\theta)p(\theta)}{p(y_{N+1}|Y^{N})p(Y^N)}
+	$$
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Recursive Bayesian Estimation</h2>
+				</div>
+				<div class="slide-content">
+				
+Given a dataset
+$$
+	Y^N:=\{y_1,y_2,\ldots,y_N,y_{N+1}\},
+$$
+and a prior distribution
+$$
+\theta\sim p(\theta)
+$$
+We want to find
+<p class="lightup">
+	$$
+		p(\theta|Y^{N+1})=\frac{p(y_{N+1}|Y^{N},\theta)p(\theta|Y^N)}{p(y_{N+1}|Y^{N})}
+	$$
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Recursive Bayesian Estimation: example</h2>
+				</div>
+				<div class="slide-content">
+				
+Given a dataset
+$$
+	Y^N:=\{y_1\},
+$$
+and a prior distribution
+$$
+\theta\sim p(\theta)
+$$
+The posterior is
+<p class="lightup">
+	$$
+		p(\theta|Y^{1})=\frac{p(y_{1}|\theta)p(\theta)}{p(Y^{1})}
+	$$
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Recursive Bayesian Estimation: example</h2>
+				</div>
+				<div class="slide-content">
+				
+Given a dataset
+$$
+	Y^N:=\{y_1,y_2\},
+$$
+and a prior distribution
+$$
+\theta\sim p(\theta|Y^1)
+$$
+The posterior is
+<p class="lightup">
+	$$
+		p(\theta|Y^{2})=\frac{p(y_2|Y^1,\theta)p(\theta|Y^1)}{p(y_{2}|Y^1)}
+	$$
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Recursive Bayesian Estimation: example</h2>
+				</div>
+				<div class="slide-content">
+				
+Given a dataset
+$$
+	Y^N:=\{y_1,y_2,y_3\},
+$$
+and a prior distribution
+$$
+\theta\sim p(\theta|Y^2)
+$$
+The posterior is
+<p class="lightup">
+	$$
+		p(\theta|Y^{3})=\frac{p(y_3|Y^2,\theta)p(\theta|Y^2)}{p(y_{3}|Y^2)}
+	$$
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Recursive Bayesian Estimation: example</h2>
+				</div>
+				<div class="slide-content">
+				
+Given a dataset
+$$
+	Y^N:=\{y_1,y_2,y_3,\ldots,y_N\},
+$$
+and a prior distribution
+$$
+\theta\sim p(\theta|Y^{N-1})
+$$
+The posterior is
+<p class="lightup">
+	$$
+		p(\theta|Y^{N})=\frac{p(y_N|Y^{N-1},\theta)p(\theta|Y^{N-1})}{p(y_{N}|Y^{N-1})}
+	$$
+</p>
+
+		</div>
+
+						
+</section>
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Estimator Properties: bias</h2>
+				</div>
+				<div class="slide-content">
+				
+
+<div class="box">
+	<span class="box-title">Definition:</span>
+	An estimator is said to be a <b>unbiased</b> if the estimate converges to the true mean value. For instance,
+$$
+	\begin{equation}
+\lim_{k\rightarrow \infty} \mathbb{E}\{\hat{\theta}_k|Y^k\}=\mathbb{E}[\theta]
+\end{equation}
+$$
+
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Estimator Properties: consistency</h2>
+				</div>
+				<div class="slide-content">
+				
+
+<div class="box">
+	<span class="box-title">Definition:</span>
+	An estimator is said to be a <b>consistent</b> if the estimate converges to the true value in some stochastic sense. For instance,
+$$
+	\begin{equation}
+\lim_{k\rightarrow \infty} \mathbb{E}\{\|\theta-\hat{\theta}_k\|_2^2|Y^k\}=0
+\end{equation}
+$$
+is the condition for <b>consistency in the mean square sense</b> for a non-random parameter estimator. The expectation is taken over $Y^k$. 
+</p>
+
+		</div>
+
+						
+</section>
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>The Cramer-Rao Low Bound</h2>
+				</div>
+				<div class="slide-content">
+				
+
+<div class="box">
+	<span class="box-title">Definition: Fisher Information</span>
+The Fisher Information is defined as
+$$
+\begin{equation}
+J:=-\mathbb{E}\{\frac{\partial^2 \text{ln} \Lambda(\theta)}{\partial \theta^2}\}|_{\theta=\theta_0}=\mathbb{E}\{[\frac{\partial \ln \Lambda(\theta)}{\partial \theta}]^2\}|_{\theta=\theta_0}
+\end{equation}
+$$
+where $\Lambda(\theta)=p(Y^N|\theta)$ is the likelihood function and $\theta_0$ is the true parameter value. 
+</p>
+
+		</div>
+
+						
+</section>
+
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>The Cramer-Rao Low Bound</h2>
+				</div>
+				<div class="slide-content">
+				
+
+<div class="box">
+	<span class="box-title">Definition: CRLB</span>
+The <b>Cramér Rao Low Bound</b> (CRLB) for an unbiased estimator is defined as the inverse of the respective Fisher Information.
+$$\begin{equation}
+	CRLB:= J^{-1}
+\end{equation}
+$$</p>
+
+All unbiased estimator satisfies 
+$$
+\begin{equation}
+	\Var\{\hat{\theta}_k\}\ge CRLB
+\end{equation}
+$$
+		</div>
+
+						
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Estimator Properties: efficiency</h2>
+				</div>
+				<div class="slide-content">
+				
+
+<div class="box">
+	<span class="box-title">Definition:</span>
+	According to the <b>Cramer-Rao lower bound</b> (CRLB), the mean square error cannot be smaller than a certain quantity related to the likelihood function.
+If an unbiased estimator's variance is <b>equal</b> to the CRLB then such estimator is called <b>Efficient</b>.
+$$
+\begin{equation}
+	\Var\{\hat{\theta}_k\}=CRLB
+\end{equation}
+$$
+</p>
+
+		</div>
+
+
+</section>
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Sensitivity of ML (LS) to Outliers</h2>
+				</div>
+				<div class="slide-content">
+				
+					<center>
+					<img src="../images/ml_outlier_recursive.gif" width="750">
+					</center>
+				
+				</div>
+
+
+</section>
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Robust Estimation: $L_1$ vs. $L_2$</h2>
+				</div>
+				<div class="slide-content">
+		
+<p class="lightup">
+$$
+	\hat\theta^{L_1}=\arg\min_\theta\sum_{k=1}^N|y_k-H_k\theta|
+$$
+</p>
+<center>
+					<img src="../images/laplace_distribution.png" width="450">
+					</center>
+				</div>
+
+
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Robust Estimation: $L_1$ vs. $L_2$</h2>
+				</div>
+				<div class="slide-content">
+
+					<center>
+					<img src="../images/ml_l1_vs_l2_outlier.png" width="700">
+					</center>
+
+				</div>
+
+
+</section>
+
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Exercise: Recursive 2D GNSS Positioning</h2>
+				</div>
+				<div class="slide-content">
+					<center>
+					<img src="../images/gnss_2d_geometry.png" width="530">
+					</center>
+									</div>
+
+
+</section>
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Exercise: Recursive 2D GNSS Positioning</h2>
+				</div>
+				<div class="slide-content">
+					<p style="font-size:0.62em;">Unknown antenna position $\theta=(x_a,y_a)$, 3 satellites $S_k$ at known positions, pseudoranges $$\rho_k=\|\theta-S_k\|+\varepsilon_k,\quad \varepsilon_k\sim\mathcal{N}(0,R_k)$$ arriving <b>sequentially</b>.</p>
+<p class="lightup" style="font-size:0.8em;">
+$$
+\underbrace{\rho_k-\rho_{0,k}}_{\Delta\rho_k}=H_k\,\Delta\theta+\varepsilon_k,\quad H_k=\frac{\partial \rho_k}{\partial\theta}\Big|_{\theta_0}
+$$
+</p>
+					<p style="font-size:0.6em;">Linearize around a nominal point $\theta_0$, then apply the recursive ML estimator from this class, one satellite at a time.</p>
+				</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+		
+			<section>
+		
+				<div class="slide-content">
+					<center>
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+					<h2>Until next time!</h2>
+				</center>
+				</div>
+
+			</section>
+
+
+
+
+				
+
+
+
+				<!------------------------>
+			</div>
+		</div>
+
+		
+
+		<script src="../dist/reveal.js"></script>
+		<script src="../plugin/notes/notes.js"></script>
+		<script src="../plugin/markdown/markdown.js"></script>
+		<script src="../plugin/highlight/highlight.js"></script>
+		<script src="../plugin/math/math.js"></script>
+		<script src="../init.js"></script>
+		<script src="../plugin/handwriting/plugin.js"></script>
+	</body>
+</html>
+
+</p>
