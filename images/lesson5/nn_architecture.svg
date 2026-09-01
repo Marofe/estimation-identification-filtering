@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 470" font-family="Inter, Segoe UI, Arial, sans-serif">
+<rect x="0" y="0" width="780" height="470" fill="white"/>
+<text x="140" y="46" text-anchor="middle" font-size="20" font-weight="700" fill="#1e40af">Inputs (regressors)</text>
+<text x="390" y="46" text-anchor="middle" font-size="20" font-weight="700" fill="#1e40af">Hidden layer (σ)</text>
+<text x="650" y="46" text-anchor="middle" font-size="20" font-weight="700" fill="#1e40af">Output</text>
+<line x1="166" y1="150" x2="364" y2="90" stroke="#94a3b8" stroke-width="1.4" opacity="0.55"/>
+<line x1="166" y1="150" x2="364" y2="170" stroke="#94a3b8" stroke-width="1.4" opacity="0.55"/>
+<line x1="166" y1="150" x2="364" y2="250" stroke="#94a3b8" stroke-width="1.4" opacity="0.55"/>
+<line x1="166" y1="150" x2="364" y2="330" stroke="#94a3b8" stroke-width="1.4" opacity="0.55"/>
+<line x1="166" y1="150" x2="364" y2="410" stroke="#94a3b8" stroke-width="1.4" opacity="0.55"/>
+<line x1="166" y1="250" x2="364" y2="90" stroke="#94a3b8" stroke-width="1.4" opacity="0.55"/>
+<line x1="166" y1="250" x2="364" y2="170" stroke="#94a3b8" stroke-width="1.4" opacity="0.55"/>
+<line x1="166" y1="250" x2="364" y2="250" stroke="#94a3b8" stroke-width="1.4" opacity="0.55"/>
+<line x1="166" y1="250" x2="364" y2="330" stroke="#94a3b8" stroke-width="1.4" opacity="0.55"/>
+<line x1="166" y1="250" x2="364" y2="410" stroke="#94a3b8" stroke-width="1.4" opacity="0.55"/>
+<line x1="166" y1="350" x2="364" y2="90" stroke="#94a3b8" stroke-width="1.4" opacity="0.55"/>
+<line x1="166" y1="350" x2="364" y2="170" stroke="#94a3b8" stroke-width="1.4" opacity="0.55"/>
+<line x1="166" y1="350" x2="364" y2="250" stroke="#94a3b8" stroke-width="1.4" opacity="0.55"/>
+<line x1="166" y1="350" x2="364" y2="330" stroke="#94a3b8" stroke-width="1.4" opacity="0.55"/>
+<line x1="166" y1="350" x2="364" y2="410" stroke="#94a3b8" stroke-width="1.4" opacity="0.55"/>
+<line x1="416" y1="90" x2="624" y2="250" stroke="#94a3b8" stroke-width="1.4" opacity="0.55"/>
+<line x1="416" y1="170" x2="624" y2="250" stroke="#94a3b8" stroke-width="1.4" opacity="0.55"/>
+<line x1="416" y1="250" x2="624" y2="250" stroke="#94a3b8" stroke-width="1.4" opacity="0.55"/>
+<line x1="416" y1="330" x2="624" y2="250" stroke="#94a3b8" stroke-width="1.4" opacity="0.55"/>
+<line x1="416" y1="410" x2="624" y2="250" stroke="#94a3b8" stroke-width="1.4" opacity="0.55"/>
+<circle cx="140" cy="150" r="26" fill="#dbeafe" stroke="#2563eb" stroke-width="2.5"/>
+<text x="100" y="156" text-anchor="end" font-size="19" fill="#0f172a">y[k-1]</text>
+<circle cx="140" cy="250" r="26" fill="#dbeafe" stroke="#2563eb" stroke-width="2.5"/>
+<text x="100" y="256" text-anchor="end" font-size="19" fill="#0f172a">y[k-2]</text>
+<circle cx="140" cy="350" r="26" fill="#dbeafe" stroke="#2563eb" stroke-width="2.5"/>
+<text x="100" y="356" text-anchor="end" font-size="19" fill="#0f172a">u[k-1]</text>
+<circle cx="390" cy="90" r="26" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+<text x="390" y="97" text-anchor="middle" font-size="20" fill="#1e40af">σ</text>
+<circle cx="390" cy="170" r="26" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+<text x="390" y="177" text-anchor="middle" font-size="20" fill="#1e40af">σ</text>
+<circle cx="390" cy="250" r="26" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+<text x="390" y="257" text-anchor="middle" font-size="20" fill="#1e40af">σ</text>
+<circle cx="390" cy="330" r="26" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+<text x="390" y="337" text-anchor="middle" font-size="20" fill="#1e40af">σ</text>
+<circle cx="390" cy="410" r="26" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+<text x="390" y="417" text-anchor="middle" font-size="20" fill="#1e40af">σ</text>
+<circle cx="650" cy="250" r="26" fill="#2563eb" stroke="#1e40af" stroke-width="2.5"/>
+<text x="650" y="257" text-anchor="middle" font-size="18" fill="white">Σ</text>
+<text x="690" y="256" text-anchor="start" font-size="20" fill="#0f172a">ŷ[k]</text>
+</svg>

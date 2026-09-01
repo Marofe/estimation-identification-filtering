@@ -1,0 +1,1513 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>SEL5917 - Estimation, Identification and Stochastic Filtering</title>
+
+		<link rel="stylesheet" href="../dist/reset.css">
+		<link rel="stylesheet" href="../dist/reveal.css">
+		<link rel="stylesheet" href="../dist/theme/white.css" id="theme">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="../plugin/highlight/monokai.css" id="highlight-theme">
+		<link rel="stylesheet" href="../style.css">
+	</head>
+	<body>
+		
+		<div class="reveal">
+			<div class="slides">
+				
+				<section data-hide-slide-number="true" data-transition="slide">
+					<div class="logo"><img src="../images/sel.png"/> </div>
+					<div class="logo2"><img src="../images/Logo EESC-USP_top.png"/> </div>
+					<div class="title">
+					<h2>Introduction to System Identification <br>SEL5917</h2>
+					</div>
+					<div class="author">
+					<h3>Prof. Dr. Marcos Rogério Fernandes</h3>
+				</div>
+					<div class="advisor">
+					
+					<p style="text-align: center;font-size: 0.8em;">September 1, 2026</p>
+				</div>
+
+				</section>
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Objectives:</h2>
+				</div>
+				<p>&nbsp;</p>
+				<div class="slide-content">
+					<p>The objectives of this class are:
+						<ul>
+							<li>System Identification problem;</li> 
+							<li>Parametric Models: ARX, ARMAX, ARIMA, etc;</li>	
+							<li>Parameters estimation;</li>	
+							<li>RBF: Radial Basis Functions;</li>
+							<li>Neural Networks;</li>	
+							<li>Model Selection via L1</li>
+							</ul>
+						
+						</p>
+						</div>
+
+			</section>
+
+
+		
+
+			
+
+			<section>
+
+				<div class="slide-title">
+					<h2>System Identification</h2>
+				</div>
+				<div class="slide-content">
+					<p class="lightup">System identification has the goal of building <b>dynamic mathematical models</b> from
+measured data</p>
+					<center>
+						<p>&nbsp;</p>
+						<img src="../images/system_identification.png" width="800">
+						<p>Discrete time!</p>
+					</center>
+					
+
+		</div>
+
+						
+
+			</section>
+
+
+
+
+			
+			<section>
+
+				<div class="slide-title">
+					<h2>System Identification</h2>
+				</div>
+				<div class="slide-content">
+					<p class="lightup">System identification has the goal of building <b>dynamic mathematical models</b> from
+measured data</p>
+					<center>
+						<p><b>Steps:</b></p>
+					<ul>
+						<li>Run a <b>Experiment</b> to produces the dataset $$\mathcal{D}^N:=\{(y_1,u_1),(y_2,u_2),\ldots,(y_N,u_N)\}$$</li>
+						<li>Define the <b>Model set</b>: $\mathcal{M}:=\{\mathcal{M}(\theta):\theta \in \Theta\}$</li>
+						<li><b>Estimation:</b> find the best $\theta$;</li>
+						<li><b>Validation:</b> accept or reject the model;</li>
+					</ul>
+					</center>
+					
+
+		</div>
+
+						
+
+			</section>
+
+
+
+						
+			<section>
+
+				<div class="slide-title">
+					<h2>System Identification</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box"><span class="box-title">Definition: (Shift Operator)</span>
+					$$
+						q^{-1}y[k]:=y[k-1]
+					$$
+					</div>
+
+					Example:
+					$$
+						2y[k-2]+3y[k-1]+y[k]=5x[k-1]+10x[k]
+					$$
+
+			
+					
+
+		</div>
+
+						
+
+			</section>
+
+
+									
+			<section>
+
+				<div class="slide-title">
+					<h2>System Identification</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box"><span class="box-title">Definition: (Shift Operator)</span>
+					$$
+						q^{-1}y[k]:=y[k-1]
+					$$
+					</div>
+
+					Example:
+					$$
+						2q^{-1}y[k]+3q^{-1}y[k]+y[k]=5q^{-1}x[k]+10x[k]
+					$$
+
+			
+					
+
+		</div>
+
+						
+
+			</section>
+
+
+
+										
+			<section>
+
+				<div class="slide-title">
+					<h2>System Identification</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box"><span class="box-title">Definition: (Shift Operator)</span>
+					$$
+						q^{-1}y[k]:=y[k-1]
+					$$
+					</div>
+
+					Example:
+					$$
+						(2q^{-1}+3q^{-1}+1)y[k]=(5q^{-1}+10)x[k]
+					$$
+
+			
+					
+
+		</div>
+
+						
+
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>System Identification</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box"><span class="box-title">Definition: (Shift Operator)</span>
+					$$
+						q^{-1}y[k]:=y[k-1]
+					$$
+					</div>
+
+					Example:
+					$$
+						(2q^{-1}+3q^{-1}+1)y[k]=(5q^{-1}+10)x[k]
+					$$
+
+					Thus,
+					$$
+					\Rightarrow \frac{y[k]}{x[k]}=\frac{(5q^{-1}+10)}{(2q^{-1}+3q^{-1}+1)}
+					$$
+
+			
+					
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>System Identification</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box"><span class="box-title">Definition: (Shift Operator)</span>
+					$$
+						q^{-1}y[k]:=y[k-1]
+					$$
+					</div>
+
+					<center>
+			
+
+			<p class="lightup">
+				Obs: 
+The shift operator is not the Z-transform! 
+$$q^{-1}\neq z^{-1}$$
+The $q$ operator still in the <b>time domain</b>.
+			</p>
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>General Linear Model</h2>
+				</div>
+				<div class="slide-content">
+					<p>&nbsp;</p>
+					<div class="box"><span class="box-title">Definition: </span>
+					$$
+						A(q^{-1})y[k]=\frac{B(q^{-1})}{F(q^{-1})}u[k]+\frac{C(q^{-1})}{D(q^{-1})}e[k]
+					$$
+					</div>
+
+							<center>
+					obs: $e[k]$ is a <b>white noise</b>.
+					</center>
+
+			
+
+		
+
+		</div>
+
+						
+
+			</section>
+
+				<section>
+
+					<div class="slide-title">
+						<h2>General Linear Model</h2>
+					</div>
+					<div class="slide-content">
+						<p>&nbsp;</p>
+						<div class="box"><span class="box-title">Definition: (Polynomials)</span>
+						$$
+						\begin{aligned}
+						A(q) &= 1 - a_1 q^{-1} - \ldots - a_{n_y} q^{-n_y},\\
+						B(q) &= b_1 q^{-1} + \ldots + b_{n_u} q^{-n_u},\\
+						F(q) &= 1 + f_1 q^{-1} + \ldots + f_{n_f} q^{-n_f},\\
+						C(q) &= 1 + c_1 q^{-1} + \ldots + c_{n_\nu} q^{-n_\nu},\\
+						D(q) &= 1 + d_1 q^{-1} + \ldots + d_{n_d} q^{-n_d}.
+						\end{aligned}
+						$$
+						</div>
+					</div>
+
+				</section>
+
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>General Linear Model</h2>
+				</div>
+				<div class="slide-content">
+					<p>&nbsp;</p>
+					<div class="box"><span class="box-title">Definition: </span>
+					$$
+						A(q^{-1})y[k]=\underbrace{\frac{B(q^{-1})}{F(q^{-1})}u[k]}_{\text{deterministic}}+\underbrace{\frac{C(q^{-1})}{D(q^{-1})}e[k]}_{\text{stochastic}}
+					$$
+					</div>
+					<center>
+					obs: $e[k]$ is a <b>white noise</b>.
+					</center>
+
+		
+			
+
+		
+
+		</div>
+
+						
+
+			</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>AR: Auto-Regressive Model</h2>
+				</div>
+				<div class="slide-content">
+					<p>&nbsp;</p>
+					<div class="box"><span class="box-title">Definition: </span>
+					$$
+						A(q^{-1})y[k]=e[k]
+					$$
+					</div>
+					<center>
+					obs: $e[k]$ is a <b>white noise</b>.
+					<p>
+					In this case, we have 
+					$$
+					\frac{B(q^{-1})}{F(q^{-1})}=0,\quad
+					\frac{C(q^{-1})}{D(q^{-1})}=I
+					$$
+					</p>
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+				<section>
+
+					<div class="slide-title">
+						<h2>AR: Auto-Regressive Model</h2>
+					</div>
+					<div class="slide-content">
+						<center>
+							<img src="../images/lesson5/ar.png" width="760">
+						</center>
+					</div>
+
+				</section>
+
+
+
+
+			
+				<section>
+
+				<div class="slide-title">
+					<h2>MA: Moving Average Model</h2>
+				</div>
+				<div class="slide-content">
+					<p>&nbsp;</p>
+					<div class="box"><span class="box-title">Definition: </span>
+					$$
+						y[k]=C(q^{-1})e[k]
+					$$
+					</div>
+					<center>
+					obs: $e[k]$ is a <b>white noise</b>.
+					<p>
+					In this case, we have 
+					$$
+					A(q^{-1})=I,\quad \frac{B(q^{-1})}{F(q^{-1})}=0,\quad
+					D(q^{-1})=I
+					$$
+					</p>
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+				<section>
+
+					<div class="slide-title">
+						<h2>MA: Moving Average Model</h2>
+					</div>
+					<div class="slide-content">
+						<center>
+							<img src="../images/lesson5/ma.png" width="760">
+						</center>
+					</div>
+
+				</section>
+
+
+
+
+							<section>
+
+				<div class="slide-title">
+					<h2>ARMA: Auto-Regressive Moving Average Model</h2>
+				</div>
+				<div class="slide-content">
+			
+					<div class="box"><span class="box-title">Definition: </span>
+					$$
+						A(q^{-1})y[k]=C(q^{-1})e[k]
+					$$
+					</div>
+					<center>
+					obs: $e[k]$ is a <b>white noise</b>.
+					<p>
+					In this case, we have 
+					$$
+					\frac{B(q^{-1})}{F(q^{-1})}=0,\quad
+					D(q^{-1})=I
+					$$
+					</p>
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+				<section>
+
+					<div class="slide-title">
+						<h2>ARMA: Auto-Regressive Moving Average Model</h2>
+					</div>
+					<div class="slide-content">
+						<center>
+							<img src="../images/lesson5/arma.png" width="760">
+						</center>
+					</div>
+
+				</section>
+
+
+
+
+			
+							<section>
+
+				<div class="slide-title">
+					<h2>ARX: Auto-Regressive w/ eXogenous input Model</h2>
+				</div>
+				<div class="slide-content">
+			
+					<div class="box"><span class="box-title">Definition: </span>
+					$$
+						A(q^{-1})y[k]=B(q^{-1})u[k]+e[k]
+					$$
+					</div>
+					<center>
+					obs: $e[k]$ is a <b>white noise</b>.
+					<p>
+					In this case, we have 
+					$$
+					F(q^{-1})=I,\quad \frac{C(q^{-1})}{D(q^{-1})}=I
+					$$
+					</p>
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+				<section>
+
+					<div class="slide-title">
+						<h2>ARX: Auto-Regressive w/ eXogenous input Model</h2>
+					</div>
+					<div class="slide-content">
+						<center>
+							<img src="../images/lesson5/arx.png" width="760">
+						</center>
+					</div>
+
+				</section>
+
+
+
+			
+							<section>
+
+				<div class="slide-title">
+					<h2>ARMAX: Auto-Regressive Moving Average w/ eXogenous input Model</h2>
+				</div>
+				<div class="slide-content">
+			
+					<div class="box"><span class="box-title">Definition: </span>
+					$$
+						A(q^{-1})y[k]=B(q^{-1})u[k]+C(q^{-1})e[k]
+					$$
+					</div>
+					<center>
+					obs: $e[k]$ is a <b>white noise</b>.
+					<p>
+					In this case, we have 
+					$$
+					F(q^{-1})=I,\quad D(q^{-1})=I
+					$$
+					</p>
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+				<section>
+
+					<div class="slide-title">
+						<h2>ARMAX: Auto-Regressive Moving Average w/ eXogenous input Model</h2>
+					</div>
+					<div class="slide-content">
+						<center>
+							<img src="../images/lesson5/armax.png" width="760">
+						</center>
+					</div>
+
+				</section>
+
+				<section>
+
+					<div class="slide-title">
+						<h2>ARX vs ARMAX</h2>
+					</div>
+					<div class="slide-content">
+						<center>
+							<img src="../images/lesson5/arx_vs_armax.png" width="800">
+						</center>
+					</div>
+
+				</section>
+
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Box-Jenkins Model</h2>
+				</div>
+				<div class="slide-content">
+			
+					<div class="box"><span class="box-title">Definition: </span>
+					$$
+						y[k]=\frac{B(q^{-1})}{F(q^{-1})}u[k]+\frac{C(q^{-1})}{D(q^{-1})}e[k]
+					$$
+					</div>
+					<center>
+					obs: $e[k]$ is a <b>white noise</b>.
+					<p>
+					In this case, we have 
+					$$
+					A(q^{-1})=I
+					$$
+					</p>
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+				<section>
+
+					<div class="slide-title">
+						<h2>Box-Jenkins Model</h2>
+					</div>
+					<div class="slide-content">
+						<center>
+							<img src="../images/lesson5/boxjenkins.png" width="760">
+						</center>
+					</div>
+
+				</section>
+
+
+
+
+			
+				<section>
+
+				<div class="slide-title">
+					<h2>Output-Error Model (OEM)</h2>
+				</div>
+				<div class="slide-content">
+			
+					<div class="box"><span class="box-title">Definition: </span>
+					$$
+						y[k]=\frac{B(q^{-1})}{F(q^{-1})}u[k]+e[k]
+					$$
+					</div>
+					<center>
+					obs: $e[k]$ is a <b>white noise</b>.
+					<p>
+					In this case, we have 
+					$$
+					A(q^{-1})=I,\quad \frac{C(q^{-1})}{D(q^{-1})}=I
+					$$
+					</p>
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+				<section>
+
+					<div class="slide-title">
+						<h2>Output-Error Model (OEM)</h2>
+					</div>
+					<div class="slide-content">
+						<center>
+							<img src="../images/lesson5/oem.png" width="760">
+						</center>
+					</div>
+
+				</section>
+
+
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>ARIMA: Auto-Regressive Integral Moving Average Model</h2>
+				</div>
+				<div class="slide-content">
+			
+					<div class="box"><span class="box-title">Definition: </span>
+					$$
+						(1-q^{-1})^dA(q^{-1})y[k]=C(q^{-1})e[k]
+					$$
+					</div>
+					<center>
+					obs: $e[k]$ is a <b>white noise</b>.
+					<p>
+					
+					</p>
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+				<section>
+
+					<div class="slide-title">
+						<h2>ARIMA: Auto-Regressive Integral Moving Average Model</h2>
+					</div>
+					<div class="slide-content">
+						<center>
+							<img src="../images/lesson5/arima.png" width="760">
+						</center>
+					</div>
+
+				</section>
+
+
+
+
+			
+						<section>
+
+				<div class="slide-title">
+					<h2>Parameter Estimation</h2>
+				</div>
+				<div class="slide-content">
+			
+					<div class="box"><span class="box-title">ARX: </span>
+					$$
+						(1-a_1q^{-1}-a_2q^{-2})y[k]=(b_0+b_1q^{-1})u[k]+e[k]
+					$$
+					</div>
+					<center>
+					obs: $e[k]$ is a <b>white noise</b>.
+			
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+						<section>
+
+				<div class="slide-title">
+					<h2>Parameter Estimation</h2>
+				</div>
+				<div class="slide-content">
+			
+					<div class="box"><span class="box-title">ARX: </span>
+					$$
+						y[k]-a_1y[k-1]-a_2y[k-2]=b_0u[k]+b_1u[k-1]+e[k]
+					$$
+					</div>
+					<center>
+					obs: $e[k]$ is a <b>white noise</b>.
+					<p>
+			
+					</p>
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+							<section>
+
+				<div class="slide-title">
+					<h2>Parameter Estimation</h2>
+				</div>
+				<div class="slide-content">
+			
+					<div class="box"><span class="box-title">ARX: </span>
+					$$
+						y[k]=a_1y[k-1]+a_2y[k-2]+b_0u[k]+b_1u[k-1]+e[k]
+					$$
+					</div>
+					<center>
+					obs: $e[k]$ is a <b>white noise</b>.
+					<p>
+					
+					</p>
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+							<section>
+
+				<div class="slide-title">
+					<h2>Parameter Estimation</h2>
+				</div>
+				<div class="slide-content">
+			
+					<div class="box"><span class="box-title">ARX: </span>
+					$$
+						y[k]=\begin{bmatrix}
+						y[k-1] & y[k-2] & u[k] & u[k-1]
+						\end{bmatrix}\begin{bmatrix}
+						a_1\\
+						a_2\\
+						b_0\\
+						b_1
+						\end{bmatrix}+e[k]
+					$$
+					</div>
+					<center>
+					obs: $e[k]$ is a <b>white noise</b>.
+			
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+			
+			
+							<section>
+
+				<div class="slide-title">
+					<h2>Parameter Estimation</h2>
+				</div>
+				<div class="slide-content">
+			
+					<div class="box"><span class="box-title">ARX: </span>
+					$$
+						y[k]=\underbrace{\begin{bmatrix}
+						y[k-1] & y[k-2] & u[k] & u[k-1]
+						\end{bmatrix}}_{H_k}\underbrace{\begin{bmatrix}
+						a_1\\
+						a_2\\
+						b_0\\
+						b_1
+						\end{bmatrix}}_{\theta}+e[k]
+					$$
+					</div>
+					<center>
+					obs: $e[k]$ is a <b>white noise</b>.
+			
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+					
+							<section>
+
+				<div class="slide-title">
+					<h2>Parameter Estimation</h2>
+				</div>
+				<div class="slide-content">
+			
+					<div class="box"><span class="box-title">ARX: </span>
+					$$
+						y[k]=H_k\theta+e[k]
+					$$
+					</div>
+					<center>
+					obs: $e[k]$ is a <b>white noise</b>.
+			
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+					
+							<section>
+
+				<div class="slide-title">
+					<h2>Parameter Estimation</h2>
+				</div>
+				<div class="slide-content">
+			
+					<div class="box"><span class="box-title">ARX: </span>
+					$$
+						y[k]=H_k\theta+e[k]
+					$$
+					</div>
+					<center>
+					obs: $e[k]$ is a <b>white noise</b>.
+			$$
+						\begin{bmatrix}
+						y[1]\\
+						y[2]\\
+						\vdots \\
+						y[N]
+						\end{bmatrix}=\begin{bmatrix}
+						H_1\\ 
+						H_2\\
+						\vdots \\
+						H_N
+						\end{bmatrix}\theta +\begin{bmatrix}
+						e[1]\\ 
+						e[2]\\
+						\vdots \\
+						e[N]
+						\end{bmatrix}
+			$$
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+					
+							<section>
+
+				<div class="slide-title">
+					<h2>Parameter Estimation</h2>
+				</div>
+				<div class="slide-content">
+			
+					<div class="box"><span class="box-title">ARX: </span>
+					$$
+						y[k]=H_k\theta+e[k]
+					$$
+					</div>
+					<center>
+					obs: $e[k]$ is a <b>white noise</b>.
+			$$
+						Y=\mathcal{H}\theta +\varepsilon
+			$$
+			where 
+			$$
+					\mathcal{H} \rightarrow \text{regressors matrix}\\
+					\theta \rightarrow \text{model parameters}\\
+					\varepsilon \rightarrow \text{measurement noise}
+			$$
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+				
+							<section>
+
+				<div class="slide-title">
+					<h2>Parameter Estimation</h2>
+				</div>
+				<div class="slide-content">
+			
+					<div class="box"><span class="box-title">ARX: </span>
+					$$
+							Y=\mathcal{H}\theta +\varepsilon,\quad \varepsilon\sim\mathcal{N}(0,\mathcal{R})
+					$$
+					</div>
+					<center>
+			Thus, the Maximum-Likelihood estimator for $\theta$ is
+			<p class="lightup">
+			$$
+					\hat{\theta}^{\text{ML}} =(\mathcal{H}^\trp \mathcal{R}^{-1}\mathcal{H})^{-1}\mathcal{H}^\trp \mathcal{R}^{-1}Y
+			$$
+			</p>
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Parameter Estimation</h2>
+				</div>
+				<div class="slide-content">
+			
+					<div class="box"><span class="box-title">ARX: </span>
+					$$
+							Y=\mathcal{H}\theta +\varepsilon,\quad \varepsilon\sim\mathcal{N}(0,\mathcal{R})
+					$$
+					</div>
+					<center>
+			Thus, the MAP estimator for $\theta$ is
+			<p class="lightup">
+			$$
+					\hat{\theta}^{\text{MAP}} =\hat{\theta}_0+(P_0^{-1}+\mathcal{H}^\trp \mathcal{R}^{-1}\mathcal{H})^{-1}\mathcal{H}^\trp \mathcal{R}^{-1}Y
+			$$
+			</p>
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Parameter Estimation</h2>
+				</div>
+				<div class="slide-content">
+			
+					<div class="box"><span class="box-title">ARX: </span>
+					$$
+							Y=\mathcal{H}\theta +\varepsilon,\quad \varepsilon\sim\mathcal{N}(0,\mathcal{R})
+					$$
+					</div>
+					<center>
+			Thus, the MMSE estimator for $\theta$ is
+			<p class="lightup">
+			$$
+					\hat{\theta}^{\text{MMSE}} =\int \theta p(\theta |Y)d\theta
+			$$
+			</p>
+			Usually solved using MCMC
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+			
+						<section>
+
+				<div class="slide-title">
+					<h2>Parameter Estimation</h2>
+				</div>
+				<div class="slide-content">
+			
+					<div class="box"><span class="box-title">General Linear Model: </span>
+					$$
+						A(q^{-1})y[k]=\frac{B(q^{-1})}{F(q^{-1})}u[k]+\frac{C(q^{-1})}{D(q^{-1})}e[k]
+					$$
+					</div>
+					<center>
+					obs: $e[k]$ is a <b>white noise</b>.
+
+					Rewrite it as  
+					<p class="lightup">
+					$$
+						Y=\mathcal{H}\theta +\mathcal{T}\varepsilon
+					$$
+					</p>
+					Use ML, MAP, MMSE, etc to find the best $\theta$!
+			
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Parameter Estimation</h2>
+				</div>
+				<div class="slide-content">
+			
+					<div class="box"><span class="box-title">Linear in Parameters Model: </span>
+					$$
+						y[k]=\sum_{i=1}^m \theta_ig_i(y[k-1],u[k-1])+e[k]
+					$$
+					</div>
+					<center>
+					obs: $e[k]$ is a <b>white noise</b>.
+
+					Rewrite it as  
+					<p class="lightup">
+					$$
+						Y=\mathcal{H}\theta +\mathcal{T}\varepsilon
+					$$
+					</p>
+					Use ML, MAP, MMSE, etc to find the best $\theta$!
+			
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Parameter Estimation</h2>
+				</div>
+				<div class="slide-content">
+			
+					<div class="box"><span class="box-title">Linear in Parameters Model: </span>
+					$$
+						y[k]=\theta_1\cos(y[k-1])+\theta_2\sin(u[k-1])+e[k]
+					$$
+					</div>
+					<center>
+					obs: $e[k]$ is a <b>white noise</b>.
+
+				
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Parameter Estimation</h2>
+				</div>
+				<div class="slide-content">
+			
+					<div class="box"><span class="box-title">Linear in Parameters Model: </span>
+					$$
+						y[k]=\begin{bmatrix}
+						\cos(y[k-1]) & \sin(u[k-1])
+						\end{bmatrix}\begin{bmatrix}\theta_1\\ \theta_2\end{bmatrix}
+						+e[k]
+					$$
+					</div>
+					<center>
+					obs: $e[k]$ is a <b>white noise</b>.
+
+				
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Parameter Estimation</h2>
+				</div>
+				<div class="slide-content">
+			
+					<div class="box"><span class="box-title">Linear in Parameters Model: </span>
+					$$
+						y[k]=\underbrace{\begin{bmatrix}
+						\cos(y[k-1]) & \sin(u[k-1])
+						\end{bmatrix}}_{H_k}\underbrace{\begin{bmatrix}\theta_1\\ \theta_2\end{bmatrix}}_{\theta}
+						+e[k]
+					$$
+					</div>
+					<center>
+					obs: $e[k]$ is a <b>white noise</b>.
+
+				
+					</center>
+
+		</div>
+
+						
+
+			</section>
+
+				<section>
+
+					<div class="slide-title">
+						<h2>Radial Basis Function (RBF) Model</h2>
+					</div>
+					<div class="slide-content">
+						<p>&nbsp;</p>
+						<div class="box"><span class="box-title">Model: </span>
+						$$
+						f(x)=w_0+\sum_{i=1}^{N_c} w_i\,\phi(\|x-c_i\|)
+						$$
+						$$
+						\phi(\|x-c_i\|)=\exp\!\left(-\frac{\|x-c_i\|^2}{\sigma_i^2}\right)
+						$$
+						</div>
+					</div>
+
+				</section>
+
+				<section>
+
+					<div class="slide-title">
+						<h2>Radial Basis Function (RBF) Model</h2>
+					</div>
+					<div class="slide-content">
+						<center>
+							<img src="../images/lesson5/rbf_model.gif" width="760">
+						</center>
+					</div>
+
+				</section>
+
+
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Online Parameter Estimation</h2>
+				</div>
+				<div class="slide-content">
+			
+					
+					<center>
+
+					<p class="lightup">
+					$$
+						\mathcal{D}^N=\{(y_1,u_1),(y_2,u_2),\ldots,(y_N,u_N)\}
+					$$
+					</p>
+					Using the ML estimator:
+					<p class="lightup">
+					$$
+					\hat{\theta}^{\text{ML}}_{N} =(\mathcal{H}_N^\trp \mathcal{R}_N^{-1}\mathcal{H}_N)^{-1}\mathcal{H}_N^\trp \mathcal{R}_N^{-1}Y_N
+					$$
+					</p>
+								</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Online Parameter Estimation</h2>
+				</div>
+				<div class="slide-content">
+			
+					
+					<center>
+
+					<p class="lightup">
+					$$
+						\mathcal{D}^N=\{(y_1,u_1),(y_2,u_2),\ldots,(y_N,u_N),(y_{N+1},u_{N+1})\}
+					$$
+					</p>
+					<p>&nbsp;</p>
+					Using the ML estimator:
+					<p class="lightup">
+					$$
+					\hat{\theta}^{\text{ML}}_{N+1}=\hat{\theta}_N^{\text{ML}}+K_{N+1}(y_{N+1}-H_{N+1}\hat{\theta}^{\text{ML}}_N)
+					$$
+					</p>
+								</center>
+
+		</div>
+
+						
+
+			</section>
+
+								<section>
+
+					<div class="slide-title">
+						<h2>Online Parameter Estimation</h2>
+					</div>
+					<div class="slide-content">
+						<center>
+							<img src="../images/lesson5/online_estimation_square.gif" width="820">
+						</center>
+					</div>
+
+				</section>
+
+
+
+				<section>
+
+					<div class="slide-title">
+						<h2>Online Parameter Estimation</h2>
+					</div>
+					<div class="slide-content">
+						<center>
+							<img src="../images/lesson5/online_estimation.gif" width="820">
+						</center>
+					</div>
+
+				</section>
+
+				<section>
+
+					<div class="slide-title">
+						<h2>Online Parameter Estimation</h2>
+					</div>
+					<div class="slide-content">
+						<center>
+							<img src="../images/lesson5/online_estimation_slow.gif" width="820">
+						</center>
+					</div>
+
+				</section>
+
+				<section>
+
+					<div class="slide-title">
+						<h2>Neural Networks</h2>
+					</div>
+					<div class="slide-content">
+						<p>&nbsp;</p>
+						<div class="box"><span class="box-title">Model: </span>
+						$$
+						\hat{y}[k]=g(\varphi[k];\theta)=w_0+\sum_{j=1}^{N_h} w_j\,\sigma\!\left(v_j^\top \varphi[k]+b_j\right)
+						$$
+						$$
+						\varphi[k]=[\,y[k-1],\ldots,y[k-n_a],\;u[k-1],\ldots,u[k-n_b]\,]^\top
+						$$
+						</div>
+						<center>
+						<p class="lightup">A neural network approximates the nonlinear map from the regressor $\varphi[k]$ to the output $\hat{y}[k]$.</p>
+						</center>
+					</div>
+
+				</section>
+
+
+				<section>
+
+					<div class="slide-title">
+						<h2>Neural Networks</h2>
+					</div>
+					<div class="slide-content">
+						<center>
+							<img src="../images/lesson5/nn_architecture.svg" width="760">
+						</center>
+					</div>
+
+				</section>
+
+
+				<section>
+
+					<div class="slide-title">
+						<h2>Neural Networks</h2>
+					</div>
+					<div class="slide-content">
+						<center>
+							<img src="../images/lesson5/nn_sysid.gif" width="820">
+						</center>
+					</div>
+
+				</section>
+
+				<section>
+
+					<div class="slide-title">
+						<h2>LASSO Estimation</h2>
+					</div>
+					<div class="slide-content">
+						<p>&nbsp;</p>
+						<div class="box"><span class="box-title">Definition (LASSO): </span>
+						$$
+						\hat{\theta}^{\text{LASSO}}=\arg\min_{\theta}\;\|Y-\mathcal{H}\theta\|_2^2+\lambda\,\|\theta\|_1
+						$$
+						$$
+						\|\theta\|_1=\sum_{i=1}^{p}|\theta_i|,\qquad \lambda\ge 0
+						$$
+						</div>
+						<center>
+						<p class="lightup">The $\ell_1$ penalty drives some parameters <b>exactly to zero</b> $\Rightarrow$ a <b>sparse</b> model.</p>
+						</center>
+					</div>
+
+				</section>
+
+
+				<section>
+
+					<div class="slide-title">
+						<h2>LASSO: Sparsity &amp; Model Selection</h2>
+					</div>
+					<div class="slide-content small">
+						<div class="box"><span class="box-title">Ridge (L<sub>2</sub>): </span>
+						$$
+						\hat{\theta}^{\text{ridge}}=\arg\min_{\theta}\;\|Y-\mathcal{H}\theta\|_2^2+\lambda\,\|\theta\|_2^2
+						$$
+						</div>
+						<div class="box"><span class="box-title">LASSO (L<sub>1</sub>): </span>
+						$$
+						\hat{\theta}^{\text{LASSO}}=\arg\min_{\theta}\;\|Y-\mathcal{H}\theta\|_2^2+\lambda\,\|\theta\|_1
+						$$
+						</div>
+						<ul>
+							<li>$L_2$ (ridge) <b>shrinks</b> all coefficients, but keeps them nonzero;</li>
+							<li>$L_1$ (LASSO) sets irrelevant coefficients <b>exactly to zero</b>;</li>
+							<li>zeroed coefficients remove their regressors $\Rightarrow$ <b>automatic model selection</b>;</li>
+							<li>$\lambda$ tunes the sparsity: larger $\lambda \Rightarrow$ fewer active terms.</li>
+						</ul>
+					</div>
+
+				</section>
+
+
+				<section>
+
+					<div class="slide-title">
+						<h2>LASSO: L<sub>1</sub> vs L<sub>2</sub> Geometry</h2>
+					</div>
+					<div class="slide-content">
+						<center>
+							<img src="../images/lesson5/l1_vs_l2.png" width="860">
+						</center>
+					</div>
+
+				</section>
+
+
+				<section>
+
+					<div class="slide-title">
+						<h2>LASSO: Application Example</h2>
+					</div>
+					<div class="slide-content">
+						<center>
+							<img src="../images/lesson5/lasso_example.png" width="880">
+						</center>
+					</div>
+
+				</section>
+
+
+
+
+
+
+
+
+		
+			<section>
+		
+				<div class="slide-content">
+					<center>
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+					<h2>Until next time!</h2>
+				</center>
+				</div>
+
+			</section>
+
+
+
+
+				
+
+
+
+				<!------------------------>
+			</div>
+		</div>
+
+		
+
+		<script src="../dist/reveal.js"></script>
+		<script src="../plugin/notes/notes.js"></script>
+		<script src="../plugin/markdown/markdown.js"></script>
+		<script src="../plugin/highlight/highlight.js"></script>
+		<script src="../plugin/math/math.js"></script>
+		<script src="../init.js"></script>
+		<script src="../plugin/handwriting/plugin.js"></script>
+	</body>
+</html>
+
+</p>
