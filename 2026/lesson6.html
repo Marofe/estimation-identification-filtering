@@ -1,0 +1,2130 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>SEL5917 - Estimation, Identification and Stochastic Filtering</title>
+
+		<link rel="stylesheet" href="../dist/reset.css">
+		<link rel="stylesheet" href="../dist/reveal.css">
+		<link rel="stylesheet" href="../dist/theme/white.css" id="theme">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="../plugin/highlight/monokai.css" id="highlight-theme">
+		<link rel="stylesheet" href="../style.css">
+	</head>
+	<body>
+		
+		<div class="reveal">
+			<div class="slides">
+				
+				<section data-hide-slide-number="true" data-transition="slide">
+					<div class="logo"><img src="../images/sel.png"/> </div>
+					<div class="logo2"><img src="../images/Logo EESC-USP_top.png"/> </div>
+					<div class="title">
+					<h2>Bayesian Filtering and Smoothing <br>SEL5917</h2>
+					</div>
+					<div class="author">
+					<h3>Prof. Dr. Marcos Rogério Fernandes</h3>
+				</div>
+					<div class="advisor">
+					
+					<p style="text-align: center;font-size: 0.8em;">September 15, 2026</p>
+				</div>
+
+				</section>
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Objectives:</h2>
+				</div>
+				<p>&nbsp;</p>
+				<div class="slide-content">
+					<p>The objectives of this class are to understand:
+						<ul>
+							<li>Bayesian filtering;</li> 
+							<li>Chapman-Komogorov Equation;</li>	
+							<li>The Kalman Filter;</li>
+							<li>Bayesian Smoothing;</li>	
+							<li>The RTS Smoother.</li>
+							</ul>
+						
+						</p>
+						</div>
+
+			</section>
+
+
+		
+
+			
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Probabilistic State Space Model</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Definition:</span>
+						A probabilistic state space model is defined as 
+						$$
+						\begin{aligned}
+							x_{k+1}&\sim p(x_{k+1}|x_{k})\rightarrow \text{dynamic model}\\ 
+							y_{k}&\sim p(y_k|x_k)\rightarrow \text{measurement model}
+							\end{aligned}
+						$$
+						Hypothesis:
+						$$
+						\begin{aligned}
+							p(x_{k+1}|x_{0:k},y_{0:k})&=p(x_{k+1}|x_{k}) \text{(Markov Property)}\\
+							p(y_k|x_{0:k},y_{0:k-1})&=p(y_k|x_k) \text{(Conditional Independence)}
+						\end{aligned}
+						$$
+						</div>
+
+					
+
+		</div>
+
+						
+
+			</section>
+
+
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Nomenclature</h2>
+				</div>
+				<div class="slide-content">
+				<center>
+					<img src="../images/pred_filt_smoth.svg" width="600">
+				</center>
+				$$
+				\hat{x}_{k|T}=\begin{cases}
+				\text{prediction}, k > T, \\ 
+				\text{filtering}, k=T,\\ 
+				\text{smoothing}, k < T.
+				\end{cases}
+				$$
+
+					
+
+		</div>
+
+						
+
+			</section>
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Bayesian Filtering</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						The purpose of Bayesian filtering is to obtain the <b>marginal posterior distribution</b> 
+						$$
+						\begin{aligned}
+						p(x_{k+1}|y_{0:k+1})
+							\end{aligned}
+						$$
+						recursively for each time step $k\in\mathbb{N}$.
+						</div>
+<center>
+					<img src="../images/filtering.svg" width="650">
+				</center>
+					
+
+		</div>
+
+						
+
+			</section>
+
+
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Bayesian Filtering</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Theorem</span>
+					
+						<ul>
+							<li><b>Initialization:</b> starts with a prior distribution $p(x_0)$;</li>
+							<li><b>Prediction step</b> (Chapman-Komogorov Eq.): 
+								$$
+									p(x_{k+1}|y_{0:k})=\int p(x_{k+1}|x_k,y_{0:k})p(x_k|y_{0:k})dx_k
+								$$
+							</li>
+							<li><b>Update step</b> (Bayes' rule): 
+								$$
+									p(x_{k+1}|y_{0:k+1})=\frac{p(y_{k+1}|x_{k+1})p(x_{k+1}|y_{0:k})}{p(y_{k+1}|y_{0:k})}
+								$$	
+							</li>
+						</ul>
+						</div>
+
+					
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+				<section>
+
+				<div class="slide-title">
+					<h2>Bayesian Filtering</h2>
+				</div>
+				<div class="slide-content">
+				<center>
+					<img src="../images/bayesian_filter.svg" width="900">
+				</center>
+
+					
+
+		</div>
+
+						
+
+			</section>
+
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>Proof: Bayesian Filtering</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+							<p align="center"><b>Update Step</b></p>
+						We want to obtain 
+						$$
+							p(x_{k+1}|y_{0:k+1})=p(x_{k+1}|y_{0:k},y_{k+1})
+						$$
+						From the <b>Bayes' rule</b>, one has
+						$$
+							p(x_{k+1}|y_{0:k+1})=\frac{p(y_{k+1}|x_{k+1},y_{0:k})p(x_{k+1}|y_{0:k})}{p(y_{k+1}|y_{0:k})}
+						$$
+					</div>
+
+					
+
+		</div>
+
+						
+
+			</section>
+
+
+			
+
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>Proof: Bayesian Filtering</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						<p align="center"><b>Update Step</b></p>
+						We want to obtain 
+						$$
+							p(x_{k+1}|y_{0:k+1})=p(x_{k+1}|y_{0:k},y_{k+1})
+						$$
+						From the <b>Bayes' rule</b>, one has
+						$$
+							p(x_{k+1}|y_{0:k+1})=\frac{p(y_{k+1}|x_{k+1})p(x_{k+1}|y_{0:k})}{p(y_{k+1}|y_{0:k})}
+						$$
+						<center>(Conditional Independence Property) $\square$
+							</center>
+					</div>
+
+					
+
+		</div>
+
+						
+
+			</section>
+
+			
+						<section>
+
+				<div class="slide-title">
+					<h2>Proof: Bayesian Filtering</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+							<p align="center"><b>Prediction Step</b></p>
+					Note that
+						$$
+							p(x_{k+1}|y_{0:k})=\int p(x_{k+1},x_k|y_{0:k})dx_k
+						$$
+
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+			
+						<section>
+
+				<div class="slide-title">
+					<h2>Proof: Bayesian Filtering</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+							<p align="center"><b>Prediction Step</b></p>
+					Note that
+						$$
+						\begin{aligned}
+							p(x_{k+1}|y_{0:k})&=\int p(x_{k+1},x_k|y_{0:k})dx_k\\
+							&=\int p(x_{k+1}|x_k,y_{0:k})p(x_k|y_{0:k})dx_k
+							\end{aligned}
+						$$
+
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>Proof: Bayesian Filtering</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+							<p align="center"><b>Prediction Step</b></p>
+					Note that
+						$$
+						\begin{aligned}
+							p(x_{k+1}|y_{0:k})&=\int p(x_{k+1},x_k|y_{0:k})dx_k\\
+							&=\int p(x_{k+1}|x_k)p(x_k|y_{0:k})dx_k
+							\end{aligned}
+						$$
+<center>(Markov Property) $\square$</center>
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>Chapman-Komogorov Equation</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						$$
+						\begin{aligned}
+							p(x_{k+1}|y_{0:k})&=\int \underbrace{p(x_{k+1}|x_k)}_{\text{dynamic model}}\underbrace{p(x_k|y_{0:k})}_{\text{filter}}dx_k
+							\end{aligned}
+						$$
+					</div>
+
+					<center>
+					<img src="../images/chapman_kolmogorov.svg" width="800">
+				</center>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Update Step (Measurement Assimilation)</h2>
+				</div>
+				<div class="slide-content">
+
+					<p>&nbsp;</p>
+					<div class="box">
+						
+						$$
+						\begin{aligned}
+							p(x_{k+1}|y_{0:k+1})&=\frac{\underbrace{p(y_{k+1}|x_{k+1})}_{\text{measurement model}}\underbrace{p(x_{k+1}|y_{0:k})}_{\text{prior}}}{\underbrace{p(y_{k+1}|y_{0:k})}_{\text{evidence}}}
+							\end{aligned}
+						$$
+					</div>
+
+					
+		</div>
+
+						
+
+			</section>
+
+
+			
+				<section>
+
+				<div class="slide-title">
+					<h2>Update Step (Measurement Assimilation)</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						$$
+						\begin{aligned}
+							p(x_{k+1}|y_{0:k+1})&=\frac{p(y_{k+1}|x_{k+1})p(x_{k+1}|y_{0:k})}{p(y_{k+1}|y_{0:k})}
+							\end{aligned}
+						$$
+					</div>
+
+					<center>
+					<img src="../images/bayesian_update.svg" width="750">
+				</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+<section>
+
+				<div class="slide-title">
+					<h2>Update Step (Measurement Assimilation)</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						$$
+						\begin{aligned}
+							p(x_{k+1}|y_{0:k+1})&=\frac{p(y_{k+1}|x_{k+1})p(x_{k+1}|y_{0:k})}{p(y_{k+1}|y_{0:k})}
+							\end{aligned}
+						$$
+					</div>
+
+					<center>
+					<img src="../images/bayesian_update2.svg" width="750">
+				</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Asynchronous Sensors</h2>
+				</div>
+				<div class="slide-content">
+
+
+					<center>
+					<img src="../images/multi_pred_bayesian_update.svg" width="1100">
+				</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>The Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						The classic Kalman Filter is the closed solution of Bayesian filtering for linear (or affine) systems with Gaussian Noises.
+						<p><b>Dynamic State Space Model:</b></p>
+						$$
+						\begin{aligned}
+							x_{k+1}&=A_kx_k+B_ku_k+w_k,\quad w_{k}\sim\mathcal{N}(0,Q_{k})\\
+							y_{k+1}&=H_{k+1}x_{k+1}+\epsilon_{k+1},\quad \epsilon_{k+1}\sim\mathcal{N}(0,R_{k+1})
+							\end{aligned}
+						$$
+
+						<p><b>Probabilistic State Space Model:</b></p>
+						$$
+							\begin{aligned}
+							x_{k+1}&\sim \mathcal{N}(A_kx_k+B_ku_k,Q_k)\\
+							y_{k+1}&\sim \mathcal{N}(H_{k+1}x_{k+1},R_{k+1})
+							\end{aligned}
+						$$
+
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>The Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Theorem</span>
+						For a linear system with Gaussian noises and Gaussian prior distribution: $p(x_0)\sim\mathcal{N}(\hat{x}_{0|0},P_{0|0})$:
+<ul>
+							<li>The Prediction distribution is Gaussian:
+								$$
+									p(x_{k+1}|y_{0:k})=\mathcal{N}(\hat{x}_{k+1|k},P_{k+1|k})
+								$$
+							</li>
+							<li>The posterior distribution is also Gaussian:
+								$$
+									p(x_{k+1}|y_{0:k+1})=\mathcal{N}(\hat{x}_{k+1|k+1},P_{k+1|k+1})
+								$$	
+							</li>
+						</ul>
+
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+			
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>The Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Theorem</span>
+						With 
+							$$
+							\begin{align}
+							\hat{x}_{k+1|k}&=A_k\hat{x}_{k|k}+B_ku_k,\\ 
+							P_{k+1|k}&=A_kP_{k|k}A_k^\trp + Q_k, \\ 
+							K&=P_{k+1|k}H_{k+1}^\trp (R_{k+1}+H_{k+1}P_{k+1|k}H_{k+1}^\trp)^{-1},\\
+							\hat{x}_{k+1|k+1}&=\hat{x}_{k+1|k}+K(y_{k+1}-H_{k+1}\hat{x}_{k+1|k}),\\
+							P_{k+1|k+1}&=(I-KH_{k+1})P_{k+1|k}.
+							\end{align}
+							$$
+
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Proof: Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Lemma 1</span>
+						Given the joint distribution 
+							$$
+							\begin{equation}
+\begin{bmatrix} \mathbf{x} \\ \mathbf{y} \end{bmatrix} \sim \mathcal{N} \left( \begin{bmatrix} \mathbf{a} \\ \mathbf{b} \end{bmatrix}, \begin{bmatrix} \mathbf{A} & \mathbf{C} \\ \mathbf{C}^{\top} & \mathbf{B} \end{bmatrix} \right),
+\end{equation}
+$$
+then 
+$$
+\begin{equation}
+\begin{aligned}
+\mathbf{x} &\sim \mathcal{N}(\mathbf{a}, \mathbf{A}), \quad
+\mathbf{y} \sim \mathcal{N}(\mathbf{b}, \mathbf{B}), \\
+\mathbf{x} \mid \mathbf{y} &\sim \mathcal{N}(\mathbf{a} + \mathbf{C} \, \mathbf{B}^{-1} (\mathbf{y} - \mathbf{b}), \, \mathbf{A} - \mathbf{C} \, \mathbf{B}^{-1}\mathbf{C}^{\top}), \\
+\mathbf{y} \mid \mathbf{x} &\sim \mathcal{N}(\mathbf{b} + \mathbf{C}^{\top} \mathbf{A}^{-1} (\mathbf{x} - \mathbf{a}), \, \mathbf{B} - \mathbf{C}^{\top} \mathbf{A}^{-1}\mathbf{C}).
+\end{aligned}
+\end{equation}
+							$$
+
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+	
+				<section>
+
+				<div class="slide-title">
+					<h2>Proof: Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Lemma 2</span>
+						Given the joint distribution 
+							$$
+							\begin{equation}
+\begin{aligned}
+p(\mathbf{x},\mathbf{y}) =\underbrace{\mathcal{N}(\mathbf{H} \, \mathbf{x} + \mathbf{u}, \mathbf{R})}_{p(\mathbf{y}|\mathbf{x})}\underbrace{\mathcal{N}(\mathbf{m}, \mathbf{P})}_{p(\mathbf{x})},
+\end{aligned}
+\end{equation}
+$$
+then 
+$$
+\begin{equation}
+\begin{aligned}
+\begin{bmatrix} \mathbf{x} \\ \mathbf{y} \end{bmatrix} &\sim \mathcal{N} \left( \begin{bmatrix} \mathbf{m} \\ \mathbf{H} \, \mathbf{m} + \mathbf{u} \end{bmatrix}, \begin{bmatrix} \mathbf{P} & \mathbf{P} \, \mathbf{H}^{\top} \\ \mathbf{H} \, \mathbf{P} & \mathbf{H} \, \mathbf{P} \, \mathbf{H}^{\top} + \mathbf{R} \end{bmatrix} \right),
+\end{aligned}
+\end{equation}
+							$$
+
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Proof: Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<p align="center"><b>Prediction Step</b></p>
+				Note that 
+				$$
+				\begin{aligned}
+					p(x_{k+1},x_k|y_{0:k})&=p(x_{k+1}|x_k,y_{0:k})p(x_k|y_{0:k})\\
+					
+					\end{aligned}
+				$$
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Proof: Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<p align="center"><b>Prediction Step</b></p>
+				Note that 
+				$$
+				\begin{aligned}
+					p(x_{k+1},x_k|y_{0:k})&=p(x_{k+1}|x_k)p(x_k|y_{0:k})\\
+					
+					\end{aligned}
+				$$
+
+				<center>(Markov Property)</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Proof: Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<p align="center"><b>Prediction Step</b></p>
+				Note that 
+				$$
+				\begin{aligned}
+					p(x_{k+1},x_k|y_{0:k})&=\underbrace{p(x_{k+1}|x_k)}_{\text{dynamic model}}\underbrace{p(x_k|y_{0:k})}_{\text{filtering}}\\
+					
+					\end{aligned}
+				$$
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Proof: Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<p align="center"><b>Prediction Step</b></p>
+				Note that 
+				$$
+				\begin{aligned}
+					p(x_{k+1},x_k|y_{0:k})&=\underbrace{\mathcal{N}(A_kx_k+B_ku_k,Q_k)}_{\text{dynamic model}}\underbrace{\mathcal{N}(\hat{x}_{k|k},P_{k|k})}_{\text{filtering}}\\
+					
+					\end{aligned}
+				$$
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Proof: Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<p align="center"><b>Prediction Step</b></p>
+				Note that 
+				$$
+				\begin{aligned}
+					p(x_{k+1},x_k|y_{0:k})&=\mathcal{N}(A_kx_k+B_ku_k,Q_k)\mathcal{N}(\hat{x}_{k|k},P_{k|k})\\
+					&=\mathcal{N}\Bigl(\begin{bmatrix}\hat{x}_{k|k}\\ A_k\hat{x}_{k|k}+B_ku_k\end{bmatrix},\begin{bmatrix}
+					P_{k|k} & P_{k|k}A_k^\trp \\ 
+					A_k P_{k|k} & A_kP_{k|k}A_k^\trp+ Q_k
+					\end{bmatrix}\Bigr)
+					\end{aligned}
+				$$
+					<center>(From Lemma 2)</center>
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Proof: Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<p align="center"><b>Prediction Step</b></p>
+				Thus, before the new measurement arrives, we have
+				<p class="lightup">
+				$$
+				\begin{aligned}
+					\begin{bmatrix}x_k\\x_{k+1}\end{bmatrix}\sim \mathcal{N}\Bigl(\begin{bmatrix}\hat{x}_{k|k}\\ A_k\hat{x}_{k|k}+B_ku_k\end{bmatrix},\begin{bmatrix}
+					P_{k|k} & P_{k|k}A_k^\trp \\ 
+					A_k P_{k|k} & A_kP_{k|k}A_k^\trp+ Q_k
+					\end{bmatrix}\Bigr)
+					\end{aligned}
+				$$
+				</p>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Proof: Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<p align="center"><b>Prediction Step</b></p>
+				Thus, before the new measurement arrives, we have
+				<p class="lightup">
+				$$
+				\begin{aligned}
+					\begin{bmatrix}x_k\\x_{k+1}\end{bmatrix}\sim \mathcal{N}\Bigl(\begin{bmatrix}\hat{x}_{k|k}\\ A_k\hat{x}_{k|k}+B_ku_k\end{bmatrix},\begin{bmatrix}
+					P_{k|k} & P_{k|k}A_k^\trp \\ 
+					A_k P_{k|k} & A_kP_{k|k}A_k^\trp+ Q_k
+					\end{bmatrix}\Bigr)
+					\end{aligned}
+				$$
+				</p>
+
+					From <b>Lemma 1</b>, we conclude that $p(x_{k+1})=\mathcal{N}(\hat{x}_{k+1|k},P_{k+1|k})$ with
+					$$
+						\hat{x}_{k+1|k}=A_k\hat{x}_{k|k}+B_ku_k\\
+						P_{k+1|k}=A_kP_{k|k}A_k^\trp + Q_k
+					$$
+
+		</div>
+
+						
+
+			</section>
+
+
+			
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Proof: Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<p align="center"><b>Update Step</b></p>
+			Note that
+				$$
+				\begin{aligned}
+					p(x_{k+1},y_{k+1}|y_{0:k})&=p(y_{k+1}|x_{k+1},y_{0:k})p(x_{k+1}|y_{0:k})\\
+				
+					\end{aligned}
+				$$
+			
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Proof: Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<p align="center"><b>Update Step</b></p>
+			Note that
+				$$
+				\begin{aligned}
+					p(x_{k+1},y_{k+1}|y_{0:k})&=p(y_{k+1}|x_{k+1})p(x_{k+1}|y_{0:k})\\
+				
+					\end{aligned}
+				$$
+			<center>(Conditional Independence Property)</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Proof: Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<p align="center"><b>Update Step</b></p>
+			Note that
+				$$
+				\begin{aligned}
+					p(x_{k+1},y_{k+1}|y_{0:k})&=\underbrace{p(y_{k+1}|x_{k+1})}_{\text{measurement model}}\underbrace{p(x_{k+1}|y_{0:k})}_{\text{prediction}}\\
+				
+					\end{aligned}
+				$$
+		
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Proof: Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<p align="center"><b>Update Step</b></p>
+			Note that
+				$$
+				\begin{aligned}
+					p(x_{k+1},y_{k+1}|y_{0:k})&=\underbrace{\mathcal{N}(H_{k+1}x_{k+1},R_{k+1})}_{\text{measurement model}}\underbrace{\mathcal{N}(\hat{x}_{k+1|k},P_{k+1|k})}_{\text{prediction}}\\
+				
+					\end{aligned}
+				$$
+		
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Proof: Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<p align="center"><b>Update Step</b></p>
+			Note that
+				$$
+				\begin{aligned}
+					p(x_{k+1},y_{k+1}|y_{0:k})&=\mathcal{N}(H_{k+1}x_{k+1},R_{k+1})\mathcal{N}(\hat{x}_{k+1|k},P_{k+1|k})\\
+					&=\mathcal{N}\Bigl(\begin{bmatrix}\hat{x}_{k+1|k}\\ H_{k+1}\hat{x}_{k+1|k}\end{bmatrix},\begin{bmatrix}
+					P_{k+1|k} & P_{k+1|k}H_{k+1}^\trp \\ 
+					H_{k+1} P_{k+1|k} & S_{k+1}
+					\end{bmatrix}\Bigr)
+					\end{aligned}
+				$$
+				with 
+				$$
+					S_{k+1}=H_{k+1}P_{k+1|k}H_{k+1}^\trp+ R_{k+1}
+				$$
+
+<center>(From Lemma 2)</center>
+		</div>
+
+						
+
+			</section>
+
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Proof: Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<p align="center"><b>Update Step</b></p>
+			Thus, when a new measurements arrives, we have
+			<p class="lightup">
+				$$
+				\begin{aligned}
+					\begin{bmatrix}x_{k+1}\\y_{k+1}\end{bmatrix}&\sim \mathcal{N}\Bigl(\begin{bmatrix}\hat{x}_{k+1|k}\\ H_{k+1}\hat{x}_{k+1|k}\end{bmatrix},\begin{bmatrix}
+					P_{k+1|k} & P_{k+1|k}H_{k+1}^\trp \\ 
+					H_{k+1} P_{k+1|k} & S_{k+1}
+					\end{bmatrix}\Bigr)
+					\end{aligned}
+				$$
+				with 
+				$$
+					S_{k+1}=H_{k+1}P_{k+1|k}H_{k+1}^\trp+ R_{k+1}
+				$$
+</p>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Proof: Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<p align="center"><b>Update Step</b></p>
+			From <b>Lemma 1</b>, we have
+				$$
+				\begin{aligned}
+					p(x_{k+1}|y_{k+1},y_{0:k})&=p(x_{k+1}|y_{0:k+1})\\
+					&=\mathcal{N}(\hat{x}_{k+1|k+1},P_{k+1|k+1})
+					\end{aligned}
+				$$
+				with 
+				$$
+				\begin{aligned}
+					\hat{x}_{k+1|k+1}&=\hat{x}_{k+1|k}+P_{k+1|k}H_{k+1}^\trp S_{k+1}^{-1}(y_{k+1}-H_{k+1}\hat{x}_{k+1|k})\\
+					P_{k+1|k+1}&=P_{k+1|k}-P_{k+1|k}H_{k+1}^\trp S_{k+1}^{-1} H_{k+1} P_{k+1|k}
+					\end{aligned}
+				$$
+
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+				<section>
+
+				<div class="slide-title">
+					<h2>Proof: Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<p align="center"><b>Update Step</b></p>
+			From <b>Lemma 1</b>, we have
+				$$
+				\begin{aligned}
+					p(x_{k+1}|y_{k+1},y_{0:k})&=p(x_{k+1}|y_{0:k+1})\\
+					&=\mathcal{N}(\hat{x}_{k+1|k+1},P_{k+1|k+1})
+					\end{aligned}
+				$$
+				with 
+				$$
+				\begin{aligned}
+					\hat{x}_{k+1|k+1}&=\hat{x}_{k+1|k}+\underbrace{P_{k+1|k}H_{k+1}^\trp S_{k+1}^{-1}}_{K}(y_{k+1}-H_{k+1}\hat{x}_{k+1|k})\\
+					P_{k+1|k+1}&=P_{k+1|k}-\underbrace{P_{k+1|k}H_{k+1}^\trp S_{k+1}^{-1}}_{K} H_{k+1} P_{k+1|k}
+					\end{aligned}
+				$$
+
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+				<section>
+
+				<div class="slide-title">
+					<h2>Proof: Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<p align="center"><b>Update Step</b></p>
+			From <b>Lemma 1</b>, we have
+				$$
+				\begin{aligned}
+					p(x_{k+1}|y_{k+1},y_{0:k})&=p(x_{k+1}|y_{0:k+1})\\
+					&=\mathcal{N}(\hat{x}_{k+1|k+1},P_{k+1|k+1})
+					\end{aligned}
+				$$
+				with 
+				$$
+				\begin{aligned}
+					\hat{x}_{k+1|k+1}&=\hat{x}_{k+1|k}+K(y_{k+1}-H_{k+1}\hat{x}_{k+1|k})\\
+					P_{k+1|k+1}&=P_{k+1|k}-K H_{k+1} P_{k+1|k}\\
+					K&=P_{k+1|k}H_{k+1}^\trp S_{k+1}^{-1}
+					\end{aligned}
+				$$
+
+
+		</div>
+
+						
+
+			</section>
+
+
+
+				
+				<section>
+
+				<div class="slide-title">
+					<h2>Proof: Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<p align="center"><b>Update Step</b></p>
+			From <b>Lemma 1</b>, we have
+				$$
+				\begin{aligned}
+					p(x_{k+1}|y_{k+1},y_{0:k})&=p(x_{k+1}|y_{0:k+1})\\
+					&=\mathcal{N}(\hat{x}_{k+1|k+1},P_{k+1|k+1})
+					\end{aligned}
+				$$
+				with 
+				$$
+				\begin{aligned}
+					\hat{x}_{k+1|k+1}&=\hat{x}_{k+1|k}+K(y_{k+1}-H_{k+1}\hat{x}_{k+1|k})\\
+					P_{k+1|k+1}&=[I-K H_{k+1}] P_{k+1|k}\\
+					K&=P_{k+1|k}H_{k+1}^\trp S_{k+1}^{-1}\quad \square
+					\end{aligned}
+				$$
+
+
+		</div>
+
+
+
+			</section>
+
+
+			<!-- ===== Example: CV + GPS model equations (added after slide 39) ===== -->
+			<section>
+
+				<div class="slide-title">
+					<h2>Example: Tracking with GPS</h2>
+				</div>
+				<div class="slide-content smaller">
+
+					A target moves in 3D and is observed by a <b>GPS</b> sensor that returns
+					noisy $x,y,z$ coordinates. We use a <b>constant-velocity (CV)</b> model, whose
+					state stacks position and velocity:
+					$$
+						x_k=\begin{bmatrix} p_x & p_y & p_z & v_x & v_y & v_z \end{bmatrix}^\trp\in\R^{6}.
+					$$
+
+						<div class="box">
+								<span class="box-title">Dynamic model (CV) & GPS sensor model</span>
+								$$
+								\begin{aligned}
+									x_{k+1}&=\underbrace{\begin{bmatrix} I_3 & \Delta t\,I_3 \\ 0_3 & I_3 \end{bmatrix}}_{A}x_k+w_k,\quad w_k\sim\mathcal{N}(0,Q)\\
+										y_{k}&=\underbrace{\begin{bmatrix} I_3 & 0_3 \end{bmatrix}}_{H}x_k+\epsilon_k,\quad \epsilon_k\sim\mathcal{N}(0,R)
+										\end{aligned}
+								$$
+								
+							
+							</div>
+
+							
+				</div>
+
+			</section>
+
+
+			<!-- ===== Example: animated Kalman filter (GIF, added after slide 39) ===== -->
+			<section>
+
+				<div class="slide-title">
+					<h2>Example: Kalman Filter Tracking (GPS)</h2>
+				</div>
+				<div class="slide-content">
+					<center>
+						<img src="../images/kf_gps_tracking_3d.gif" width="980">
+					
+					</center>
+				</div>
+
+			</section>
+
+
+
+
+
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>The Bayesian Smoothing</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						The purpose of Bayesian Smoothing is to obtain the <b>marginal posterior distribution</b> 
+						$$
+						\begin{aligned}
+						p(x_{k}|y_{0:T})
+							\end{aligned}
+						$$
+						with $T>k$ recursively for each time step $k\in\{0,\ldots,T\}$.
+					</div>
+
+				<center>
+					<img src="../images/smoothing.svg" width="600">
+				</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>The Bayesian Smoothing</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Theorem</span>
+						The posterior distribution for $T>k$ is given by 
+						$$
+						\begin{aligned}
+						p(x_{k}|y_{0:T})=p(x_k|y_{0:k})\int \Bigl[\frac{p(x_{k+1}|x_k)p(x_{k+1}|y_{0:T})}{p(x_{k+1}|y_{0:k})}\Bigr]dx_{k+1}
+							\end{aligned}
+						$$
+					where 
+					$$
+							p(x_{k+1}|y_{0:k})=\int p(x_{k+1}|x_k)p(x_k|y_{0:k})dx_k
+					$$
+					for $k=T-1, T-2,\ldots, 1$ (backward in time)
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+							<section>
+
+				<div class="slide-title">
+					<h2>Proof: Bayesian Smoothing</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						Note that
+						$$
+							p(x_k|y_{0:T})=\int p(x_k,x_{k+1}|y_{0:T})dx_{k+1}
+						$$
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+								<section>
+
+				<div class="slide-title">
+					<h2>Proof: Bayesian Smoothing</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						Note that
+						$$
+							p(x_k|y_{0:T})=\int p(x_{k}|x_{k+1},y_{0:T})p(x_{k+1}|y_{0:T})dx_{k+1}
+						$$
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+			
+								<section>
+
+				<div class="slide-title">
+					<h2>Proof: Bayesian Smoothing</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						Note that
+						$$
+							p(x_k|y_{0:T})=\int p(x_{k}|x_{k+1},y_{0:k})p(x_{k+1}|y_{0:T})dx_{k+1}\\
+						
+						
+						$$
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+					
+								<section>
+
+				<div class="slide-title">
+					<h2>Proof: Bayesian Smoothing</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						Note that
+						$$
+							p(x_k|y_{0:T})=\int p(x_{k}|x_{k+1},y_{0:k})p(x_{k+1}|y_{0:T})dx_{k+1}\\
+						=\int \frac{p(x_{k+1}|x_{k},y_{0:k})p(x_k|y_{0:k})}{p(x_{k+1}|y_{0:k})}p(x_{k+1}|y_{0:T})dx_{k+1}\\
+						
+						$$
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+					
+								<section>
+
+				<div class="slide-title">
+					<h2>Proof: Bayesian Smoothing</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						Note that
+						$$
+							p(x_k|y_{0:T})=\int p(x_{k}|x_{k+1},y_{0:k})p(x_{k+1}|y_{0:T})dx_{k+1}\\
+							=\int \frac{p(x_{k+1}|x_{k},y_{0:k})p(x_k|y_{0:k})}{p(x_{k+1}|y_{0:k})}p(x_{k+1}|y_{0:T})dx_{k+1}\\
+							=p(x_k|y_{0:k})\int \frac{p(x_{k+1}|x_{k})p(x_{k+1}|y_{0:T})}{p(x_{k+1}|y_{0:T})}dx_{k+1} \quad \square
+						$$
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+
+			
+						<section>
+
+				<div class="slide-title">
+					<h2>The Bayesian Smoothing</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Forward-backward Smoother</span>
+						$$
+						\begin{aligned}
+						p(x_{k}|y_{0:T})=\underbrace{p(x_k|y_{0:k})}_{\text{filtering}}\underbrace{\int \Bigl[\frac{p(x_{k+1}|x_k)p(x_{k+1}|y_{0:T})}{p(x_{k+1}|y_{0:k})}\Bigr]dx_{k+1}}_{\text{smoothing correction}}
+							\end{aligned}
+						$$
+									
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>Rauch-Tung-Striebel (RTS) Smoother</h2>
+				</div>
+				<div class="slide-content">
+				<div class="box">
+						The RTS Smoother is the closed solution of Bayesian Smoothing for linear (or affine) systems with Gaussian Noises.
+						<p><b>Dynamic State Space Model:</b></p>
+						$$
+						\begin{aligned}
+							x_{k+1}&=A_kx_k+B_ku_k+w_k,\quad w_{k}\sim\mathcal{N}(0,Q_{k})\\
+							y_{k+1}&=H_{k+1}x_{k+1}+\epsilon_{k+1},\quad \epsilon_{k+1}\sim\mathcal{N}(0,R_{k+1})
+							\end{aligned}
+						$$
+
+						<p><b>Probabilistic State Space Model:</b></p>
+						$$
+							\begin{aligned}
+							x_{k+1}&\sim \mathcal{N}(A_kx_k+B_ku_k,Q_k)\\
+							y_{k+1}&\sim \mathcal{N}(H_{k+1}x_{k+1},R_{k+1})
+							\end{aligned}
+						$$
+					
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>The RTS Smoother</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Theorem</span>
+						For a linear system with Gaussian noises and Gaussian initial prior distribution $p(x_0)\sim\mathcal{N}(\hat{x}_{0|0},P_{0|0})$, 			
+							the posterior smoothed distribution is also Gaussian:
+								$$
+									p(x_{k}|y_{0:T})=\mathcal{N}(\hat{x}^s_{k},P_{k}^s)
+								$$	
+						for $k=T-1,T-2,\ldots, 1$ (backward in time).	
+					</div>
+
+					Obs: given that $\{\hat{x}_{k|k},P_{k|k}\}_{k=0}^T$ is already computed using the Kalman Filter!
+
+		</div>
+
+						
+
+			</section>
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>The RTS Smoother</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Theorem</span>
+						With 
+							$$
+							\begin{align}
+							\hat{x}^-_{k+1}&=A_k\hat{x}_{k|k}+B_ku_k,\\ 
+							P_{k+1}^-&=A_kP_{k|k}A_k^\trp + Q_k, \\ 
+							G_k&=P_{k|k}A_{k}^\trp (P_{k+1}^-)^{-1},\\
+							\hat{x}_{k}^s&=\hat{x}_{k|k}+G_k(\hat{x}_{k+1}^s-\hat{x}_{k+1}^-),\\
+							P_{k}^s&=P_{k|k}+G_k[P_{k+1}^s-P_{k+1}^-]G_k^\trp.
+							\end{align}
+							$$
+
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Proof: RTS Smoother</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						Note that
+							$$
+							\begin{aligned}
+							p(x_k,x_{k+1}|y_{0:k})=p(x_{k+1}|x_{k},y_{0:k})p(x_{k}|y_{0:k})
+							\end{aligned}
+							$$
+
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Proof: RTS Smoother</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						From the Kalman Filter, we known that
+							$$
+							\begin{aligned}
+					p(x_{k+1},x_k|y_{0:k})&=\mathcal{N}(A_kx_k+B_ku_k,Q_k)\mathcal{N}(\hat{x}_{k|k},P_{k|k})\\
+					&=\mathcal{N}\Bigl(\begin{bmatrix}\hat{x}_{k|k}\\ A_k\hat{x}_{k|k}+B_ku_k\end{bmatrix},\begin{bmatrix}
+					P_{k|k} & P_{k|k}A_k^\trp \\ 
+					A_k P_{k|k} & A_kP_{k|k}A_k^\trp+ Q_k
+					\end{bmatrix}\Bigr)
+					\end{aligned}
+				$$
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+				
+					<section>
+
+				<div class="slide-title">
+					<h2>Proof: RTS Smoother</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						From the Kalman Filter, we known that
+							$$
+							\begin{aligned}
+					p(x_{k+1},x_k|y_{0:k})&=\mathcal{N}(A_kx_k+B_ku_k,Q_k)\mathcal{N}(\hat{x}_{k|k},P_{k|k})\\
+					&=\mathcal{N}\Bigl(\begin{bmatrix}\hat{x}_{k|k}\\ A_k\hat{x}_{k|k}+B_ku_k\end{bmatrix},\begin{bmatrix}
+					P_{k|k} & P_{k|k}A_k^\trp \\ 
+					A_k P_{k|k} & A_kP_{k|k}A_k^\trp+ Q_k
+					\end{bmatrix}\Bigr)
+					\end{aligned}
+				$$
+				Thus, from <b>Lemma 1</b>, we have 
+				$$
+					p(x_k|x_{k+1},y_{0:k})=\mathcal{N}(\tilde{x}_k,\tilde{P}_k)
+				$$
+			
+		<center>(Backward transition distribution)</center>
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Proof: RTS Smoother</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						
+				with 
+				$$	
+				\begin{align}
+				\tilde{x}_k &= \hat{x}_{k|k}-G_k(x_{k+1}-\hat{x}_{k+1}^-)\\
+				G_k&=P_{k|k}A_k^\trp (P_{k+1}^-)^{-1}\\
+				P_{k+1}^{-}& =A_kP_{k|k}A_k^\trp+ Q_k\\
+				\hat{x}_{k+1}^{-}&=A_k\hat{x}_{k|k}+B_ku_k\\
+				\tilde{P}_k & = P_{k|k}-P_{k|k}A_k^\trp (P_{k+1}^-)^{-1}A_kP_{k|k}
+
+				\end{align}
+				$$
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Proof: RTS Smoother</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						
+				with 
+				$$	
+				\begin{aligned}
+				\tilde{x}_k &= \hat{x}_{k|k}-G_k(x_{k+1}-\hat{x}_{k+1}^-)\\
+				G_k&=P_{k|k}A_k^\trp (P_{k+1}^-)^{-1}\\
+				P_{k+1}^{-}& =A_kP_{k|k}A_k^\trp+ Q_k\\
+				\hat{x}_{k+1}^{-}&=A_k\hat{x}_{k|k}+B_ku_k\\
+				\tilde{P}_k & = P_{k|k}-P_{k|k}A_k^\trp (P_{k+1}^-)^{-1}[P_{k+1}^- (P_{k+1}^-)^{-1}]A_kP_{k|k}
+
+				\end{aligned}
+				$$
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Proof: RTS Smoother</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						
+				with 
+				$$	
+				\begin{aligned}
+				\tilde{x}_k &= \hat{x}_{k|k}-G_k(x_{k+1}-\hat{x}_{k+1}^-)\\
+				G_k&=P_{k|k}A_k^\trp (P_{k+1}^-)^{-1}\\
+				P_{k+1}^{-}& =A_kP_{k|k}A_k^\trp+ Q_k\\
+				\hat{x}_{k+1}^{-}&=A_k\hat{x}_{k|k}+B_ku_k\\
+				\tilde{P}_k & = P_{k|k}-\underbrace{P_{k|k}A_k^\trp (P_{k+1}^-)^{-1}}_{G_k}P_{k+1}^- \underbrace{(P_{k+1}^-)^{-1}A_kP_{k|k}}_{G_k^\trp }
+
+				\end{aligned}
+				$$
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>Proof: RTS Smoother</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						
+				with 
+				$$	
+				\begin{aligned}
+				\tilde{x}_k &= \hat{x}_{k|k}-G_k(x_{k+1}-\hat{x}_{k+1}^-)\\
+				G_k&=P_{k|k}A_k^\trp (P_{k+1}^-)^{-1}\\
+				P_{k+1}^{-}& =A_kP_{k|k}A_k^\trp+ Q_k\\
+				\hat{x}_{k+1}^{-}&=A_k\hat{x}_{k|k}+B_ku_k\\
+				\tilde{P}_k & = P_{k|k}-G_kP_{k+1}^- G_k^\trp 
+
+				\end{aligned}
+				$$
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Proof: RTS Smoother</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						
+				Now, consider
+				$$	
+				\begin{aligned}
+				p(x_k,x_{k+1}|y_{0:T})=p(x_{k}|x_{k+1},y_{0:T})p(x_{k+1}|y_{0:T})
+
+				\end{aligned}
+				$$
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Proof: RTS Smoother</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						
+				Now, consider
+				$$	
+				\begin{aligned}
+				p(x_k,x_{k+1}|y_{0:T})=p(x_{k}|x_{k+1},y_{0:k})p(x_{k+1}|y_{0:T})
+
+				\end{aligned}
+				$$
+				<center>(Markov Property (backward in time))</center>
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Proof: RTS Smoother</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						
+				Now, consider
+				$$	
+				\begin{aligned}
+				p(x_k,x_{k+1}|y_{0:T})=\underbrace{p(x_{k}|x_{k+1},y_{0:k})}_{\text{backward distribution}}\underbrace{p(x_{k+1}|y_{0:T})}_{\text{smoothing}}
+
+				\end{aligned}
+				$$
+				
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Proof: RTS Smoother</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						
+				Now, consider
+				$$	
+				\begin{aligned}
+				p(x_k,x_{k+1}|y_{0:T})=\underbrace{\mathcal{N}(\tilde{x}_k,\tilde{P}_k)}_{\text{backward distribution}}\underbrace{\mathcal{N}(\hat{x}_{k+1}^s,P_{k+1}^s)}_{\text{smoothing}}
+
+				\end{aligned}
+				$$
+				
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+				
+					<section>
+
+				<div class="slide-title">
+					<h2>Proof: RTS Smoother</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						
+				Now, consider
+				$$	
+				\begin{aligned}
+				p(x_k,x_{k+1}|y_{0:T})=\underbrace{\mathcal{N}(\hat{x}_{k|k}+G_k(x_{k+1}-\hat{x}_{k+1}^-),\tilde{P}_k)}_{\text{backward distribution}}\underbrace{\mathcal{N}(\hat{x}_{k+1}^s,P_{k+1}^s)}_{\text{smoothing}}
+
+				\end{aligned}
+				$$
+				
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Proof: RTS Smoother</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						
+				Now, consider
+				$$	
+				\begin{aligned}
+				p(x_k,x_{k+1}|y_{0:T})=\underbrace{\mathcal{N}(\hat{x}_{k|k}+G_k(x_{k+1}-\hat{x}_{k+1}^-),\tilde{P}_k)}_{\text{backward distribution}}\underbrace{\mathcal{N}(\hat{x}_{k+1}^s,P_{k+1}^s)}_{\text{smoothing}}
+
+				\end{aligned}
+				$$
+				From <b>Lemma 2</b>, we have 
+				$$
+						\begin{bmatrix}x_{k+1} \\ x_{k}\end{bmatrix}\sim\mathcal{N}\Bigl(\begin{bmatrix}\hat{x}_{k+1}^s \\
+						\hat{x}_{k|k}+G_k(\hat{x}_{k+1}^s-\hat{x}_{k+1}^-)
+						\end{bmatrix},\begin{bmatrix}P_{k+1}^s & {P}_{k+1}^sG_k^\trp \\
+						G_k {P}_{k+1}^s & W_k
+						\end{bmatrix}\Bigr)
+				$$
+				with 
+				$$
+						W_k =\tilde{P}_k+G_k P_{k+1}^s G_k^\trp 
+				$$
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Proof: RTS Smoother</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						
+				Therefore, from <b>Lemma 1</b>, we conclude that
+				$$	
+				\begin{aligned}
+				p(x_k|y_{0:T})=\mathcal{N}(\hat{x}_k^s, P_k^s)
+				\end{aligned}
+				$$
+				with 
+				$$
+				\begin{aligned}
+					\hat{x}_k^s &= 	\hat{x}_{k|k}+G_k(\hat{x}_{k+1}^s-\hat{x}_{k+1}^-)\\
+					P_k^s & = \tilde{P}_k+G_k P_{k+1}^s G_k^\trp 
+					\end{aligned}
+				$$
+				
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Proof: RTS Smoother</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						
+				Therefore, from <b>Lemma 1</b>, we conclude that
+				$$	
+				\begin{aligned}
+				p(x_k|y_{0:T})=\mathcal{N}(\hat{x}_k^s, P_k^s)
+				\end{aligned}
+				$$
+				with 
+				$$
+				\begin{aligned}
+					\hat{x}_k^s &= 	\hat{x}_{k|k}+G_k(\hat{x}_{k+1}^s-\hat{x}_{k+1}^-)\\
+					P_k^s & = P_{k|k}-G_kP_{k+1}^- G_k^\trp +G_k P_{k+1}^s G_k^\trp 
+					\end{aligned}
+				$$
+				
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Proof: RTS Smoother</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						
+				Therefore, from <b>Lemma 1</b>, we conclude that
+				$$	
+				\begin{aligned}
+				p(x_k|y_{0:T})=\mathcal{N}(\hat{x}_k^s, P_k^s)
+				\end{aligned}
+				$$
+				with 
+				$$
+				\begin{aligned}
+					\hat{x}_k^s &= 	\hat{x}_{k|k}+G_k(\hat{x}_{k+1}^s-\hat{x}_{k+1}^-)\\
+					P_k^s & = P_{k|k}+G_k[P_{k+1}^s-P_{k+1}^-] G_k^\trp \quad \square
+					\end{aligned}
+				$$
+				
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+			
+			
+			
+
+
+
+
+
+		
+			<!-- ===== RTS example: 3D animated filter vs smoother (after slide 68) ===== -->
+			<section>
+
+				<div class="slide-title">
+					<h2>Example: RTS Smoother vs Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<center>
+						<img src="../images/rts_3d_compare.gif" width="950">
+					
+					</center>
+				</div>
+
+			</section>
+
+
+			<!-- ===== RTS example: positions x,y,z ===== -->
+			<section>
+
+				<div class="slide-title">
+					<h2>Filter vs Smoother: positions ($x,y,z$)</h2>
+				</div>
+				<div class="slide-content">
+					<center>
+						<img src="../images/rts_pos_compare.png" width="1180">
+						<p style="font-size:0.74em; margin-top:0.2em;">
+							Position estimates versus time step $k$. The <b style="color:#D95319;">smoother</b> (orange)
+							tracks the true path more tightly than the causal <b style="color:#0072BD;">filter</b> (blue): position
+							RMSE drops from <b>7.45&nbsp;&rarr;&nbsp;4.08&nbsp;m</b>.
+						</p>
+					</center>
+				</div>
+
+			</section>
+
+
+			<!-- ===== RTS example: velocities vx,vy,vz ===== -->
+			<section>
+
+				<div class="slide-title">
+					<h2>Filter vs Smoother: velocities ($v_x,v_y,v_z$)</h2>
+				</div>
+				<div class="slide-content">
+					<center>
+						<img src="../images/rts_vel_compare.png" width="1180">
+						<p style="font-size:0.74em; margin-top:0.2em;">
+							Velocity estimates versus time step $k$. Velocities are only observed indirectly, so the gain from
+							smoothing is largest here: velocity RMSE drops from <b>7.54&nbsp;&rarr;&nbsp;2.06&nbsp;m/s</b>.
+						</p>
+					</center>
+				</div>
+
+			</section>
+
+
+			<!-- ===== RTS example: error histograms ===== -->
+			<section>
+
+				<div class="slide-title">
+					<h2>Filter vs Smoother: error histograms</h2>
+				</div>
+				<div class="slide-content">
+					<center>
+						<img src="../images/rts_error_hist.png" width="1000">
+					
+					</center>
+				</div>
+
+			</section>
+
+
+			<!-- ===== RTS example: RMSE comparison table ===== -->
+			<section>
+
+				<div class="slide-title">
+					<h2>Filter vs Smoother: RMSE comparison</h2>
+				</div>
+				<div class="slide-content">
+					<center>
+					<table style="margin:0.4em auto; border-collapse:collapse; font-size:0.95em; min-width:600px;">
+						<thead>
+							<tr style="border-bottom:2px solid #000; background:#fff;">
+								<th style="text-align:left; padding:7px 26px; color:#111; background:#fff;">variable</th>
+								<th style="padding:7px 26px; color:#111; background:#fff;">filter RMSE</th>
+								<th style="padding:7px 26px; color:#111; background:#fff;">smoother RMSE</th>
+								<th style="padding:7px 26px; color:#111; background:#fff;">improvement</th>
+							</tr>
+						</thead>
+						<tbody style="text-align:center;">
+							<tr style="background:#f0f0f0;"><td style="text-align:left; padding:5px 26px;">$x$</td><td>4.12 m</td><td>1.89 m</td><td>54%</td></tr>
+							<tr><td style="text-align:left; padding:5px 26px;">$y$</td><td>3.87 m</td><td>2.26 m</td><td>42%</td></tr>
+							<tr style="background:#f0f0f0;"><td style="text-align:left; padding:5px 26px;">$z$</td><td>4.85 m</td><td>2.82 m</td><td>42%</td></tr>
+							<tr style="border-top:1px solid #999;"><td style="text-align:left; padding:5px 26px;">$v_x$</td><td>4.98 m/s</td><td>1.35 m/s</td><td>73%</td></tr>
+							<tr style="background:#f0f0f0;"><td style="text-align:left; padding:5px 26px;">$v_y$</td><td>5.52 m/s</td><td>1.39 m/s</td><td>75%</td></tr>
+							<tr><td style="text-align:left; padding:5px 26px;">$v_z$</td><td>1.28 m/s</td><td>0.72 m/s</td><td>43%</td></tr>
+							<tr style="border-top:2px solid #000; font-weight:700;"><td style="text-align:left; padding:6px 26px;">position (3D)</td><td>7.45 m</td><td>4.08 m</td><td>45%</td></tr>
+							<tr style="font-weight:700;"><td style="text-align:left; padding:6px 26px;">velocity (3D)</td><td>7.54 m/s</td><td>2.06 m/s</td><td>73%</td></tr>
+						</tbody>
+					</table>
+					<p style="font-size:0.72em; margin-top:0.4em;">RMSE against ground-truth over the whole run ($N=48$). The RTS smoother improves every coordinate, most strongly the velocities.</p>
+					</center>
+				</div>
+
+			</section>
+
+
+			<section>
+		
+				<div class="slide-content">
+					<center>
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+					<h2>Until next time!</h2>
+				</center>
+				</div>
+
+			</section>
+
+
+
+
+				
+
+
+
+				<!------------------------>
+			</div>
+		</div>
+
+		
+
+		<script src="../dist/reveal.js"></script>
+		<script src="../plugin/notes/notes.js"></script>
+		<script src="../plugin/markdown/markdown.js"></script>
+		<script src="../plugin/highlight/highlight.js"></script>
+		<script src="../plugin/math/math.js"></script>
+		<script src="../init.js"></script>
+		<script src="../plugin/handwriting/plugin.js"></script>
+	</body>
+</html>
+
+</p>
