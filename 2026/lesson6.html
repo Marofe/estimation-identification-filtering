@@ -165,7 +165,7 @@
 							<li><b>Initialization:</b> starts with a prior distribution $p(x_0)$;</li>
 							<li><b>Prediction step</b> (Chapman-Komogorov Eq.): 
 								$$
-									p(x_{k+1}|y_{0:k})=\int p(x_{k+1}|x_k,y_{0:k})p(x_k|y_{0:k})dx_k
+									p(x_{k+1}|y_{0:k})=\int p(x_{k+1}|x_k)p(x_k|y_{0:k})dx_k
 								$$
 							</li>
 							<li><b>Update step</b> (Bayes' rule): 
@@ -1142,20 +1142,15 @@ $$
 					$$
 						x_k=\begin{bmatrix} p_x & p_y & p_z & v_x & v_y & v_z \end{bmatrix}^\trp\in\R^{6}.
 					$$
-
-						<div class="box">
-								<span class="box-title">Dynamic model (CV) & GPS sensor model</span>
+<div class="box">
+								<span class="box-title">Dynamic model (CV)</span>
 								$$
-								\begin{aligned}
-									x_{k+1}&=\underbrace{\begin{bmatrix} I_3 & \Delta t\,I_3 \\ 0_3 & I_3 \end{bmatrix}}_{A}x_k+w_k,\quad w_k\sim\mathcal{N}(0,Q)\\
-										y_{k}&=\underbrace{\begin{bmatrix} I_3 & 0_3 \end{bmatrix}}_{H}x_k+\epsilon_k,\quad \epsilon_k\sim\mathcal{N}(0,R)
-										\end{aligned}
+									x_{k+1}=\underbrace{\begin{bmatrix} I_3 & \Delta t\,I_3 \\ 0_3 & I_3 \end{bmatrix}}_{A}x_k+w_k,\quad w_k\sim\mathcal{N}(0,Q)\\
+									y_{k}=\underbrace{\begin{bmatrix} I_3 & 0_3 \end{bmatrix}}_{H}x_k+\epsilon_k,\quad \epsilon_k\sim\mathcal{N}(0,R)
 								$$
 								
-							
 							</div>
 
-							
 				</div>
 
 			</section>
@@ -1198,9 +1193,9 @@ $$
 						with $T>k$ recursively for each time step $k\in\{0,\ldots,T\}$.
 					</div>
 
-				<center>
-					<img src="../images/smoothing.svg" width="600">
-				</center>
+					<center><img src="../images/smoothing.svg" alt=""></center>
+
+				
 
 		</div>
 
@@ -1348,7 +1343,7 @@ $$
 						$$
 							p(x_k|y_{0:T})=\int p(x_{k}|x_{k+1},y_{0:k})p(x_{k+1}|y_{0:T})dx_{k+1}\\
 							=\int \frac{p(x_{k+1}|x_{k},y_{0:k})p(x_k|y_{0:k})}{p(x_{k+1}|y_{0:k})}p(x_{k+1}|y_{0:T})dx_{k+1}\\
-							=p(x_k|y_{0:k})\int \frac{p(x_{k+1}|x_{k})p(x_{k+1}|y_{0:T})}{p(x_{k+1}|y_{0:T})}dx_{k+1} \quad \square
+							=p(x_k|y_{0:k})\int \frac{p(x_{k+1}|x_{k})p(x_{k+1}|y_{0:T})}{p(x_{k+1}|y_{0:k})}dx_{k+1} \quad \square
 						$$
 					</div>
 
@@ -1435,12 +1430,12 @@ $$
 				<div class="slide-content">
 					<div class="box">
 						<span class="box-title">Theorem</span>
-						For a linear system with Gaussian noises and Gaussian initial prior distribution $p(x_0)\sim\mathcal{N}(\hat{x}_{0|0},P_{0|0})$, 			
-							the posterior smoothed distribution is also Gaussian:
+						For a linear (or affine) system with Gaussian noises,			
+							the posterior smoothed distribution is also Gaussian and given by:
 								$$
 									p(x_{k}|y_{0:T})=\mathcal{N}(\hat{x}^s_{k},P_{k}^s)
 								$$	
-						for $k=T-1,T-2,\ldots, 1$ (backward in time).	
+						for $k=T-1,T-2,\ldots, 0$ (backward in time).	
 					</div>
 
 					Obs: given that $\{\hat{x}_{k|k},P_{k|k}\}_{k=0}^T$ is already computed using the Kalman Filter!
@@ -1993,7 +1988,7 @@ $$
 				</div>
 				<div class="slide-content">
 					<center>
-						<img src="../images/rts_3d_compare.gif" width="950">
+						<img src="../images/rts_3d_compare.gif" width="900">
 					
 					</center>
 				</div>
@@ -2064,7 +2059,7 @@ $$
 				</div>
 				<div class="slide-content">
 					<center>
-					<table style="margin:0.4em auto; border-collapse:collapse; font-size:0.95em; min-width:600px;">
+					<table style="margin:0.4em auto; border-collapse:collapse; font-size:0.95em; min-width:760px;">
 						<thead>
 							<tr style="border-bottom:2px solid #000; background:#fff;">
 								<th style="text-align:left; padding:7px 26px; color:#111; background:#fff;">variable</th>
