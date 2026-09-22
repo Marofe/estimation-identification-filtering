@@ -1,0 +1,2416 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>SEL5917 - Estimation, Identification and Stochastic Filtering</title>
+
+		<link rel="stylesheet" href="../dist/reset.css">
+		<link rel="stylesheet" href="../dist/reveal.css">
+		<link rel="stylesheet" href="../dist/theme/white.css" id="theme">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="../plugin/highlight/monokai.css" id="highlight-theme">
+		<link rel="stylesheet" href="../style.css">
+	</head>
+	<body>
+		
+		<div class="reveal">
+			<div class="slides">
+				
+				<section data-hide-slide-number="true" data-transition="slide">
+					<div class="logo"><img src="../images/sel.png"/> </div>
+					<div class="logo2"><img src="../images/Logo EESC-USP_top.png"/> </div>
+					<div class="title">
+					<h2>Nonlinear Filtering: EKF and UKF <br>SEL5917</h2>
+					</div>
+					<div class="author">
+					<h3>Prof. Dr. Marcos Rogério Fernandes</h3>
+				</div>
+					<div class="advisor">
+					
+					<p style="text-align: center;font-size: 0.8em;">September 22, 2026</p>
+				</div>
+
+				</section>
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Objectives:</h2>
+				</div>
+				<p>&nbsp;</p>
+				<div class="slide-content">
+					<p>The objectives of this class are to understand:
+						<ul>
+							<li>Nonlinear Filtering;</li> 
+							<li>The Extended Kalman Filter;</li>	
+							<li>The Unscented Transformation;</li>
+							<li>The Scaled Unscented Transformation;</li>
+							<li>The Unscented Kalman Filter;</li>
+							</ul>
+						
+						</p>
+						</div>
+
+			</section>
+
+
+		
+
+			
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Probabilistic State Space Model</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Definition:</span>
+						A probabilistic state space model is defined as 
+						$$
+						\begin{aligned}
+							x_{k+1}&\sim p(x_{k+1}|x_{k})\rightarrow \text{dynamic model}\\ 
+							y_{k}&\sim p(y_k|x_k)\rightarrow \text{measurement model}
+							\end{aligned}
+						$$
+						Hypothesis:
+						$$
+						\begin{aligned}
+							p(x_{k+1}|x_{0:k},y_{0:k})&=p(x_{k+1}|x_{k}) \text{(Markov Property)}\\
+							p(y_k|x_{0:k},y_{0:k-1})&=p(y_k|x_k) \text{(Conditional Independence)}
+						\end{aligned}
+						$$
+						</div>
+
+					
+
+		</div>
+
+						
+
+			</section>
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Bayesian Filtering</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						The purpose of Bayesian filtering is to obtain the <b>marginal posterior distribution</b> 
+						$$
+						\begin{aligned}
+						p(x_{k+1}|y_{0:k+1})
+							\end{aligned}
+						$$
+						recursively for each time step $k\in\mathbb{N}$.
+						</div>
+<center>
+					<img src="../images/filtering.svg" width="650">
+				</center>
+					
+
+		</div>
+
+						
+
+			</section>
+
+
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Bayesian Filtering</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Theorem</span>
+					
+						<ul>
+							<li><b>Initialization:</b> starts with a prior distribution $p(x_0)$;</li>
+							<li><b>Prediction step</b> (Chapman-Komogorov Eq.): 
+								$$
+									p(x_{k+1}|y_{0:k})=\int p(x_{k+1}|x_k)p(x_k|y_{0:k})dx_k
+								$$
+							</li>
+							<li><b>Update step</b> (Bayes' rule): 
+								$$
+									p(x_{k+1}|y_{0:k+1})=\frac{p(y_{k+1}|x_{k+1})p(x_{k+1}|y_{0:k})}{p(y_{k+1}|y_{0:k})}
+								$$	
+							</li>
+						</ul>
+						</div>
+
+					
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Linear Systems</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<p><b>Dynamic State Space Model:</b></p>
+						$$
+						\begin{aligned}
+							x_{k+1}&=A_kx_k+B_ku_k+w_k,\quad w_{k}\sim\mathcal{N}(0,Q_{k})\\
+							y_{k+1}&=H_{k+1}x_{k+1}+\epsilon_{k+1},\quad \epsilon_{k+1}\sim\mathcal{N}(0,R_{k+1})
+							\end{aligned}
+						$$
+
+						<p><b>Probabilistic State Space Model:</b></p>
+						$$
+							\begin{aligned}
+							x_{k+1}|x_k&\sim \mathcal{N}(A_kx_k+B_ku_k,Q_k)\\
+							y_{k+1}|x_{k+1}&\sim \mathcal{N}(H_{k+1}x_{k+1},R_{k+1})
+							\end{aligned}
+						$$
+
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Joint Gaussian Distribution</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Lemma 1</span>
+						Given the joint distribution 
+							$$
+							\begin{equation}
+\begin{bmatrix} \mathbf{x} \\ \mathbf{y} \end{bmatrix} \sim \mathcal{N} \left( \begin{bmatrix} \mathbf{a} \\ \mathbf{b} \end{bmatrix}, \begin{bmatrix} \mathbf{A} & \mathbf{C} \\ \mathbf{C}^{\top} & \mathbf{B} \end{bmatrix} \right),
+\end{equation}
+$$
+then 
+$$
+\begin{equation}
+\begin{aligned}
+\mathbf{x} &\sim \mathcal{N}(\mathbf{a}, \mathbf{A}), \quad
+\mathbf{y} \sim \mathcal{N}(\mathbf{b}, \mathbf{B}), \\
+\mathbf{x} \mid \mathbf{y} &\sim \mathcal{N}(\mathbf{a} + \mathbf{C} \, \mathbf{B}^{-1} (\mathbf{y} - \mathbf{b}), \, \mathbf{A} - \mathbf{C} \, \mathbf{B}^{-1}\mathbf{C}^{\top}), \\
+\mathbf{y} \mid \mathbf{x} &\sim \mathcal{N}(\mathbf{b} + \mathbf{C}^{\top} \mathbf{A}^{-1} (\mathbf{x} - \mathbf{a}), \, \mathbf{B} - \mathbf{C}^{\top} \mathbf{A}^{-1}\mathbf{C}).
+\end{aligned}
+\end{equation}
+							$$
+
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+	
+				<section>
+
+				<div class="slide-title">
+					<h2>Joint Gaussian Distribution</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Lemma 2</span>
+						Given the joint distribution 
+							$$
+							\begin{equation}
+\begin{aligned}
+p(\mathbf{x},\mathbf{y}) =\underbrace{\mathcal{N}(\mathbf{H} \, \mathbf{x} + \mathbf{u}, \mathbf{R})}_{p(\mathbf{y}|\mathbf{x})}\underbrace{\mathcal{N}(\mathbf{m}, \mathbf{P})}_{p(\mathbf{x})},
+\end{aligned}
+\end{equation}
+$$
+then 
+$$
+\begin{equation}
+\begin{aligned}
+\begin{bmatrix} \mathbf{x} \\ \mathbf{y} \end{bmatrix} &\sim \mathcal{N} \left( \begin{bmatrix} \mathbf{m} \\ \mathbf{H} \, \mathbf{m} + \mathbf{u} \end{bmatrix}, \begin{bmatrix} \mathbf{P} & \mathbf{P} \, \mathbf{H}^{\top} \\ \mathbf{H} \, \mathbf{P} & \mathbf{H} \, \mathbf{P} \, \mathbf{H}^{\top} + \mathbf{R} \end{bmatrix} \right),
+\end{aligned}
+\end{equation}
+							$$
+
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+						
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>The Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Theorem</span>
+							$$
+							\begin{align}
+							\hat{x}_{k+1|k}&=A_k\hat{x}_{k|k}+B_ku_k,\\ 
+							P_{k+1|k}&=A_kP_{k|k}A_k^\trp + Q_k, \\ 
+							K&=P_{k+1|k}H_{k+1}^\trp (R_{k+1}+H_{k+1}P_{k+1|k}H_{k+1}^\trp)^{-1},\\
+							\hat{x}_{k+1|k+1}&=\hat{x}_{k+1|k}+K(y_{k+1}-H_{k+1}\hat{x}_{k+1|k}),\\
+							P_{k+1|k+1}&=(I-KH_{k+1})P_{k+1|k}.
+							\end{align}
+							$$
+
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Nonlinear Systems</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<p><b>Dynamic State Space Model:</b></p>
+						$$
+						\begin{aligned}
+							x_{k+1}&=f_k(x_k,u_k)+w_k,\quad w_{k}\sim\mathcal{N}(0,Q_{k})\\
+							y_{k+1}&=h_{k+1}(x_{k+1})+\epsilon_{k+1},\quad \epsilon_{k+1}\sim\mathcal{N}(0,R_{k+1})
+							\end{aligned}
+						$$
+
+						<p><b>Probabilistic State Space Model:</b></p>
+						$$
+							\begin{aligned}
+							x_{k+1}|x_k&\sim \mathcal{N}(f_k(x_k,u_k),Q_k)\\
+							y_{k+1}|x_{k+1}&\sim \mathcal{N}(h_{k+1}(x_{k+1}),R_{k+1})
+							\end{aligned}
+						$$
+
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Linear (Affine) Transformation</h2>
+				</div>
+				<div class="slide-content">
+					<center>
+						<div class="box">$$y=Hx+u,\quad x\sim\mathcal{N}(\mu_x,\sigma_x^2)$$</div>
+						<img src="../images/transformacao_gaussiana.svg" width="750">
+					</center>
+		</div>
+
+						
+
+			</section>
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Nonlinear Transformation</h2>
+				</div>
+				<div class="slide-content">
+					<center>
+						<div class="box">$$y=g(x),\quad x\sim\mathcal{N}(\mu_x,\sigma_x^2)$$</div>
+						<img src="../images/transformacao_nao_linear.svg" width="650">
+					</center>
+		</div>
+
+						
+
+			</section>
+
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Nonlinear Transformation</h2>
+				</div>
+				<div class="slide-content">
+					<center>
+						<div class="box">$$y=g(x),\quad x\sim\mathcal{N}(\mu_x,\sigma_x^2)$$</div>
+						<img src="../images/transformacao_nao_linear_approx.svg" width="650">
+					</center>
+		</div>
+
+						
+
+			</section>
+
+
+
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Nonlinear Systems</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						Note that
+						$$
+							p(x_{k+1},x_k|y_{0:k})=p(x_{k+1}|x_k,y_{0:k})p(x_k|y_{0:k})
+						$$
+
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+				<section>
+
+				<div class="slide-title">
+					<h2>Nonlinear Systems</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						Note that
+						$$
+							p(x_{k+1},x_k|y_{0:k})=p(x_{k+1}|x_k)p(x_k|y_{0:k})
+						$$
+
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Nonlinear Systems</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						Note that
+						$$
+							p(x_{k+1},x_k|y_{0:k})=\underbrace{\mathcal{N}(f_k(x_k,u_k),Q_k)}_{\text{dynamic model}}\underbrace{p(x_k|y_{0:k})}_{\text{filtering}}
+						$$
+						<p>&nbsp;</p>
+						<div class="box warn">
+							<center>
+							We cannot guarantee for nonlinear systems that $p(x_k|y_{0:k})$ is Gaussian!
+							</center>
+						</div>
+
+					</div>
+
+				
+
+		</div>					
+			</section>
+
+
+							<section>
+
+				<div class="slide-title">
+					<h2>Nonlinear Systems</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						Note that
+						$$
+							p(x_{k+1},x_k|y_{0:k})=\underbrace{\mathcal{N}(f_k(x_k,u_k),Q_k)}_{\text{dynamic model}}\underbrace{p(x_k|y_{0:k})}_{\text{filtering}}
+						$$
+						<p>&nbsp;</p>
+						<div class="box warn">
+							<center>
+							<span class="box-title">Approximation</span>
+							Assume that  
+							$$
+							p(x_k|y_{0:k})=\mathcal{N}(\hat{x}_{k|k},P_{k|k})
+							$$
+							</center>
+						</div>
+
+					</div>
+
+				
+
+		</div>					
+			</section>
+
+
+								<section>
+
+				<div class="slide-title">
+					<h2>Nonlinear Systems</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						Note that
+						$$
+							p(x_{k+1},x_k|y_{0:k})=\underbrace{\mathcal{N}(f_k(x_k,u_k),Q_k)}_{\text{dynamic model}}\underbrace{\mathcal{N}(\hat{x}_{k|k},P_{k|k})}_{\text{filtering}}
+						$$
+						<p>&nbsp;</p>
+						
+
+					</div>
+
+				
+
+		</div>					
+			</section>
+
+
+
+									<section>
+
+				<div class="slide-title">
+					<h2>Nonlinear Systems</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						Note that
+						$$
+							p(x_{k+1},x_k|y_{0:k})=\underbrace{\mathcal{N}(f_k(x_k,u_k),Q_k)}_{\text{dynamic model}}\underbrace{\mathcal{N}(\hat{x}_{k|k},P_{k|k})}_{\text{filtering}}
+						$$
+						<p>&nbsp;</p>
+						<div class="box warn">
+							<span class="box-title">Taylor Approximation (first order)</span>
+$$
+							f_k(x,u_k)\approx f_k(\hat{x}_{k|k},u_k)+ \frac{\partial f_k}{\partial x}\Bigr|_{x=\hat{x}_{k|k}}(x-\hat{x}_{k|k})
+$$
+						</div>
+
+					</div>
+
+				
+
+		</div>					
+			</section>
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>Nonlinear Systems</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						Note that
+						$$
+							p(x_{k+1},x_k|y_{0:k})=\underbrace{\mathcal{N}(f_k(x_k,u_k),Q_k)}_{\text{dynamic model}}\underbrace{\mathcal{N}(\hat{x}_{k|k},P_{k|k})}_{\text{filtering}}
+						$$
+						<p>&nbsp;</p>
+						<div class="box warn">
+							<span class="box-title">Taylor Approximation (first order)</span>
+$$
+							f_k(x,u_k)\approx f_k(\hat{x}_{k|k},u_k)+ \underbrace{\frac{\partial f_k}{\partial x}\Bigr|_{x=\hat{x}_{k|k}}}_{A_k}(x-\hat{x}_{k|k})
+$$
+						</div>
+
+					</div>
+
+				
+
+		</div>					
+			</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Nonlinear Systems</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						Note that
+						$$
+							p(x_{k+1},x_k|y_{0:k})=\underbrace{\mathcal{N}(f_k(\hat{x}_{k|k},u_k)+A_k(x_k-\hat{x}_{k|k}),Q_k)}_{\text{dynamic model}}\underbrace{\mathcal{N}(\hat{x}_{k|k},P_{k|k})}_{\text{filtering}}
+						$$
+						
+						
+					
+					</div>
+
+				
+
+		</div>					
+			</section>
+
+
+
+			
+				<section>
+
+				<div class="slide-title">
+					<h2>Nonlinear Systems</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						Note that
+						$$
+							p(x_{k+1},x_k|y_{0:k})=\underbrace{\mathcal{N}(f_k(\hat{x}_{k|k},u_k)+A_k(x_k-\hat{x}_{k|k}),Q_k)}_{\text{dynamic model}}\underbrace{\mathcal{N}(\hat{x}_{k|k},P_{k|k})}_{\text{filtering}}
+						$$
+						From <b>Lemma 2</b>, 
+
+						$$
+						\begin{bmatrix}x_k\\x_{k+1}\end{bmatrix}\Bigr|y_{0:k}\sim\mathcal{N}\Bigl(\begin{bmatrix}\hat{x}_{k|k}\\
+						 f_k(\hat{x}_{k|k},u_k)\end{bmatrix},\begin{bmatrix}
+					P_{k|k} & P_{k|k}A_k^\trp \\ 
+					A_k P_{k|k} & A_kP_{k|k}A_k^\trp+ Q_k
+					\end{bmatrix}\Bigr)
+						$$
+					
+					</div>
+
+				
+
+		</div>					
+			</section>
+
+
+
+							<section>
+
+				<div class="slide-title">
+					<h2>Nonlinear Systems</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						From <b>Lemma 1</b>, we get $p(x_{k+1}|y_{0:k})$ is approximately Gaussian with
+						<div class="box">
+							<span class="box-title">Prediction:</span>
+						$$
+						\begin{aligned}
+							\hat{x}_{k+1|k}&=f_k(\hat{x}_{k|k},u_k),\\					
+							P_{k+1|k}&=A_kP_{k|k}A_k^\trp + Q_k
+							\end{aligned}
+						$$
+						</div>
+					<div class="box warn">
+					<span class="box-title">Approximations:</span>
+						<ul>
+							<li>$p(x_k|y_{0:k})\approx \mathcal{N}(\hat{x}_{k|k},P_{k|k})$</li>
+							<li>$f_k(x,u_k)\approx f_k(\hat{x}_{k|k},u_k)+A_k(x-\hat{x}_{k|k})$</li>
+						</ul>
+					</div>
+					</div>
+
+				
+
+		</div>					
+			</section>
+
+
+
+			
+							<section>
+
+				<div class="slide-title">
+					<h2>Nonlinear Systems</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						Note that
+						$$
+							p(y_{k+1},x_{k+1}|y_{0:k})=p(y_{k+1}|x_{k+1})p(x_{k+1}|y_{0:k})
+						$$
+
+		</div>					
+			</section>
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Nonlinear Systems</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						Note that
+						$$
+							p(y_{k+1},x_{k+1}|y_{0:k})=\underbrace{\mathcal{N}(h_{k+1}(x_{k+1}),R_{k+1})}_{\text{measurement model}}\underbrace{\mathcal{N}(\hat{x}_{k+1|k},P_{k+1|k})}_{\text{prediction}}
+						$$
+
+
+		</div>					
+			</section>
+
+
+							<section>
+
+				<div class="slide-title">
+					<h2>Nonlinear Systems</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						Note that
+						$$
+							p(y_{k+1},x_{k+1}|y_{0:k})=\underbrace{\mathcal{N}(h_{k+1}(x_{k+1}),R_{k+1})}_{\text{measurement model}}\underbrace{\mathcal{N}(\hat{x}_{k+1|k},P_{k+1|k})}_{\text{prediction}}
+						$$
+
+						<p>&nbsp;</p>
+						<div class="box warn">
+							<span class="box-title">Taylor Approximation (first order)</span>
+$$
+							h_{k+1}(x)\approx h_{k+1}(\hat{x}_{k+1|k})+ \underbrace{\frac{\partial h_{k+1}}{\partial x}\Bigr|_{x=\hat{x}_{k+1|k}}}_{H_{k+1}}(x-\hat{x}_{k+1|k})
+$$
+						</div>
+
+		</div>					
+			</section>
+
+
+
+
+								<section>
+
+				<div class="slide-title">
+					<h2>Nonlinear Systems</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						Note that
+						$$
+							p(y_{k+1},x_{k+1}|y_{0:k})=\\=\underbrace{\mathcal{N}(h_{k+1}(\hat{x}_{k+1|k})+H_{k+1}(x_{k+1}-\hat{x}_{k+1|k}),R_{k+1})}_{\text{measurement model}}\underbrace{\mathcal{N}(\hat{x}_{k+1|k},P_{k+1|k})}_{\text{prediction}}
+						$$
+
+					
+
+		</div>					
+			</section>
+
+
+							<section>
+
+				<div class="slide-title">
+					<h2>Nonlinear Systems</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+						Note that
+						$$
+							p(y_{k+1},x_{k+1}|y_{0:k})=\\=\underbrace{\mathcal{N}(h_{k+1}(\hat{x}_{k+1|k})+H_{k+1}(x_{k+1}-\hat{x}_{k+1|k}),R_{k+1})}_{\text{measurement model}}\underbrace{\mathcal{N}(\hat{x}_{k+1|k},P_{k+1|k})}_{\text{prediction}}
+						$$
+From <b>Lemma 2</b>,
+$$
+						\begin{bmatrix}x_{k+1}\\
+						y_{k+1}\end{bmatrix}\Bigr|y_{0:k}\sim\mathcal{N}\Bigl(\begin{bmatrix}\hat{x}_{k+1|k}\\
+						 h_{k+1}(\hat{x}_{k+1|k})\end{bmatrix},\begin{bmatrix}
+					P_{k+1|k} & P_{k+1|k}H_{k+1}^\trp \\ 
+					H_{k+1} P_{k+1|k} & S_{k+1}
+					\end{bmatrix}\Bigr)
+$$
+with 
+$$
+						S_{k+1}=H_{k+1}P_{k+1|k}H_{k+1}^\trp+ R_{k+1}
+$$
+					
+
+		</div>					
+			</section>
+
+
+
+							<section>
+
+				<div class="slide-title">
+					<h2>Nonlinear Systems</h2>
+				</div>
+				<div class="slide-content">
+					<div class="">
+From <b>Lemma 1</b>, $p(x_{k+1}|y_{0:k+1})=\mathcal{N}(\hat{x}_{k+1|k+1},P_{k+1|k+1})$ with
+<div class="box">
+	<span class="box-title">Update:</span>
+$$
+					\begin{aligned} 
+					\hat{x}_{k+1|k+1}&=\hat{x}_{k+1|k}+K(y_{k+1}-h_{k+1}(\hat{x}_{k+1|k})),\\
+					K&=P_{k+1|k}H_{k+1}^\trp (S_{k+1})^{-1},\\
+					P_{k+1}&=[I-KH_{k+1}]P_{k+1|k}.
+					\end{aligned}
+$$
+</div>
+	
+<div class="box warn">
+							<span class="box-title">Approximation </span>
+$$
+							h_{k+1}(x)\approx h_{k+1}(\hat{x}_{k+1|k})+ H_{k+1}(x-\hat{x}_{k+1|k})
+$$
+						</div>
+
+		</div>					
+			</section>
+
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>The Extented Kalman Filter (EKF)</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+							$$
+							\begin{align}
+							\hat{x}_{k+1|k}&=f_k(\hat{x}_{k|k},u_k),\\ 
+							P_{k+1|k}&=A_kP_{k|k}A_k^\trp + Q_k, \\ 
+							K&=P_{k+1|k}H_{k+1}^\trp (R_{k+1}+H_{k+1}P_{k+1|k}H_{k+1}^\trp)^{-1},\\
+							\hat{x}_{k+1|k+1}&=\hat{x}_{k+1|k}+K(y_{k+1}-h_{k+1}(\hat{x}_{k+1|k})),\\
+							P_{k+1|k+1}&=(I-KH_{k+1})P_{k+1|k}.
+							\end{align}
+							$$
+
+					</div>
+					Obs:
+					$$
+						A_k:=\frac{\partial f_k}{\partial x}\Bigr|_{x=\hat{x}_{k|k}},\quad H_{k+1}:=\frac{\partial h_{k+1}}{\partial x}\Bigr|_{x=\hat{x}_{k+1|k}}
+					$$
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Target Tracking with Radar</h2>
+				</div>
+				<div class="slide-content">
+								<center>
+									<img src="../images/sistema_radar_drone.svg" width="900">
+								</center>
+
+		</div>
+
+						
+
+			</section>
+
+
+								
+
+			</section>
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Target Tracking with Radar</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Nearly Constant Turn Model (2D)</span>
+					$$			
+			 \begin{aligned}
+    px_{k+1}&=px_{k}+\frac{v_{k}}{\Omega_{k}}\big[\sin(\varphi_{k}+\Omega_{k}T)-\sin\varphi_{k}\big],\\
+    py_{k+1}&=py_{k}+\frac{v_{k}}{\Omega_{k}}\big[-\cos(\varphi_{k}+\Omega_{k}T)+\cos\varphi_{k}\big],\\
+    \varphi_{k+1}&=\varphi_{k}+\Omega_{k}T,\\
+	v_{k+1}&=v_{k}+w_k,\\
+	 \Omega_{k+1}&=\Omega_{k}+m_k,
+  \end{aligned}
+$$
+
+		</div>
+
+		</div>
+
+						
+
+			</section>
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Target Tracking with Radar</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Polar measurements from the radar</span>
+					$$			
+			 \begin{aligned}
+     y_k=\begin{bmatrix}r_k\\ \theta_k\end{bmatrix}=\begin{bmatrix}\sqrt{(px_{k})^{2}+(py_{k})^{2}}\\
+	 \text{atan2}(py_{k},px_{k})
+	 \end{bmatrix}+\epsilon_k,
+  \end{aligned}
+$$
+
+		</div>
+
+		<div class="box">
+			<span class="box-title">Goal:</span>
+			
+			$$
+				p(x_k|y_{0:k})=?
+			$$
+		</div>
+		Solution: EKF or IEKF
+
+		</div>
+
+
+
+						
+
+			</section>
+
+
+				<section>
+					<div class="slide-title">
+						<h2>Target Tracking with Radar</h2>
+					</div>
+					<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+						<img src="../images/ekf_radar_drone.gif" style="height:610px; max-width:100%; box-shadow:none; border:none; background:none;">
+					</div>
+				</section>
+
+
+			
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>Nonlinear Systems (Non-additive noise)</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<p><b>Dynamic State Space Model:</b></p>
+						$$
+						\begin{aligned}
+							x_{k+1}&=f_k(x_k,u_k,w_k),\quad w_{k}\sim\mathcal{N}(0,Q_{k})\\
+							y_{k+1}&=h_{k+1}(x_{k+1},\epsilon_{k+1}),\quad \epsilon_{k+1}\sim\mathcal{N}(0,R_{k+1})
+							\end{aligned}
+						$$
+
+						<p><b>Probabilistic State Space Model:</b></p>
+						$$
+							\begin{aligned}
+							p(x_{k+1}|x_k)&=?\\
+							p(y_{k+1}|x_{k+1})&=?
+							\end{aligned}
+						$$
+
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+			
+			
+			
+
+
+			
+						<section>
+
+				<div class="slide-title">
+					<h2>Nonlinear Systems (Non-additive noise)</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<p><b>Dynamic State Space Model:</b></p>
+						$$
+						\begin{aligned}
+							x_{k+1}&\approx f_k(x_k,u_k,0)+G_kw_k,\quad w_{k}\sim\mathcal{N}(0,Q_{k})\\
+							y_{k+1}&\approx h_{k+1}(x_{k+1},0)+M_{k+1}\epsilon_{k+1},\quad \epsilon_{k+1}\sim\mathcal{N}(0,R_{k+1})
+							\end{aligned}
+						$$
+
+						<p><b>Probabilistic State Space Model:</b></p>
+						$$
+							\begin{aligned}
+							x_{k+1}|x_k&\sim \mathcal{N}(f_k(x_k,u_k,0),G_kQ_kG_k^\trp )\\
+							y_{k+1}|x_{k+1}&\sim \mathcal{N}(h_{k+1}(x_{k+1},0),M_{k+1}R_{k+1}M_{k+1}^\trp )
+							\end{aligned}
+						$$
+
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>The Iterated Extented Kalman Filter (IEKF)</h2>
+				</div>
+				<div class="slide-content">
+					<b>Update Step:</b>
+		$$
+							p(y_{k+1},x_{k+1}|y_{0:k})=\\=\underbrace{\mathcal{N}(h_{k+1}(\hat{x}_{k+1}^j)+H_{k+1}^j(x_{k+1}-\hat{x}_{k+1}^j),R_{k+1})}_{\text{measurement model}}\underbrace{\mathcal{N}(\hat{x}_{k+1|k},P_{k+1|k})}_{\text{prediction}}
+						$$
+						with 
+						$$
+H_{k+1}^j:=\frac{\partial h_{k+1}}{\partial x}\Bigr|_{x=\hat{x}_{k+1}^j}
+						$$
+		</div>
+
+						
+
+			</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>The Iterated Extented Kalman Filter (IEKF)</h2>
+				</div>
+				<div class="slide-content">
+				From <b>Lemma 1</b>, for $j=0,1,2\ldots,$ until convergence, compute
+							<div class="box">
+								$$
+								\begin{aligned}
+							K^j&=P_{k+1|k}(H_{k+1}^j)^\trp (R_{k+1}+H_{k+1}^jP_{k+1|k}(H_{k+1}^j)^\trp)^{-1},\\
+							z_{k+1}&=y_{k+1}-h_{k+1}(\hat{x}_{k+1}^j)+H_{k+1}^j(\hat{x}_{k+1}^j-\hat{x}_{k+1|k}),\\
+							\hat{x}_{k+1}^{j+1}&=\hat{x}_{k+1|k}+K^jz_{k+1},\\
+							P_{k+1|k+1}^{j+1}&=(I-K^jH_{k+1}^j)P_{k+1|k}.
+							
+							\end{aligned}
+							$$
+
+					</div>
+					with 
+					$$
+						\hat{x}_{k+1}^0 = \hat{x}_{k+1|k}
+					$$
+
+		</div>
+
+						
+
+			</section>
+
+
+
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Sigma Point Approximations</h2>
+				</div>
+				<div class="slide-content">
+					<p class="lightup">
+								$$
+									y=g(x)
+								$$
+								</p>
+								
+								Given that $p(x)=\mathcal{N}(\hat{x},P_{xx})$ and $g:\mathbb{R}^n\to\mathbb{R}^p$ a nonlinear map, what is 
+								<p>&nbsp;</p>
+								$$
+								\begin{aligned}
+										\mathbb{E}\{y\}&=? \\
+									\text{var}(y)&=?		\\
+									\text{cov}(x,y)&=?				
+									\end{aligned}
+								$$
+		</div>
+
+						
+
+			</section>
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>Sigma Point Approximations</h2>
+				</div>
+				<div class="slide-content">
+					<p class="lightup">
+								$$
+									y=g(x)
+								$$
+								</p>
+							
+												
+								From a <b>First Order Taylor Approximation</b>, we have 
+								$$
+									y\approx g(\hat{x})+\underbrace{\frac{\partial g}{\partial x}\Bigr|_{x=\hat{x}}}_{G}(x-\hat{x})
+								$$
+		</div>
+
+						
+
+			</section>
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>Sigma Point Approximations</h2>
+				</div>
+				<div class="slide-content">
+					<p class="lightup">
+								$$
+									y=g(x)
+								$$
+								</p>
+							
+												
+								From a <b>First Order Taylor Approximation</b>, we have 
+								$$
+									y\approx g(\hat{x})+G(x-\hat{x})
+								$$
+								Thus, 
+								$$
+								\begin{aligned}
+									\mathbb{E}\{y\}&=g(\hat{x})\\
+									\text{var}(y)&=GP_{xx}G^\trp \\ 
+									\text{cov}(x,y)&=P_{xx}G^\trp.
+									\end{aligned}
+								$$
+		</div>
+
+						
+
+			</section>
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Exemplo: Polar to Cartesian </h2>
+				</div>
+				<div class="slide-content" style="display:flex;align-items:center;justify-content:center;">
+						<img src="../images/polar2cart_linearization.gif" style="width:1050px; max-width:100%; box-shadow:none; border:none; background:none;">
+
+				
+								
+		</div>
+
+						
+
+			</section>
+
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Sigma Point Approximations</h2>
+				</div>
+				<div class="slide-content">
+					<p class="lightup">
+								$$
+									y=g(x)
+								$$
+								</p>
+								
+								Given that $p(x)=\mathcal{N}(\hat{x},P_{xx})$ and $g:\mathbb{R}^n\to\mathbb{R}^p$ a nonlinear map, what is 
+							
+								$$
+								\begin{aligned}
+										\mathbb{E}\{y\}&=\int y p(y) dy, \\
+									\text{var}(y)&=\int (y-\mathbb{E}\{y\})(\bullet)^\trp p(y)dy,		\\
+									\text{cov}(x,y)&=\int (x-\mathbb{E}\{x\})(y-\mathbb{E}\{y\})^\trp p(x,y)dxdy				
+									\end{aligned}
+								$$
+		</div>
+
+						
+
+			</section>
+
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Sigma Point Approximations</h2>
+				</div>
+				<div class="slide-content">
+					
+								
+								<div class="box">
+							
+								$$
+								\begin{align}
+										\mathbb{E}\{y\}&=\sum_{i=1}^N w_i^m\mathcal{Y}^i , \\
+									\text{var}(y)&=\sum_{i=1}^N w_i^c (\mathcal{Y}^i-\mathbb{E}\{y\})(\bullet)^\trp,		\\
+									\text{cov}(x,y)&=\sum_{i=1}^N w_i^c (\mathcal{X}^i-\mathbb{E}\{x\})(\mathcal{Y}^i-\mathbb{E}\{y\})^\trp			
+									\end{align}
+								$$
+								</div>
+		</div>
+
+						
+
+			</section>
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Sigma Point Approximations</h2>
+				</div>
+				<div class="slide-content">
+					Where 
+<div class="box">
+					$$
+					\mathcal{Y}^i=g(\mathcal{X}^i)
+					$$
+</div>
+and $w_i^m$ and $w_i^c$ are choosen such that 
+$$
+\begin{aligned}
+		&\sum_{i=1}^N w_i^m \mathcal{X}^i = \mathbb{E}\{x\}\\
+		&\sum_{i=1}^N w_i^c (\mathcal{X}^i-\mathbb{E}\{x\})(\bullet)^\trp  = P_{xx}
+\end{aligned}
+$$
+						
+					
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+				<section>
+
+				<div class="slide-title">
+					<h2>Sigma Point Approximations</h2>
+				</div>
+				<div class="slide-content">
+				<p>&nbsp;</p>
+					<ul>
+						<li>Gauss-Hermite Quadrature Approximation (QKF);</li>
+						<li>Spherical Cubature Rule (CKF);</li>
+						<li>Unscented Transformation (UKF);</li>
+						<li>etc</li>
+					</ul>
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+						<section>
+
+				<div class="slide-title">
+					<h2>Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					Given a nonlinear map 
+					$$
+						y=g(x),\quad x\sim\mathcal{N}(m,\Sigma)
+					$$
+					Then
+					$$
+					\begin{aligned}
+										\mathbb{E}\{g(x)\}&=\int g(x) \mathcal{N}(m,\Sigma) dx, \\
+									\end{aligned}
+								$$
+		</div>
+
+						
+
+			</section>
+
+
+
+				
+						<section>
+
+				<div class="slide-title">
+					<h2>Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					Given a nonlinear map 
+					$$
+						y=g(x),\quad x\sim\mathcal{N}(m,\Sigma)
+					$$
+					Then
+					$$
+					\begin{aligned}
+										\mathbb{E}\{g(x)\}&=\int g(x) \mathcal{N}(m,\Sigma) dx, \\
+									\end{aligned}
+								$$
+								Take a <b>variable transformation</b>:
+								$$
+								x=m+\Sigma^{1/2}\xi,\quad \xi \sim\mathcal{N}(0,I)
+								$$
+								obs: $\Sigma^{1/2}(\Sigma^{1/2})^\trp =\Sigma$ (in MATLAB <b>L=chol(Sigma,'low')</b>)
+		</div>
+
+						
+
+			</section>
+
+
+			
+						<section>
+
+				<div class="slide-title">
+					<h2>Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					
+					$$
+					\begin{aligned}
+										\mathbb{E}\{g(x)\}&=\int g(m+\Sigma^{1/2}\xi) \mathcal{N}(0,I) d\xi, \\
+									\end{aligned}
+								$$
+								
+		</div>
+
+						
+
+			</section>
+
+
+				
+						<section>
+
+				<div class="slide-title">
+					<h2>Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					
+					$$
+					\begin{aligned}
+										\mathbb{E}\{g(x)\}&=\int g(m+\Sigma^{1/2}\xi) \mathcal{N}(0,I) d\xi, \\
+										&\approx \sum_{i=0}^N w_i g(\chi^i)
+									\end{aligned}
+								$$
+								such that 
+								$$
+							\chi^i:=m+\Sigma^{1/2}\xi^i\\
+							\xi^i \sim \mathcal{N}(0,I)
+								$$
+		</div>
+
+						
+
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					<center>
+					<b>Symmetric set generator ($\mathbb{R}^n$):</b>
+					$$
+\mathcal{S}:=\Bigl\{\begin{bmatrix} 
+\pm 1 \\ 0 \\ 0 \\ \vdots \\ 0 
+\end{bmatrix}, 
+\begin{bmatrix} 
+0 \\ \pm 1 \\ 0 \\ \vdots \\ 0 
+\end{bmatrix}, \dots,\begin{bmatrix}0\\ 0 \\0 \\\vdots \\ \pm 1\end{bmatrix}\Bigr\}\cup \begin{bmatrix}0\\ 0 \\0 \\\vdots \\ 0\end{bmatrix}
+					$$
+					Obs: #$\mathcal{S}=2n+1$
+					</center>
+		</div>
+
+						
+
+			</section>
+
+
+				<section>
+					<div class="slide-title">
+						<h2>Symmetric Set &mdash; Sigma Points (2D)</h2>
+					</div>
+					<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+						<img src="../images/sigma_symmetric_set.png" style="width:1080px; max-width:100%; box-shadow:none; border:none; background:none;">
+					</div>
+				</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					
+					$$
+					\begin{aligned}
+										\mathbb{E}\{g(x)\}&\approx w_0g(\chi^0)+\sum_{i=1}^{2n} w g(\chi^i)
+									\end{aligned}
+								$$
+								such that 
+								$$
+							\chi^i:=m+c\Sigma^{1/2}s^i,\quad s^i \in \mathcal{S}
+								$$
+		</div>
+
+						
+
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					As it should holds for any $g:\mathbb{R}^n\to\mathbb{R}^m$ and for any $m\in\mathbb{R}^n$ and $\Sigma\succ 0$ one conclude that
+					$$
+					\begin{aligned}
+										\mathbb{E}\{1\}&\approx w_0+\sum_{i=1}^{2n} w =1 \\
+
+									\end{aligned}
+									$$
+					and (for $m=0$ and $\Sigma = I$)
+					$$
+							\mathbb{E}\{\xi(\xi)^\trp\}=\sum_{i=1}^{2n} wc^2s^i(s^i)^\trp = I
+					$$
+
+						
+
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					As it should holds for any $g:\mathbb{R}^n\to\mathbb{R}^m$ and for any $m\in\mathbb{R}^n$ and $\Sigma\succ 0$ one conclude that
+					$$
+					\begin{aligned}
+										\mathbb{E}\{1\}&\approx w_0+2nw =1 \\
+
+									\end{aligned}
+									$$
+					and (for $m=0$ and $\Sigma = I$)
+					$$
+							\tr[\mathbb{E}\{\xi(\xi)^\trp\}]=\tr[\sum_{i=1}^{2n} wc^2s^i(s^i)^\trp] = \tr[I]
+					$$
+
+						
+
+			</section>
+
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					As it should holds for any $g:\mathbb{R}^n\to\mathbb{R}^m$ and for any $m\in\mathbb{R}^n$ and $\Sigma\succ 0$ one conclude that
+					$$
+					\begin{aligned}
+										 w_0+2nw =1 \\
+
+									\end{aligned}
+									$$
+					and (for $m=0$ and $\Sigma = I$)
+					$$
+							\tr[\mathbb{E}\{\xi(\xi)^\trp\}]= wc^2\sum_{i=1}^{2n}\tr[s^i(s^i)^\trp] = n
+					$$
+
+						
+
+			</section>
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					As it should holds for any $g:\mathbb{R}^n\to\mathbb{R}^m$ and for any $m\in\mathbb{R}^n$ and $\Sigma\succ 0$ one conclude that
+					$$
+					\begin{aligned}
+										w_0+2nw =1 \\
+
+									\end{aligned}
+									$$
+					and (for $m=0$ and $\Sigma = I$)
+					$$
+							\tr[\mathbb{E}\{\xi(\xi)^\trp\}]= wc^2\sum_{i=1}^{2n}\tr[(s^i)^\trp s^i] = n
+					$$
+
+						
+
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					As it should holds for any $g:\mathbb{R}^n\to\mathbb{R}^m$ and for any $m\in\mathbb{R}^n$ and $\Sigma\succ 0$ one conclude that
+					$$
+					\begin{aligned}
+										w_0+2nw =1 \\
+
+									\end{aligned}
+									$$
+					and (for $m=0$ and $\Sigma = I$)
+					$$
+							\tr[\mathbb{E}\{\xi(\xi)^\trp\}]= wc^2\sum_{i=1}^{2n}\tr[\|s^i\|_2^2] = n
+					$$
+
+						
+
+			</section>
+
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					As it should holds for any $g:\mathbb{R}^n\to\mathbb{R}^m$ and for any $m\in\mathbb{R}^n$ and $\Sigma\succ 0$ one conclude that
+					$$
+					\begin{aligned}
+										w_0+2nw =1 \\
+
+									\end{aligned}
+									$$
+					and (for $m=0$ and $\Sigma = I$)
+					$$
+						 wc^22n = n
+					$$
+
+						
+
+			</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					As it should holds for any $g:\mathbb{R}^n\to\mathbb{R}^m$ and for any $m\in\mathbb{R}^n$ and $\Sigma\succ 0$ one conclude that
+					$$
+					\begin{equation}
+										w_0+2nw =1
+									\end{equation}
+									$$
+					and (for $m=0$ and $\Sigma = I$)
+					$$
+					\begin{equation}
+						 2wc^2 = 1
+				    \end{equation}
+					$$
+
+						<div class="lightup">
+						
+								<b>Two</b> equations but <b>three</b> unknowns!
+							
+						</div>
+
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					Note that
+					$$
+					
+										w_0+2nw =	 2wc^2 \\
+										\Rightarrow w_0=2w(c^2-n)
+					
+									$$
+					
+				
+					
+
+			</section>
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					Note that
+					$$
+					
+										w_0+2nw =	 2wc^2 \\
+										\Rightarrow w_0=2w\underbrace{(c^2-n)}_{\kappa}
+					
+									$$
+					
+				
+					
+
+			</section>
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					Note that
+					$$
+					\begin{align}
+										w_0+2nw &= 1  \\
+										2wc^2 &= 1\\
+										c^2-n &= \kappa
+					\end{align}
+									$$
+					
+				
+					
+
+			</section>
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					Note that
+					$$
+					\begin{align*}
+										w_0+2nw &= 1  \\
+										2wc^2 &= 1\\
+										c^2-n &= \kappa
+					\end{align*}
+									$$
+					Thus, 
+					$$ \Rightarrow \boxed{c=\sqrt{n+\kappa}},\quad 
+						\Rightarrow \boxed{w=\frac{1}{2(n+\kappa)}},\quad
+							\Rightarrow \boxed{w_0=\frac{\kappa}{n+\kappa}}
+					$$
+				
+					
+
+			</section>
+
+
+	
+
+		
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					
+					$$
+					\begin{aligned}
+										\mathbb{E}\{g(x)\}&=\int g(m+\Sigma^{1/2}\xi) \mathcal{N}(0,I) d\xi, \\
+										&\approx \frac{\kappa}{n+\kappa}g(\chi^0)+\sum_{i=1}^{2n} \frac{1}{2(n+\kappa)} g(\chi^i)
+									\end{aligned}
+								$$
+								such that 
+								$$
+							\chi^i:=m+\sqrt{n+\kappa}\Sigma^{1/2}s^i,\quad s^i\in\mathcal{S}
+						
+								$$
+		</div>
+
+						
+
+			</section>
+
+
+				<section>
+					<div class="slide-title">
+						<h2>Polar to Cartesian: Monte-Carlo vs EKF vs UT</h2>
+					</div>
+					<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+						<img src="../images/polar2cart_ut_comparison.gif" style="width:1080px; max-width:100%; box-shadow:none; border:none; background:none;">
+					</div>
+				</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Cubature Transformation</h2>
+				</div>
+				<div class="slide-content">
+					For $\kappa = 0 $, the UT becomes the <b>spherical cubature rule</b>
+					$$
+					\begin{aligned}
+										\mathbb{E}\{g(x)\}&=\int g(m+\Sigma^{1/2}\xi) \mathcal{N}(0,I) d\xi, \\
+										&\approx \sum_{i=1}^{2n} \frac{1}{2n} g(\chi^i)
+									\end{aligned}
+								$$
+								such that 
+								$$
+							\chi^i:=m+\sqrt{n}\Sigma^{1/2}s^i,\quad s^i\in\mathcal{S}
+						
+								$$
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>The Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">From Lemma 1</span>
+							$$
+							\begin{align}
+							\hat{x}_{k+1|k}&=\mathbb{E}[f_k(x_k,u_k)|y_{0:k}],\\ 
+							P_{k+1|k}&=\Var(x_{k+1}), \\ 
+							K&=\Cov(x_{k+1},y_{k+1})\Var(y_{k+1})^{-1},\\
+							\hat{x}_{k+1|k+1}&=\hat{x}_{k+1|k}+K(y_{k+1}-\mathbb{E}[h_{k+1}(x_{k+1})|y_{0:k}]),\\
+							P_{k+1|k+1}&=\Var(x_{k+1})-K\Var(y_{k+1})K^\trp
+							\end{align}
+							$$
+
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>The Kalman Filter</h2>
+				</div>
+				<div class="slide-content">
+					<p>&nbsp;</p>
+				Recall that 
+
+				$$		\mathbb{E}[x]=\int x p(x)dx\\
+						\Var(x)=\int (x-\mathbb{E}[x])(\bullet)^\trp p(x)dx\\
+						\Cov(x,y)=\int (x-\mathbb{E}[x])(y-\mathbb{E}[y])^\trp p(x,y)dxdy
+				$$
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>The Unscented Kalman Filter (UKF)</h2>
+				</div>
+				<div class="slide-content">
+					
+			 Hence,
+
+				$$	\begin{aligned}	
+					\mathbb{E}[x]&=\sum_{i=0}^{2n+1} w_i\chi^i\\
+						\Var(x)&=\sum_{i=0}^{2n+1} w_i(\chi^i-\mathbb{E}[x])(\bullet)^\trp \\
+						\Cov(x,y)&=\sum_{i=0}^{2n+1} w_i(\chi^i-\mathbb{E}[x])(\mathcal{Y}^i-\mathbb{E}[y])^\trp 				
+						\end{aligned}
+						$$
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>The Unscented Kalman Filter (UKF)</h2>
+				</div>
+				<div class="slide-content">
+					
+			 With
+					<div class="box">
+				$$	\begin{aligned}	
+				\chi^i &= m+\sqrt{n+\kappa}\Sigma^{1/2} s^i,\quad s^i\in\mathcal{S}\\
+				\mathcal{Y}^i &=g(\chi^i)\\
+					w_0&=\frac{\kappa}{n+\kappa}\\
+					w&=\frac{1}{2(n+\kappa)}\\
+						\end{aligned}
+						$$
+</div>
+				Obs:
+				$
+						x\sim\mathcal{N}(m,\Sigma)
+				$
+
+		</div>
+
+						
+
+			</section>
+
+
+			
+
+				<section>
+
+				<div class="slide-title">
+					<h2>The Unscented Kalman Filter (UKF)</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Prediction</span>
+							$$
+							\begin{align}
+							\chi^i &= \hat{x}_{k|k}+\sqrt{n+\kappa}P_{k|k}^{1/2} s^i,\quad s^i\in\mathcal{S}\\
+							\chi^i_{k+1}&=f_k(\chi^i,u_k)\\
+							\hat{x}_{k+1|k}&=\sum_{i=0}^{2n+1} w_i \chi^i_{k+1}\\ 
+							P_{k+1|k}&=\sum_{i=0}^{2n+1} w_i(\chi^i_{k+1}-\hat{x}_{k+1|k})(\bullet)^\trp+Q_k , 
+							\end{align}
+							$$
+
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>The Unscented Kalman Filter (UKF)</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+							$$
+							\begin{align}
+							\mathcal{Y}^i&=h_{k+1}(\chi^i_{k+1})\\
+							\hat{y}_{k+1|k}&=\sum_{i=0}^{2n+1} w_i \mathcal{Y}^i\\ 
+							P_{xy}&=\sum_{i=0}^{2n+1} w_i(\chi_{k+1}^i-\hat{x}_{k+1|k})(\mathcal{Y}^i-\hat{y}_{k+1|k})^\trp , \\ 
+							S & = \sum_{i=0}^{2n+1} w_i(\mathcal{Y}^i-\hat{y}_{k+1|k})(\bullet)^\trp+R_{k+1} 
+					
+							\end{align}
+							$$
+
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>The Unscented Kalman Filter (UKF)</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Update</span>
+							$$
+							\begin{align}
+							K&=P_{xy}S^{-1},\\
+							\hat{x}_{k+1|k+1}&=\hat{x}_{k+1|k}+K(y_{k+1}-\hat{y}_{k+1|k}),\\
+							P_{k+1|k+1}&=P_{k+1|k}-KSK^\trp
+							\end{align}
+							$$
+
+					</div>
+
+				Obs: The UKF has mean exact up to polynomial order of three and variance exact up to first order!
+
+		</div>
+
+						
+
+			</section>
+
+
+				<section>
+					<div class="slide-title">
+						<h2>UKF &mdash; Prediction &amp; Update (Visual)</h2>
+					</div>
+					<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+						<img src="../images/ukf_predict_update.gif" style="height:600px; max-width:100%; box-shadow:none; border:none; background:none;">
+					</div>
+				</section>
+
+
+
+							<section>
+
+				<div class="slide-title">
+					<h2>The Scaled Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+							$$
+							\begin{align}
+						\chi^i = m + \alpha \sqrt{n+\kappa}\Sigma^{1/2}s^i,\quad s^i\in\mathcal{S}
+							\end{align}
+							$$
+					</div>
+					with 
+					$$
+						\alpha \in (0,1]
+					$$	
+
+				Note that 
+				$$
+						\chi^0=m
+				$$
+
+		</div>
+
+						
+
+			</section>
+
+					<section>
+
+				<div class="slide-title">
+					<h2>The Scaled Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+				Let 
+					$$
+						\alpha\sqrt{(n+\kappa)}=\sqrt{n+\lambda}
+					$$	
+
+			
+
+		</div>
+
+						
+
+			</section>
+
+
+	<section>
+
+				<div class="slide-title">
+					<h2>The Scaled Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+				Let 
+					$$
+						\sqrt{\alpha^2(n+\kappa)}=\sqrt{n+\lambda}\\
+					
+					$$	
+
+			
+
+		</div>
+
+						
+
+			</section>
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>The Scaled Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+				Let 
+					$$						
+						\alpha^2(n+\kappa) = n+\lambda
+					$$	
+
+			
+
+		</div>
+
+						
+
+			</section>
+
+			
+						<section>
+
+				<div class="slide-title">
+					<h2>The Scaled Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+				Let 
+					$$						
+						\alpha^2(n+\kappa) = n+\lambda
+					$$	
+
+					Thus, 
+					$$
+						\boxed{\lambda = \alpha^2(n+\kappa)-n}
+					$$
+
+		</div>
+
+						
+
+			</section>
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>The Scaled Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+							$$
+							\begin{align}
+						\chi^i = m + \sqrt{n+\lambda}\Sigma^{1/2}s^i,\quad s^i\in\mathcal{S}
+							\end{align}
+							$$
+					</div>
+				with 
+$$
+						\boxed{\lambda = \alpha^2(n+\kappa)-n}
+					$$
+
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+						<section>
+
+				<div class="slide-title">
+					<h2>The Scaled Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+							$$
+							\begin{align}
+						\chi^i = m + \sqrt{n+\lambda}\Sigma^{1/2}s^i,\quad s^i\in\mathcal{S}
+							\end{align}
+							$$
+					</div>
+				with 
+$$
+						\boxed{\lambda = \alpha^2(n+\kappa)-n}
+					$$
+
+					Thus, 
+					$$
+					\mathbb{E}\{g(x)\}\approx w_0g(\chi^0)+\sum_{i=1}^{2n}wg(\chi^i)
+					$$
+
+		</div>
+
+						
+
+			</section>
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>The Scaled Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+							$$
+							\begin{align}
+						\chi^i = m + \sqrt{n+\lambda}\Sigma^{1/2}s^i,\quad s^i\in\mathcal{S}
+							\end{align}
+							$$
+					</div>
+				with 
+$$
+						\boxed{\lambda = \alpha^2(n+\kappa)-n}
+					$$
+
+					Thus, 
+					$$
+					\boxed{w_0=\frac{\lambda}{n+\lambda}},\quad \boxed{w=\frac{1}{2(n+\lambda)}}
+					$$
+
+		</div>
+
+						
+
+			</section>
+
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>The Scaled Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					
+
+				$$	\begin{aligned}	
+					\mathbb{E}[x]&=\sum_{i=0}^{2n+1} w_i^m\chi^i\\
+						\Var(x)&=\sum_{i=0}^{2n+1} w_i^c(\chi^i-\mathbb{E}[x])(\bullet)^\trp \\
+						\Cov(x,y)&=\sum_{i=0}^{2n+1} w_i^c(\chi^i-\mathbb{E}[x])(\mathcal{Y}^i-\mathbb{E}[y])^\trp 				
+						\end{aligned}
+						$$
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>The Scaled Unscented Transformation</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+							$$
+							\begin{align}
+						\chi^i = m + \sqrt{n+\lambda}\Sigma^{1/2}s^i,\quad s^i\in\mathcal{S}
+							\end{align}
+							$$
+					</div>
+				with 
+$$
+						\boxed{\lambda = \alpha^2(n+\kappa)-n},\quad
+					\boxed{w^m=w^c=\frac{1}{2(n+\lambda)}}\\
+					\boxed{w_0^m=\frac{\lambda}{n+\lambda}},\quad \boxed{w_0^c=\frac{\lambda}{n+\lambda}+(1-\alpha^2+\beta)}
+					$$
+
+		</div>
+
+						
+
+			</section>
+
+
+				<section>
+					<div class="slide-title">
+						<h2>Target Tracking with Radar &mdash; EKF vs UKF</h2>
+					</div>
+					<div class="slide-content" style="display:flex; flex-direction:column; align-items:center; justify-content:center;">
+						<img src="../images/ekf_ukf_radar.gif" style="height:680px; max-width:100%; box-shadow:none; border:none; background:none;">
+						<p style="font-size:0.52em; color:#666; margin:2px 0 0;">black = true &nbsp;&middot;&nbsp; grey = radar meas. &nbsp;&middot;&nbsp; <span style="color:#D95319;">orange = EKF</span> &nbsp;&middot;&nbsp; <span style="color:#7E2F8E;">purple = UKF</span></p>
+					</div>
+				</section>
+
+
+				<section>
+					<div class="slide-title">
+						<h2>EKF vs UKF &mdash; RMSE Comparison</h2>
+					</div>
+					<div class="slide-content">
+						<center>
+						<table style="border-collapse:collapse; font-size:0.82em; margin-top:26px;">
+							<tr style="background:#2F6BD8; color:#fff;">
+								<th style="border:1px solid #2F6BD8; padding:11px 22px;" style="border:1px solid #2F6BD8; padding:11px 22px; text-align:left;">Metric</th>
+								<th style="border:1px solid #2F6BD8; padding:11px 22px;">Raw radar</th>
+								<th style="border:1px solid #2F6BD8; padding:11px 22px;">EKF</th>
+								<th style="border:1px solid #2F6BD8; padding:11px 22px;">UKF</th>
+							</tr>
+							<tr style="background:#f4f7fc;">
+								<td style="border:1px solid #cfd6e4; padding:9px 22px; text-align:left; font-weight:600;">Position RMSE&nbsp;[m]</td>
+								<td style="border:1px solid #cfd6e4; padding:9px 22px; text-align:center;">4.72</td><td style="border:1px solid #cfd6e4; padding:9px 22px; text-align:center;">3.90</td><td style="border:1px solid #cfd6e4; padding:9px 22px; text-align:center;">3.89</td>
+							</tr>
+							<tr>
+								<td style="border:1px solid #cfd6e4; padding:9px 22px; text-align:left; font-weight:600;">Speed RMSE&nbsp;[m/s]</td>
+								<td style="border:1px solid #cfd6e4; padding:9px 22px; text-align:center;">&mdash;</td><td style="border:1px solid #cfd6e4; padding:9px 22px; text-align:center;">0.45</td><td style="border:1px solid #cfd6e4; padding:9px 22px; text-align:center;">0.44</td>
+							</tr>
+							<tr style="background:#f4f7fc;">
+								<td style="border:1px solid #cfd6e4; padding:9px 22px; text-align:left; font-weight:600;">Heading RMSE&nbsp;[deg]</td>
+								<td style="border:1px solid #cfd6e4; padding:9px 22px; text-align:center;">&mdash;</td><td style="border:1px solid #cfd6e4; padding:9px 22px; text-align:center;">9.00</td><td style="border:1px solid #cfd6e4; padding:9px 22px; text-align:center;">8.79</td>
+							</tr>
+						</table>
+						</center>
+						<p style="font-size:0.58em; color:#555; text-align:center; margin-top:26px; line-height:1.5;">
+						Even with the drone flying right over the sensor, the range/bearing geometry stays only weakly nonlinear, so the EKF and UKF are essentially tied (both beat raw radar). The UKF's advantage shows under strong nonlinearity &mdash; see the bearing&#8209;only case next.
+						</p>
+					</div>
+				</section>
+
+
+				<section>
+					<div class="slide-title">
+						<h2>Bearing-Only Tracking &mdash; EKF vs UKF</h2>
+					</div>
+					<div class="slide-content" style="display:flex; flex-direction:column; align-items:center; justify-content:center;">
+						<img src="../images/ekf_ukf_bearing.gif" style="height:560px; max-width:100%; box-shadow:none; border:none; background:none;">
+					
+					</div>
+				</section>
+
+				<section>
+					<div class="slide-title">
+						<h2>1-D Nonlinear Benchmark &mdash; Model</h2>
+					</div>
+					<div class="slide-content">
+						<div class="box">
+							<span class="box-title">Dynamics (nonlinear):</span>
+							$$ x_{k}=0.5\,x_{k-1}+\frac{25\,x_{k-1}}{1+x_{k-1}^{2}}+8\cos(1.2\,k)+w_{k-1} $$
+						</div>
+						<div class="box">
+							<span class="box-title">Measurement (sign-blind):</span>
+							$$ y_{k}=\frac{x_{k}^{2}}{20}+v_{k} $$
+						</div>
+						<center>
+						$$ w_{k-1}\sim\mathcal{N}(0,Q),\quad v_{k}\sim\mathcal{N}(0,R) $$
+						$$ Q=10,\qquad R=1,\qquad x_0=0.1 $$
+						</center>
+						<p style="font-size:0.62em; color:#555; text-align:center; margin-top:14px;">
+							Classic Kitagawa (1987) / Gordon&ndash;Salmond&ndash;Smith (1993) benchmark: strongly nonlinear growth dynamics and a sign&#8209;blind quadratic measurement.
+						</p>
+					</div>
+				</section>
+
+				<section>
+					<div class="slide-title">
+						<h2>EKF vs UKF &mdash; 1-D Nonlinear Benchmark</h2>
+					</div>
+					<div class="slide-content" style="display:flex; flex-direction:column; align-items:center; justify-content:center;">
+						<img src="../images/benchmark1d.png" style="height:560px; max-width:100%; box-shadow:none; border:none; background:none;">
+					
+					</div>
+				</section>
+
+
+
+				<section>
+					<div class="slide-title">
+						<h2>Tuning of Q and R &mdash; The Innovations</h2>
+					</div>
+					<div class="slide-content" style="display:flex; flex-direction:column; align-items:center; justify-content:center;">
+						<p style="font-size:0.6em; color:#444; margin:0 0 6px;">
+							Scalar model&nbsp; $x_k=a\,x_{k-1}+w_k,\; y_k=x_k+v_k$ &nbsp;&middot;&nbsp; innovation (residual)&nbsp; $e_k=y_k-\hat{y}_{k\mid k-1}$, &nbsp; with covariance $S_k=P_{k}^{-}+R$.
+						</p>
+						<img src="../images/tuning_residuals.png" style="height:405px; max-width:100%; box-shadow:none; border:none; background:none;">
+						<p style="font-size:0.58em; color:#555; margin:8px 0 0;"><b>Matched</b> $Q,R$ give small, erratic residuals; <b>bad</b> $Q,R$ leave large, slowly&#8209;drifting residuals &mdash; a first sign the filter is mis&#8209;tuned.</p>
+					</div>
+				</section>
+
+				<section>
+					<div class="slide-title">
+						<h2>Are the Residuals White? &mdash; Autocorrelation</h2>
+					</div>
+					<div class="slide-content" style="display:flex; flex-direction:column; align-items:center; justify-content:center;">
+						<img src="../images/tuning_autocorr.png" style="height:490px; max-width:100%; box-shadow:none; border:none; background:none;">
+						<p style="font-size:0.58em; color:#555; margin:8px 0 0;">An optimally&#8209;tuned filter leaves <b>white</b> innovations (all lags inside the 95% band). A <b>positive&#8209;autocorrelation tail</b> means the residuals still carry structure the filter failed to use &mdash; $Q$ is too small and the estimate lags the state.</p>
+					</div>
+				</section>
+
+				<section>
+					<div class="slide-title">
+						<h2>Normalized Innovation &mdash; Consistency ($\pm3\sigma$)</h2>
+					</div>
+					<div class="slide-content" style="display:flex; flex-direction:column; align-items:center; justify-content:center;">
+						<img src="../images/tuning_nis.png" style="height:490px; max-width:100%; box-shadow:none; border:none; background:none;">
+						<p style="font-size:0.58em; color:#555; margin:8px 0 0;">Normalizing by the filter's own covariance, $z_k=e_k/\sqrt{S_k}$, should be $\sim\mathcal{N}(0,1)$: about <b>99.7% inside $\pm3\sigma$</b>. When $z_k$ escapes the band the filter is <b>over&#8209;confident</b> ($S_k$ under&#8209;estimates the true spread &mdash; $Q,R$ set too small).</p>
+					</div>
+				</section>
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Final Project</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<ul>
+						<li>
+							Presentation of about 10min;
+						</li>
+						<li>For the enrolled students: LATEX report;</li>
+						<li>Cover a topic related to the course;</li>
+						<li>(Preferable) Choose a topic related to your research;</li>
+						<li>Next week: use the time for the final project.</li>
+					</ul>
+					</div>
+		</div>
+
+						
+
+			</section>
+
+
+
+
+			<section>
+		
+				<div class="slide-content">
+					<center>
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+					<h2>Until next time!</h2>
+				</center>
+				</div>
+
+			</section>
+
+
+
+
+				
+
+
+
+				<!------------------------>
+			</div>
+		</div>
+
+		
+
+		<script src="../dist/reveal.js"></script>
+		<script src="../plugin/notes/notes.js"></script>
+		<script src="../plugin/markdown/markdown.js"></script>
+		<script src="../plugin/highlight/highlight.js"></script>
+		<script src="../plugin/math/math.js"></script>
+		<script src="../init.js"></script>
+		<script src="../plugin/handwriting/plugin.js"></script>
+	</body>
+</html>
+
+</p>
