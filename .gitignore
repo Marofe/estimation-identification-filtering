@@ -2,4 +2,5 @@ Claude outputs/
 Thumbs.db
 .DS_Store
 lesson6_part*
-2026/video_build/
+video_build/
+*.m
