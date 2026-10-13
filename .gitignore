@@ -5,3 +5,6 @@ lesson6_part*
 video_build/
 *.m
 exercises/
+notes/
+note/
+!plugin/notes/
