@@ -1,0 +1,1526 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>SEL5917 - Estimation, Identification and Stochastic Filtering</title>
+
+		<link rel="stylesheet" href="../dist/reset.css">
+		<link rel="stylesheet" href="../dist/reveal.css">
+		<link rel="stylesheet" href="../dist/theme/white.css" id="theme">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="../plugin/highlight/monokai.css" id="highlight-theme">
+		<link rel="stylesheet" href="../style.css">
+	</head>
+	<body>
+		
+		<div class="reveal">
+			<div class="slides">
+				
+				<section data-hide-slide-number="true" data-transition="slide">
+					<div class="logo"><img src="../images/sel.png"/> </div>
+					<div class="logo2"><img src="../images/Logo EESC-USP_top.png"/> </div>
+					<div class="title">
+					<h2>Particle Filtering <br>SEL5917</h2>
+					</div>
+					<div class="author">
+					<h3>Prof. Dr. Marcos Rogério Fernandes</h3>
+				</div>
+					<div class="advisor">
+					
+					<p style="text-align: center;font-size: 0.8em;">October 13, 2026</p>
+				</div>
+
+				</section>
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Objectives:</h2>
+				</div>
+				<p>&nbsp;</p>
+				<div class="slide-content">
+					<p>The objectives of this class are to understand:</p>
+						<ul>
+							<li>Monte Carlo Integration;</li>
+							<li>Importance Sampling;</li>
+							<li>Sequential Importance Sampling (SIS);</li>
+							<li>Resampling and Sequential Importance Resampling (SIR);</li>
+							<li>Bootstrap and Local Linearization Particle Filters.</li>
+						</ul>
+						</div>
+
+			</section>
+
+
+		
+
+			
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Probabilistic State Space Model</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Definition:</span>
+						A probabilistic state space model is defined as 
+						$$
+						\begin{aligned}
+							x_{k}&\sim p(x_{k}|x_{k-1})\rightarrow \text{dynamic model}\\ 
+							y_{k}&\sim p(y_k|x_k)\rightarrow \text{measurement model}
+							\end{aligned}
+						$$
+						Hypothesis:
+						$$
+						\begin{aligned}
+							p(x_{k}|x_{0:k-1},y_{1:k-1})&=p(x_{k}|x_{k-1}) \text{(Markov Property)}\\
+							p(y_k|x_{0:k},y_{1:k-1})&=p(y_k|x_k) \text{(Conditional Independence)}
+						\end{aligned}
+						$$
+						</div>
+
+					
+
+		</div>
+
+						
+
+			</section>
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Bayesian Filtering</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						The purpose of Bayesian filtering is to obtain the <b>marginal posterior distribution</b> 
+						$$
+						\begin{aligned}
+						p(x_{k}|y_{1:k})
+							\end{aligned}
+						$$
+						recursively for each time step $k=1,2,\ldots$
+						</div>
+<center>
+					<img src="../images/filtering.svg" width="650">
+				</center>
+					
+
+		</div>
+
+						
+
+			</section>
+
+
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Bayesian Filtering</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Theorem</span>
+					
+						<ul>
+							<li><b>Initialization:</b> starts with a prior distribution $p(x_0)$;</li>
+							<li><b>Prediction step</b> (Chapman-Kolmogorov Eq.): 
+								$$
+									p(x_{k}|y_{1:k-1})=\int p(x_{k}|x_{k-1})p(x_{k-1}|y_{1:k-1})dx_{k-1}
+								$$
+							</li>
+							<li><b>Update step</b> (Bayes' rule): 
+								$$
+									p(x_{k}|y_{1:k})=\frac{p(y_{k}|x_{k})p(x_{k}|y_{1:k-1})}{p(y_{k}|y_{1:k-1})}
+								$$	
+							</li>
+						</ul>
+						</div>
+
+					
+
+		</div>
+
+						
+
+			</section>
+
+
+
+						
+					<section>
+
+				<div class="slide-title">
+					<h2>Nonlinear Systems</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<p><b>Dynamic State Space Model:</b></p>
+						$$
+						\begin{aligned}
+							x_{k}&=f_{k-1}(x_{k-1},u_{k-1})+w_{k-1},\quad w_{k-1}\sim\mathcal{N}(0,Q_{k-1})\\
+							y_{k}&=h_{k}(x_{k})+\epsilon_{k},\quad \epsilon_{k}\sim\mathcal{N}(0,R_{k})
+							\end{aligned}
+						$$
+
+						<p><b>Probabilistic State Space Model:</b></p>
+						$$
+							\begin{aligned}
+							x_{k}|x_{k-1}&\sim \mathcal{N}(f_{k-1}(x_{k-1},u_{k-1}),Q_{k-1})\\
+							y_{k}|x_{k}&\sim \mathcal{N}(h_{k}(x_{k}),R_{k})
+							\end{aligned}
+						$$
+
+					</div>
+
+				
+
+		</div>
+
+						
+
+			</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Monte Carlo Integration</h2>
+				</div>
+				<div class="slide-content">
+					<p>&nbsp;</p>
+					Suppose we want to solve the following multidimensional integral
+					<div class="box">
+						$$
+							I=\int g(x)dx
+						$$
+					</div>
+				where $g: \mathbb{R}^n \rightarrow \mathbb{R}^m$ is some complicated function that cannot be integrated analytically.
+
+		</div>
+
+						
+
+			</section>
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Monte Carlo Integration</h2>
+				</div>
+				<div class="slide-content">
+					Assume that $g(x)=f(x)\pi(x)$, where $\pi: \mathbb{R}^n\rightarrow \mathbb{R}$ is interpreted as a probability density satisfying
+					<div class="box">
+						$$
+					\pi(x)\ge 0,\quad \int \pi(x)dx = 1
+						$$
+					</div>
+					Then, the integral can be restated as 
+					<div class="box">
+						$$
+						I=\int f(x)\pi(x)dx
+						$$
+					</div>
+		</div>
+
+						
+
+			</section>
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Monte Carlo Integration</h2>
+				</div>
+				<div class="slide-content">
+					Assume that $g(x)=f(x)\pi(x)$, where $\pi: \mathbb{R}^n\rightarrow \mathbb{R}$ is interpreted as a probability density satisfying
+					<div class="box">
+						$$
+					\pi(x)\ge 0,\quad \int \pi(x)dx = 1
+						$$
+					</div>
+					Then, the integral can be restated as 
+					<div class="box">
+						$$
+						I=\mathbb{E}^\pi[f(x)]
+						$$
+					</div>
+		</div>
+
+						
+
+			</section>
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Monte Carlo Integration</h2>
+				</div>
+				<div class="slide-content">
+					Assume that $g(x)=f(x)\pi(x)$, where $\pi: \mathbb{R}^n\rightarrow \mathbb{R}$ is interpreted as a probability density satisfying
+					<div class="box">
+						$$
+					\pi(x)\ge 0,\quad \int \pi(x)dx = 1
+						$$
+					</div>
+					Then, the integral can be restated as 
+					<div class="box">
+						$$
+						I=\lim_{N\to\infty} \frac{1}{N}\sum_{i=1}^Nf(x^{(i)}),\quad x^{(i)}\sim\pi(x)
+						$$
+					</div>
+		</div>
+
+						
+
+			</section>
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Monte Carlo Integration</h2>
+				</div>
+				<div class="slide-content">
+					Assume that $g(x)=f(x)\pi(x)$, where $\pi: \mathbb{R}^n\rightarrow \mathbb{R}$ is interpreted as a probability density satisfying
+					<div class="box">
+						$$
+					\pi(x)\ge 0,\quad \int \pi(x)dx = 1
+						$$
+					</div>
+					Then, the integral can be approximated by 
+					<div class="box">
+						$$
+						\hat{I}=\frac{1}{N}\sum_{i=1}^Nf(x^{(i)}),\quad x^{(i)}\sim\pi(x), \quad N<\infty
+						$$
+					</div>
+		</div>
+
+						
+
+			</section>
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>Monte Carlo Integration (MC)</h2>
+				</div>
+				<div class="slide-content">
+		
+					<div class="box">
+						$$
+						\hat{I}=\frac{1}{N}\sum_{i=1}^Nf(x^{(i)}),\quad x^{(i)}\sim\pi(x), \quad N<\infty
+						$$
+					</div>
+					<p>
+					Observations:
+					</p>
+					<ul>
+						<li>The samples concentrate in regions where $\pi(x)$ is large;</li>
+						<li>The error decreases as $\mathcal{O}(N^{-1/2})$, a rate independent of the dimension;</li>
+						<li>Usually we cannot sample directly from $\pi(x)$ (e.g., a posterior known only up to a normalizing constant).</li>
+						
+					</ul>
+		</div>
+
+						
+
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Monte Carlo Integration: Area of a Circle</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/mc_circle_area.gif" style="width:1100px; max-width:100%; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+
+
+							<section>
+
+				<div class="slide-title">
+					<h2>Importance Sampling Method (IS)</h2>
+				</div>
+				<div class="slide-content">
+		
+					<div class="box">
+						Suppose we can only generate samples from a density $q(x)$ that is similar to $\pi(x)$. Can we still make the MC estimation effective?
+					</div>
+					<p>
+					Answer: yes! If $q(x)&gt;0$ wherever $f(x)\pi(x)\neq 0$ (<b>support condition</b>), then
+					</p>
+<div class="box">
+					$$
+						I=\int f(x)\pi(x)dx = \int f(x)\frac{\pi(x)}{q(x)}q(x)dx
+					$$
+					</div>
+				The PDF $q(x)$ is referred to as the <b>importance</b> or <b>proposal</b> density.
+		</div>
+
+						
+
+			</section>
+
+
+			
+							<section>
+
+				<div class="slide-title">
+					<h2>Importance Sampling Method (IS)</h2>
+				</div>
+				<div class="slide-content">
+			The PDF $q(x)$ is referred to as the <b>importance</b> or <b>proposal</b> density.
+<div class="box">
+					$$
+						I=\int f(x)\frac{\pi(x)}{q(x)}q(x)dx
+					$$
+					</div>
+			
+		</div>
+
+						
+
+			</section>
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Importance Sampling Method (IS)</h2>
+				</div>
+				<div class="slide-content">
+			The PDF $q(x)$ is referred to as the <b>importance</b> or <b>proposal</b> density.
+<div class="box">
+					$$
+						I=\mathbb{E}^q[f(x)\frac{\pi(x)}{q(x)}]
+					$$
+					</div>
+			
+		</div>
+
+						
+
+			</section>
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Importance Sampling Method (IS)</h2>
+				</div>
+				<div class="slide-content">
+			The PDF $q(x)$ is referred to as the <b>importance</b> or <b>proposal</b> density.
+<div class="box">
+					$$
+						\hat{I}=\frac{1}{N}\sum_{i=1}^N f(x^{(i)})\frac{\pi(x^{(i)})}{q(x^{(i)})},\quad x^{(i)}\sim q(x)
+					$$
+					</div>
+			
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+				<section>
+
+				<div class="slide-title">
+					<h2>Importance Sampling Method (IS)</h2>
+				</div>
+				<div class="slide-content">
+			The PDF $q(x)$ is referred to as the <b>importance</b> or <b>proposal</b> density.
+<div class="box">
+					$$
+						\hat{I}=\frac{1}{N}\sum_{i=1}^N f(x^{(i)})\tilde{w}_i,\quad x^{(i)}\sim q(x)
+					$$
+					</div>
+					with 
+					$$
+					\tilde{w}_i:=\frac{\pi(x^{(i)})}{q(x^{(i)})}
+					$$
+			
+		</div>
+
+						
+
+			</section>
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Importance Sampling Method (IS)</h2>
+				</div>
+				<div class="slide-content">
+			The PDF $q(x)$ is referred to as the <b>importance</b> or <b>proposal</b> density.
+<div class="box">
+					$$
+						\hat{I}=\frac{1}{N}\sum_{i=1}^N f(x^{(i)})\tilde{w}_i,\quad x^{(i)}\sim q(x)
+					$$
+					</div>
+					Note that 
+					$$
+					\int \frac{\pi(x)}{q(x)}q(x) dx = 1
+					$$
+			
+		</div>
+
+						
+
+			</section>
+
+
+			
+				<section>
+
+				<div class="slide-title">
+					<h2>Importance Sampling Method (IS)</h2>
+				</div>
+				<div class="slide-content">
+			The PDF $q(x)$ is referred to as the <b>importance</b> or <b>proposal</b> density.
+<div class="box">
+					$$
+						\hat{I}=\frac{1}{N}\sum_{i=1}^N f(x^{(i)})\tilde{w}_i,\quad x^{(i)}\sim q(x)
+					$$
+					</div>
+					Note that 
+					$$
+					\Rightarrow \sum_{i=1}^N \frac{1}{N}\frac{\pi(x^{(i)})}{q(x^{(i)})}\approx 1
+					$$
+			
+		</div>
+
+						
+
+			</section>
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Importance Sampling Method (IS)</h2>
+				</div>
+				<div class="slide-content">
+			The PDF $q(x)$ is referred to as the <b>importance</b> or <b>proposal</b> density.
+<div class="box">
+					$$
+						\hat{I}=\frac{1}{N}\sum_{i=1}^N f(x^{(i)})\tilde{w}_i,\quad x^{(i)}\sim q(x)
+					$$
+					</div>
+					Note that 
+					$$
+					\Rightarrow \sum_{i=1}^N \frac{1}{N}\tilde{w}_i\approx 1
+					$$
+			
+		</div>
+
+						
+
+			</section>
+
+
+			
+			<section>
+
+				<div class="slide-title">
+					<h2>Importance Sampling Method (IS)</h2>
+				</div>
+				<div class="slide-content">
+			The PDF $q(x)$ is referred to as the <b>importance</b> or <b>proposal</b> density.
+<div class="box">
+					$$
+						\hat{I}=\frac{\frac{1}{N}\sum_{i=1}^N f(x^{(i)})\tilde{w}_i}{\sum_{i=1}^N \frac{1}{N}\tilde{w}_i},\quad x^{(i)}\sim q(x)
+					$$
+					</div>
+					This <b>self-normalized</b> estimator also works when $\pi(x)$ is known only up to a normalizing constant (it is biased, but consistent).
+			
+			
+		</div>
+
+						
+
+			</section>
+
+
+				
+			<section>
+
+				<div class="slide-title">
+					<h2>Importance Sampling Method (IS)</h2>
+				</div>
+				<div class="slide-content">
+			The PDF $q(x)$ is referred to as the <b>importance</b> or <b>proposal</b> density.
+<div class="box">
+					$$
+						\hat{I}=\sum_{i=1}^N f(x^{(i)})w_i,\quad x^{(i)}\sim q(x)
+					$$
+					</div>
+					with 
+					$$
+						\boxed{w_i:=\frac{\tilde {w}_i}{\sum_{j=1}^N \tilde{w}_j}}
+					$$
+			
+			
+		</div>
+
+						
+
+			</section>
+
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Importance Sampling Method (IS)</h2>
+				</div>
+				<div class="slide-content">
+			The PDF $q(x)$ is referred to as the <b>importance</b> or <b>proposal</b> density.
+<div class="box">
+					$$
+						\hat{I}=\sum_{i=1}^N f(x^{(i)})w_i,\quad x^{(i)}\sim q(x)
+					$$
+					</div>
+					with 
+					$$
+						\boxed{w_i:=\frac{\tilde {w}_i}{\sum_{j=1}^N \tilde{w}_j}} \Rightarrow \sum_{i=1}^N w_i=1
+					$$
+			
+			
+		</div>
+
+						
+
+			</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Sequential Importance Sampling (SIS)</h2>
+				</div>
+				<div class="slide-content">
+		<div class="box">
+			It is a technique for implementing recursive Bayesian filters using Monte Carlo simulations!
+		</div>
+		<p>&nbsp;</p>
+		<div class="box">
+			<span class="box-title">Advantage:</span>
+			As the number of samples becomes larger, the SIS filter approaches the optimal Bayesian estimator!</div>
+			
+		</div>
+
+						
+
+			</section>
+
+
+
+			
+
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Sequential Importance Sampling (SIS)</h2>
+				</div>
+				<div class="slide-content">
+		<div class="box">
+		The key idea is to represent the required posterior density function by a <b>set of random samples</b> with associated <b>weights</b>.
+		</div>
+
+		$$
+			p(x_{k}|y_{1:k})\approx \sum_{i=1}^N w_i \delta(x_{k}-\hat{x}_{k}^{(i)})
+		$$
+
+		<ul>
+			<li>Applies to non-Gaussian distributions;</li>
+			<li>Can represent multimodal distributions;</li>
+			<li>Handles mixed continuous&ndash;discrete states;</li>
+			<li>Theoretically optimal for $N\to\infty$.</li>
+		</ul>
+			</div>
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Continuous vs. Discrete (Particle) Representation</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/continuous_vs_discrete_pdf.gif" style="width:1100px; max-width:100%; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Continuous vs. Discrete Representation (3D)</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/continuous_vs_discrete_pdf_3d.gif" style="width:1100px; max-width:100%; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+
+
+			
+				<section>
+
+				<div class="slide-title">
+					<h2>Sequential Importance Sampling (SIS)</h2>
+				</div>
+				<div class="slide-content">
+		<div class="box">
+		The key idea is to represent the required posterior density function by a <b>set of random samples</b> with associated <b>weights</b>.
+		</div>
+<p>&nbsp;</p>
+		$$
+		\begin{aligned}
+			\hat{x}_{k|k}&=\mathbb{E}[x_{k}|y_{1:k}]\\
+			P_{k|k}&=\mathbb{E}[(x_{k}-\hat{x}_{k|k})(\bullet)^\trp |y_{1:k}]\\
+			\end{aligned}
+		$$
+			</div>
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Sequential Importance Sampling (SIS)</h2>
+				</div>
+				<div class="slide-content">
+		<div class="box">
+		The key idea is to represent the required posterior density function by a <b>set of random samples</b> with associated <b>weights</b>.
+		</div>
+<p>&nbsp;</p>
+		$$
+		\begin{aligned}
+			\hat{x}_{k|k}&\approx\sum_{i=1}^Nw_i\hat{x}_{k}^{(i)}\\
+			P_{k|k}&\approx \sum_{i=1}^Nw_i(\hat{x}_{k}^{(i)}-\hat{x}_{k|k})(\bullet)^\trp
+			\end{aligned}
+		$$
+			</div>
+			</section>
+
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Sequential Importance Sampling (SIS)</h2>
+				</div>
+				<div class="slide-content">
+		Consider the whole state trajectory $x_{0:k}$, whose posterior $p(x_{0:k}|y_{1:k})$ has the filtering density $p(x_{k}|y_{1:k})$ as its marginal. Note that
+		$$
+			\mathbb{E}[f(x_{0:k})|y_{1:k}]=\int f(x_{0:k}) \underbrace{p(x_{0:k}|y_{1:k})}_{\pi(x_{0:k}|y_{1:k})}dx_{0:k}
+		$$
+			</div>
+			</section>
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Sequential Importance Sampling (SIS)</h2>
+				</div>
+				<div class="slide-content">
+		Note that
+		$$
+			\mathbb{E}[f(x_{0:k})|y_{1:k}]=\int f(x_{0:k}) \frac{p(x_{0:k}|y_{1:k})}{q(x_{0:k})}q(x_{0:k})dx_{0:k}
+		$$
+			</div>
+			</section>
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Sequential Importance Sampling (SIS)</h2>
+				</div>
+				<div class="slide-content">
+		Note that
+		$$
+			\mathbb{E}[f(x_{0:k})|y_{1:k}]=\mathbb{E}^q\Bigl[f(x_{0:k})\underbrace{\frac{p(x_{0:k}|y_{1:k})}{q(x_{0:k})}}_{\tilde{w}}\Bigr]
+		$$
+			</div>
+			</section>
+
+
+
+		
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Sequential Importance Sampling (SIS)</h2>
+				</div>
+				<div class="slide-content">
+		Note that
+		$$
+				\mathbb{E}[f(x_{0:k})|y_{1:k}]=\mathbb{E}^q\Bigl[f(x_{0:k})\tilde{w}\Bigr]
+		$$
+		with 
+		$$
+					\tilde{w}=\frac{p(x_{0:k}|y_{1:k})}{q(x_{0:k})}
+		$$
+			</div>
+			</section>
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>Sequential Importance Sampling (SIS)</h2>
+				</div>
+				<div class="slide-content">
+		Note that
+		$$
+			\mathbb{E}[f(x_{0:k})|y_{1:k}]=\mathbb{E}^q\Bigl[f(x_{0:k})\tilde{w}\Bigr]
+		$$
+		with 
+		$$
+					\tilde{w}=\frac{p(x_{0:k}|y_{k},y_{1:k-1})}{q(x_{0:k})}
+		$$
+			</div>
+			</section>
+
+
+			
+					
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Sequential Importance Sampling (SIS)</h2>
+				</div>
+				<div class="slide-content">
+		Note that
+		$$
+		\mathbb{E}[f(x_{0:k})|y_{1:k}]=\mathbb{E}^q\Bigl[f(x_{0:k})\tilde{w}\Bigr]
+		$$
+		with 
+		$$
+					\tilde{w}=\frac{p(y_{k}|x_{0:k},y_{1:k-1})p(x_{0:k}|y_{1:k-1})}{p(y_{k}|y_{1:k-1})q(x_{0:k})}
+		$$
+			</div>
+			</section>
+
+
+
+			
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Sequential Importance Sampling (SIS)</h2>
+				</div>
+				<div class="slide-content">
+		Note that
+		$$
+\mathbb{E}[f(x_{0:k})|y_{1:k}]=\mathbb{E}^q\Bigl[f(x_{0:k})\tilde{w}\Bigr]
+		$$
+		with 
+		$$
+					\tilde{w}=\frac{p(y_{k}|x_{0:k},y_{1:k-1})p(x_{k},x_{0:k-1}|y_{1:k-1})}{p(y_{k}|y_{1:k-1})q(x_{0:k})}
+		$$
+			</div>
+			</section>
+
+
+
+			
+					<section>
+
+				<div class="slide-title">
+					<h2>Sequential Importance Sampling (SIS)</h2>
+				</div>
+				<div class="slide-content">
+		Note that
+		$$
+\mathbb{E}[f(x_{0:k})|y_{1:k}]=\mathbb{E}^q\Bigl[f(x_{0:k})\tilde{w}\Bigr]
+		$$
+		with 
+		$$
+					\tilde{w}=\frac{p(y_{k}|x_{0:k},y_{1:k-1})p(x_{k}|x_{0:k-1},y_{1:k-1})p(x_{0:k-1}|y_{1:k-1})}{p(y_{k}|y_{1:k-1})q(x_{0:k})}
+		$$
+			</div>
+			</section>
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Sequential Importance Sampling (SIS)</h2>
+				</div>
+				<div class="slide-content">
+		Note that
+		$$
+\mathbb{E}[f(x_{0:k})|y_{1:k}]=\mathbb{E}^q\Bigl[f(x_{0:k})\tilde{w}\Bigr]
+		$$
+		with 
+		$$
+					\tilde{w}=\frac{p(y_{k}|x_{k})p(x_{k}|x_{k-1})p(x_{0:k-1}|y_{1:k-1})}{p(y_{k}|y_{1:k-1})q(x_{0:k})}
+		$$
+			</div>
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Sequential Importance Sampling (SIS)</h2>
+				</div>
+				<div class="slide-content">
+		Note that
+		$$
+\mathbb{E}[f(x_{0:k})|y_{1:k}]=\mathbb{E}^q\Bigl[f(x_{0:k})\tilde{w}\Bigr]
+		$$
+		with 
+		$$
+					\tilde{w}=\frac{\frac{p(y_{k}|x_{k})p(x_{k}|x_{k-1})p(x_{0:k-1}|y_{1:k-1})}{q(x_{0:k})}}{\int p(y_{k},x_{0:k}|y_{1:k-1})dx_{0:k}}
+		$$
+			</div>
+			</section>
+
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>Sequential Importance Sampling (SIS)</h2>
+				</div>
+				<div class="slide-content">
+			Note that
+		$$
+\mathbb{E}[f(x_{0:k})|y_{1:k}]=\mathbb{E}^q\Bigl[f(x_{0:k})\tilde{w}\Bigr]
+		$$
+		with 
+		$$
+					\tilde{w}=\frac{\frac{p(y_{k}|x_{k})p(x_{k}|x_{k-1})p(x_{0:k-1}|y_{1:k-1})}{q(x_{0:k})}}{\int p(y_{k}|x_{0:k},y_{1:k-1})p(x_{0:k}|y_{1:k-1})dx_{0:k}}
+		$$
+			</div>
+			</section>
+
+
+									<section>
+
+				<div class="slide-title">
+					<h2>Sequential Importance Sampling (SIS)</h2>
+				</div>
+				<div class="slide-content">
+			Note that
+		$$
+\mathbb{E}[f(x_{0:k})|y_{1:k}]=\mathbb{E}^q\Bigl[f(x_{0:k})\tilde{w}\Bigr]
+		$$
+		with 
+		$$
+					\tilde{w}=\frac{\frac{p(y_{k}|x_{k})p(x_{k}|x_{k-1})p(x_{0:k-1}|y_{1:k-1})}{q(x_{0:k})}}{\int p(y_{k}|x_{k})p(x_{k}|x_{k-1})p(x_{0:k-1}|y_{1:k-1})dx_{0:k}}
+		$$
+			</div>
+			</section>
+
+
+			
+									<section>
+
+				<div class="slide-title">
+					<h2>Sequential Importance Sampling (SIS)</h2>
+				</div>
+				<div class="slide-content">
+			Note that
+		$$
+\mathbb{E}[f(x_{0:k})|y_{1:k}]=\mathbb{E}^q\Bigl[f(x_{0:k})\tilde{w}\Bigr]
+		$$
+		with 
+		$$
+					\tilde{w}=\frac{\frac{p(y_{k}|x_{k})p(x_{k}|x_{k-1})p(x_{0:k-1}|y_{1:k-1})}{q(x_{0:k})}}{\int \frac{p(y_{k}|x_{k})p(x_{k}|x_{k-1})p(x_{0:k-1}|y_{1:k-1})}{q(x_{0:k})}q(x_{0:k})dx_{0:k}}
+		$$
+			</div>
+			</section>
+
+
+
+				
+									<section>
+
+				<div class="slide-title">
+					<h2>Sequential Importance Sampling (SIS)</h2>
+				</div>
+				<div class="slide-content">
+			Note that
+		$$
+\mathbb{E}[f(x_{0:k})|y_{1:k}]=\mathbb{E}^q\Bigl[f(x_{0:k})\tilde{w}\Bigr]
+		$$
+		with 
+		$$
+					\tilde{w}\approx\frac{\frac{p(y_{k}|x_{k})p(x_{k}|x_{k-1})p(x_{0:k-1}|y_{1:k-1})}{q(x_{0:k})}}{\frac{1}{N}\sum_j \frac{p(y_{k}|\hat{x}_{k}^{(j)})p(\hat{x}_{k}^{(j)}|\hat{x}_{k-1}^{(j)})p(\hat{x}_{0:k-1}^{(j)}|y_{1:k-1})}{q(\hat{x}_{0:k}^{(j)})}}
+		$$
+			</div>
+			</section>
+
+
+	
+
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>Sequential Importance Sampling (SIS)</h2>
+				</div>
+				<div class="slide-content">
+		Note that
+		$$
+\mathbb{E}[f(x_{0:k})|y_{1:k}]\approx\frac{1}{N}\sum_{i=1}^N    f(\hat{x}_{0:k}^{(i)})\tilde{w}_i
+		$$
+		with 
+		$$
+					\tilde{w}_i=\frac{\frac{p(y_{k}|\hat{x}_{k}^{(i)})p(\hat{x}_{k}^{(i)}|\hat{x}_{k-1}^{(i)})p(\hat{x}_{0:k-1}^{(i)}|y_{1:k-1})}{q(\hat{x}_{0:k}^{(i)})}}{\frac{1}{N}\sum_j \frac{p(y_{k}|\hat{x}_{k}^{(j)})p(\hat{x}_{k}^{(j)}|\hat{x}_{k-1}^{(j)})p(\hat{x}_{0:k-1}^{(j)}|y_{1:k-1})}{q(\hat{x}_{0:k}^{(j)})}}
+		$$
+			</div>
+			</section>
+
+
+			
+						<section>
+
+				<div class="slide-title">
+					<h2>Sequential Importance Sampling (SIS)</h2>
+				</div>
+				<div class="slide-content">
+	Therefore,
+	<div class="box">
+		$$
+\mathbb{E}[f(x_{0:k})|y_{1:k}]\approx\sum_{i=1}^N    f(\hat{x}_{0:k}^{(i)})w_i
+		$$
+		</div>
+		with 
+		$$
+					\boxed{w_i=\frac{\frac{p(y_{k}|\hat{x}_{k}^{(i)})p(\hat{x}_{k}^{(i)}|\hat{x}_{k-1}^{(i)})p(\hat{x}_{0:k-1}^{(i)}|y_{1:k-1})}{q(\hat{x}_{0:k}^{(i)})}}{\sum_j \frac{p(y_{k}|\hat{x}_{k}^{(j)})p(\hat{x}_{k}^{(j)}|\hat{x}_{k-1}^{(j)})p(\hat{x}_{0:k-1}^{(j)}|y_{1:k-1})}{q(\hat{x}_{0:k}^{(j)})}}}
+		$$
+			</div>
+			</section>
+
+
+
+
+
+		
+
+
+
+								<section>
+
+				<div class="slide-title">
+					<h2>How to choose the Proposal Distribution?</h2>
+				</div>
+				<div class="slide-content">
+		 <div class="box">
+				$$
+					q(x_{0:k})=?
+				$$
+		 </div>
+			</div>
+			</section>
+
+
+
+								<section>
+
+				<div class="slide-title">
+					<h2>The Proposal Distribution</h2>
+				</div>
+				<div class="slide-content">
+		 <div class="box">
+			Assume that
+				$$
+					q(x_{0:k})=q(x_{0:k}|y_{1:k})=q(x_{k}|x_{0:k-1},y_{1:k})q(x_{0:k-1}|y_{1:k-1})
+				$$
+				
+		 </div>
+
+		
+						Accordingly, 
+				$$
+				w_i=\frac{\frac{p(y_{k}|\hat{x}_{k}^{(i)})p(\hat{x}_{k}^{(i)}|\hat{x}_{k-1}^{(i)})p(\hat{x}_{0:k-1}^{(i)}|y_{1:k-1})}{q(\hat{x}_{k}^{(i)}|\hat{x}_{0:k-1}^{(i)},y_{1:k})q(\hat{x}_{0:k-1}^{(i)}|y_{1:k-1})}}{\sum_j \frac{p(y_{k}|\hat{x}_{k}^{(j)})p(\hat{x}_{k}^{(j)}|\hat{x}_{k-1}^{(j)})p(\hat{x}_{0:k-1}^{(j)}|y_{1:k-1})}{q(\hat{x}_{k}^{(j)}|\hat{x}_{0:k-1}^{(j)},y_{1:k})q(\hat{x}_{0:k-1}^{(j)}|y_{1:k-1})}}
+				$$
+			</div>
+			</section>
+
+
+
+			
+								<section>
+
+				<div class="slide-title">
+					<h2>The Proposal Distribution</h2>
+				</div>
+				<div class="slide-content">
+		 <div class="box">
+			Assume that
+				$$
+					q(x_{0:k})=q(x_{0:k}|y_{1:k})=q(x_{k}|x_{0:k-1},y_{1:k})q(x_{0:k-1}|y_{1:k-1})
+				$$
+				
+		 </div>
+
+		
+						Accordingly, 
+				$$
+				w_{k}^{(i)} \propto \frac{p(y_{k}|\hat{x}_{k}^{(i)})p(\hat{x}_{k}^{(i)}|\hat{x}_{k-1}^{(i)})}{q(\hat{x}_{k}^{(i)}|\hat{x}_{0:k-1}^{(i)},y_{1:k})}\underbrace{\frac{p(\hat{x}_{0:k-1}^{(i)}|y_{1:k-1})}{q(\hat{x}_{0:k-1}^{(i)}|y_{1:k-1})}}_{w_{k-1}^{(i)}}
+				$$
+			</div>
+			</section>
+
+
+			
+								<section>
+
+				<div class="slide-title">
+					<h2>The Proposal Distribution</h2>
+				</div>
+				<div class="slide-content">
+		 <div class="box">
+			Assume that
+				$$
+					q(x_{0:k})=q(x_{0:k}|y_{1:k})=q(x_{k}|x_{0:k-1},y_{1:k})q(x_{0:k-1}|y_{1:k-1})
+				$$
+				
+		 </div>
+
+		
+						Accordingly, 
+				$$
+				\boxed{w_{k}^{(i)}\propto w_{k-1}^{(i)} \frac{p(y_{k}|\hat{x}_{k}^{(i)})p(\hat{x}_{k}^{(i)}|\hat{x}_{k-1}^{(i)})}{q(\hat{x}_{k}^{(i)}|\hat{x}_{0:k-1}^{(i)},y_{1:k})}}
+				$$
+			</div>
+			</section>
+			
+				<section>
+
+				<div class="slide-title">
+					<h2>The Optimal Proposal Distribution</h2>
+				</div>
+				<div class="slide-content">
+		
+		For Markov models it is natural to take $q(x_{k}|x_{0:k-1},y_{1:k})=q(x_{k}|x_{k-1},y_{k})$. It can be proven that the optimal proposal distribution (in the sense of minimum weight variance) is
+		$$
+		 \boxed{q^*(x_{k}|x_{k-1}^{(i)},y_{k})=p(x_{k}|x_{k-1}^{(i)},y_{k})}
+		$$
+		which gives $w_{k}^{(i)}\propto w_{k-1}^{(i)}\, p(y_{k}|x_{k-1}^{(i)})$. In general, it cannot be sampled from exactly.
+			</div>
+			</section>
+			
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>SIS Algorithm</h2>
+				</div>
+				<div class="slide-content">
+		<ul>
+			<li><b>Initialization:</b> Draw $N$ samples $\hat{x}_0^{(i)}$ from the initial distribution:
+				$$
+					\boxed{\hat{x}_0^{(i)} \sim p(x_0),\quad i=1,\ldots, N}
+				$$
+				and set $w_0^{(i)}=\frac{1}{N}$ for all $i=1,\ldots,N$.
+			</li>
+			
+		</ul>
+		<center>
+			<img src="../images/sis_init_sampling.gif" style="width:760px; max-width:100%; box-shadow:none; border:none; background:none;">
+		</center>
+			</div>
+			</section>
+
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>SIS Algorithm</h2>
+				</div>
+				<div class="slide-content">
+		<ul>
+			
+			<li><b>Time Update:</b> For all $k=1,2,\ldots$ do the following: 
+			<ol><li>
+				Draw samples $\hat{x}_k^{(i)}$ from the <b>proposal distribution</b>:
+				$$
+				\boxed{\hat{x}_k^{(i)} \sim q(x_k|\hat{x}_{0:k-1}^{(i)},y_k),\quad i=1,\ldots,N}
+				$$
+			</li>
+			<li>Compute the <b>weights</b> according to
+				$$
+					\boxed{w_k^{(i)} \propto w_{k-1}^{(i)} \frac{p(y_k|\hat{x}_k^{(i)})p(\hat{x}_{k}^{(i)}|\hat{x}_{k-1}^{(i)})}{q(\hat{x}_k^{(i)}|\hat{x}_{0:k-1}^{(i)},y_k)}}
+				$$
+				and <b>normalize</b> them to sum to unity.
+			</li>
+		</ol>
+			</li>
+		</ul>
+			</div>
+			</section>
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>SIS Algorithm</h2>
+				</div>
+				<div class="slide-content">
+				
+		<b>Mean and Covariance:</b>
+<div class="box">
+			$$
+			\begin{aligned}
+				\hat{x}_{k|k}&=\sum_{i=1}^N w_k^{(i)} \hat{x}_k^{(i)} \\
+				P_{k|k} & = \sum_{i=1}^N w_k^{(i)} (\hat{x}_k^{(i)}-\hat{x}_{k|k})(\bullet)^\trp  
+			\end{aligned}
+			$$
+		
+	</div>	
+	for all $k=1,2,\ldots$
+	</div>
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Particle Filter Workflow</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/pf_workflow.svg" style="width:1150px; max-width:100%; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Degeneracy Problem </h2>
+				</div>
+				<div class="slide-content">
+		<div class="box warn">
+			One problem in SIS is that, after a few iterations, all but one (or a few) particles have negligible weight. This is the so-called <b>degeneracy problem</b>.
+		</div>
+		<center>
+			<img src="../images/sis_degeneracy.gif" style="width:820px; max-width:100%; margin-top:20px; box-shadow:none; border:none; background:none;">
+		</center>
+
+		
+			</div>
+			</section>
+
+
+				
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Resampling </h2>
+				</div>
+				<div class="slide-content">
+		
+		<div class="box">
+Replaces the set of particles with a new one drawn according to the discrete distribution defined by the weights.
+		</div>
+
+		The resampling procedure can be described as follows:
+<ul>
+	<li>Interpret each weight $w_k^{(i)}$ as the probability of obtaining the sample index $i$ in the set $\{\hat{x}_k^{(i)} : i = 1, \dots, N\}$;</li>
+	<li>Draw $N$ samples from that discrete distribution and replace the old sample set with this new one;</li>
+	<li>Set all weights to the constant value $w_k^{(i)} = 1/N$.</li>
+</ul>
+			</div>
+			</section>
+			
+
+
+		<section>
+
+				<div class="slide-title">
+					<h2>Sequential Importance Resampling (SIR) </h2>
+				</div>
+				<div class="slide-content">
+		
+		<div class="lightup">
+Combining SIS with resampling results in the so-called <b>Sequential Importance Resampling (SIR)</b>, which is the basis for most particle filter implementations.
+		</div>
+
+		Usual condition for resampling (estimated effective sample size):
+		$$
+			\boxed{\hat{N}_\text{eff}=\frac{1}{\sum_{i=1}^N (w_k^{(i)})^2}}
+		$$
+		Resample if
+		$
+			\hat{N}_\text{eff} < \eta
+		$
+		where $\eta$ is a threshold, typically $\eta = N/2$.
+			</div>
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Same Example with Resampling (SIR)</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/sir_resampling.gif" style="width:1100px; max-width:100%; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+
+
+
+								<section>
+
+				<div class="slide-title">
+					<h2>Bootstrap Particle Filter</h2>
+				</div>
+				<div class="slide-content">
+		 <div class="box">
+			Assume that
+				$$
+					q(x_{k}|x_{k-1},y_{k})=p(x_{k}|x_{k-1})
+				$$
+				
+		 </div>
+
+		and <b>resample at every time step</b>.<br>
+
+		
+						Accordingly, 
+				$$
+				\boxed{w_{k}^{(i)}\propto w_{k-1}^{(i)} \frac{p(y_{k}|\hat{x}_{k}^{(i)})p(\hat{x}_{k}^{(i)}|\hat{x}_{k-1}^{(i)})}{q(\hat{x}_{k}^{(i)}|\hat{x}_{0:k-1}^{(i)},y_{1:k})}}
+				$$
+			</div>
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Bootstrap Particle Filter</h2>
+				</div>
+				<div class="slide-content">
+		 <div class="box">
+			Assume that
+				$$
+					q(x_{k}|x_{k-1},y_{k})=p(x_{k}|x_{k-1})
+				$$
+				
+		 </div>
+		 and <b>resample at every time step</b>.<br>
+
+		
+						Accordingly, 
+				$$
+				\boxed{w_{k}^{(i)}\propto \frac{1}{N} \frac{p(y_{k}|\hat{x}_{k}^{(i)})p(\hat{x}_{k}^{(i)}|\hat{x}_{k-1}^{(i)})}{p(\hat{x}_{k}^{(i)}|\hat{x}_{k-1}^{(i)})}}
+				$$
+			</div>
+			</section>
+
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Bootstrap Particle Filter</h2>
+				</div>
+				<div class="slide-content">
+		 <div class="box">
+			Assume that
+				$$
+					q(x_{k}|x_{k-1},y_{k})=p(x_{k}|x_{k-1})
+				$$
+				
+		 </div>
+
+		
+						Accordingly, 
+				$$
+				\boxed{w_{k}^{(i)}\propto p(y_{k}|\hat{x}_{k}^{(i)})}
+				$$
+			</div>
+			</section>
+
+
+					
+			<section>
+
+				<div class="slide-title">
+					<h2>Bootstrap PF Algorithm</h2>
+				</div>
+				<div class="slide-content">
+		<ul>
+			<li><b>Initialization:</b> Draw $N$ samples $\hat{x}_0^{(i)}$ from the initial distribution:
+				$$
+					\boxed{\hat{x}_0^{(i)} \sim p(x_0),\quad w_0^{(i)}=\frac{1}{N},\quad i=1,\ldots, N}
+				$$
+			</li>
+			<li><b>Time Update:</b> For all $k=1,2,\ldots$ do the following:
+			<br>
+				Draw samples $\hat{x}_k^{(i)}$ from the <b>state transition distribution</b>:
+				$$
+				\boxed{\hat{x}_k^{(i)} \sim p(x_k|\hat{x}_{k-1}^{(i)}),\quad i=1,\ldots,N}
+				$$
+			</li>
+		</ul>
+			</div>
+			</section>
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Bootstrap PF Algorithm</h2>
+				</div>
+				<div class="slide-content">
+		<ul>
+		
+			<li>Compute the <b>weights</b> according to
+				$$
+					\boxed{w_k^{(i)} \propto p(y_k|\hat{x}_k^{(i)})}
+				$$
+				and <b>normalize</b> them to sum to unity.
+			</li>
+			<li><b>Compute the mean and covariance:</b>
+			$$
+				\boxed{\hat{x}_{k|k}=\sum_{i=1}^N w_k^{(i)} \hat{x}_k^{(i)}} ,\quad
+				\boxed{P_{k|k}  = \sum_{i=1}^N w_k^{(i)} (\hat{x}_k^{(i)}-\hat{x}_{k|k})(\bullet)^\trp}
+			$$
+			</li>
+			<li>Do <b>resampling</b>.</li>
+		</ul>
+			</div>
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Toy Example: Differential-Drive Robot</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/bootstrap_pf_robot.gif" style="height:600px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Local Linearization Particle Filter (LLPF)</h2>
+				</div>
+				<div class="slide-content">
+		Assume that
+		<div class="box">
+				$$
+					q(x_{k}|\hat{x}_{0:k-1}^{(i)},y_{k})=\mathcal{N}(\hat{x}^{(i)}_{k|k},P_{k|k}^{(i)})
+				$$
+</div>
+where $\{\hat{x}_{k|k}^{(i)},P_{k|k}^{(i)}\}$ is obtained, for each particle, by one prediction and update step (using $y_{k}$) of a nonlinear Kalman filter (EKF or UKF) started at $\hat{x}_{k-1}^{(i)}$.
+<br>
+<ul>
+	<li>EKF &rarr; Extended Kalman Particle Filter (EKPF);</li>
+	<li>UKF &rarr; Unscented Particle Filter (UPF).</li>
+</ul>
+			</div>
+			</section>
+
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Particle Filter</h2>
+				</div>
+				<div class="slide-content">
+					Observations:
+		<ul>
+		<li>
+			The local linearization method approximates the optimal importance density and moves particles toward regions of high likelihood;
+		</li>
+			<li>Since particle filters are computationally expensive, one should use them only when conventional Kalman filters (KF, EKF, UKF) do not produce satisfactory results.
+			</li>
+			<li>Resampling duplicates high-weight particles, so the set may collapse to a few distinct values (<b>sample impoverishment</b>), especially when the process noise is small.
+			</li>
+		</ul>
+			</div>
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Global Robot Localization</h2>
+				</div>
+			
+					<img src="../images/mcl_global_localization.gif" style="height:600px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+			
+			</section>
+
+
+
+			<section>
+		
+				<div class="slide-content">
+					<center>
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+					<h2>Until next time!</h2>
+				</center>
+				</div>
+
+			</section>
+
+
+
+
+				
+
+
+
+				<!------------------------>
+			</div>
+		</div>
+
+		
+
+		<script src="../dist/reveal.js"></script>
+		<script src="../plugin/notes/notes.js"></script>
+		<script src="../plugin/markdown/markdown.js"></script>
+		<script src="../plugin/highlight/highlight.js"></script>
+		<script src="../plugin/math/math.js"></script>
+		<script src="../init.js"></script>
+		<script src="../plugin/handwriting/plugin.js"></script>
+	</body>
+</html>
