@@ -1,0 +1,1034 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>SEL5917 - Estimation, Identification and Stochastic Filtering</title>
+
+		<link rel="stylesheet" href="../dist/reset.css">
+		<link rel="stylesheet" href="../dist/reveal.css">
+		<link rel="stylesheet" href="../dist/theme/white.css" id="theme">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="../plugin/highlight/monokai.css" id="highlight-theme">
+		<link rel="stylesheet" href="../style.css">
+	</head>
+	<body>
+		
+		<div class="reveal">
+			<div class="slides">
+				
+				<section data-hide-slide-number="true" data-transition="slide">
+					<div class="logo"><img src="../images/sel.png"/> </div>
+					<div class="logo2"><img src="../images/Logo EESC-USP_top.png"/> </div>
+					<div class="title">
+						<p>&nbsp;</p>
+					<h2>Lie Group Theory & Kalman Filtering <br>SEL5917</h2>
+					</div>
+					<div class="author">
+					<h3>Prof. Dr. Marcos Rogério Fernandes</h3>
+				</div>
+					<div class="advisor">
+					
+					<p style="text-align: center;font-size: 0.8em;">October 20, 2026</p>
+				</div>
+
+				</section>
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Objectives:</h2>
+				</div>
+				<p>&nbsp;</p>
+				<div class="slide-content">
+					<p>The objectives of this class are to understand:</p>
+						<ul>
+							<li>Introduction to Lie Group Theory;</li>
+							<li>Random Variables on Lie Groups;</li>
+							<li>Dynamic Systems on Lie Groups;</li>
+							<li>EKF on Lie Groups;</li>
+							<li>Example;</li>
+						</ul>
+						</div>
+
+			</section>
+
+
+		
+
+			
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Group Theory</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Definition (Group):</span>
+						<em>The pair $(G, \cdot)$ is a group if the following axioms are satisfied:</em>
+</p>
+
+<ol>
+  <li><em>Closure:</em> $a \cdot b \in G, \, \forall a, b \in G$</li>
+  <li><em>Associativity:</em> $a \cdot (b \cdot c) = (a \cdot b) \cdot c \quad \forall a, b, c, \in G$</li>
+  <li><em>Identity element:</em> <em>there is an element</em> $1_G \in G$ <em>such that</em> <br>$a \cdot 1_G = 1_G \cdot a = a, \, \forall a \in G$</li>
+  <li><em>inverse element:</em> <em>for each</em> $a \in G$, <em>there is an element</em> $b \in G$ <em>such that</em> $a \cdot b = 1_G$</li>
+</ol>
+						</div>
+
+					
+
+		</div>
+
+						
+
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Discrete Group: Symmetries of the Square</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_def01b_discrete_group.svg" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Continuous Group: Symmetries of the Circle</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_def01_circle_group.svg" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+
+
+			
+			<section>
+
+				<div class="slide-title">
+					<h2>Topology</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Definition (Topology):</span>
+ <em>Let $X$ be a set. A topology $\mathcal{T}$ on $X$ is a collection of subsets of $X$ such that</em>
+</p>
+
+<ol>
+  <li>$\emptyset \in \mathcal{T}$ <em>and</em> $X \in \mathcal{T}$;</li>
+  <li><em>The union of the elements of any subcollection of</em> $\mathcal{T}$ <em>is in</em> $\mathcal{T}$;</li>
+  <li><em>The intersection of the elements of any finite subcollection of</em> $\mathcal{T}$ <em>is in</em> $\mathcal{T}$.</li>
+</ol>
+
+<p>
+  <em>The ordered pair $(X, \mathcal{T})$ is a topological space. The elements of $\mathcal{T}$ are called open sets of $X$. </em>
+</p>
+						</div>
+
+					
+
+		</div>
+
+						
+
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Topology</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_def02_topology_v5.svg" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+			
+
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Hausdorff Space</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Definition (Hausdorff Space):</span>
+ <p>
+ <em>A topological space $(X, \mathcal{T})$ is said to be a Hausdorff space if for every pair $x_1, x_2 \in X$, with $x_1 \neq x_2$, there exist open neighborhoods $U_1$ and $U_2$ such that $x_1 \in U_1$, $x_2 \in U_2$ and $U_1 \cap U_2 = \emptyset$.</em>
+</p>
+						</div>
+
+					
+
+		</div>
+
+						
+
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Hausdorff Space</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_def03_hausdorff_v2.svg" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Homeomorphism</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Definition (Homeomorphism):</span>
+ <p>
+ <em>Let $X$ and $Y$ be topological spaces. A function $f : X \to Y$ is said to be an homeomorphism if</em>
+</p>
+
+<ul>
+  <li><em>$f$ is a bijection</em></li>
+  <li><em>Both $f$ and $f^{-1}$ are continuous</em></li>
+</ul>
+						</div>
+
+					
+
+		</div>
+
+						
+
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Homeomorphism</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_def04_homeomorphism_v2.svg" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Homeomorphism in 3D</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_homeo3d_v3.png" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+
+
+					<section>
+
+				<div class="slide-title">
+					<h2>Manifold</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Definition (Manifold):</span>
+ <p>
+ <em>A topological space $M$ is said do be a manifold of dimension $m$ if:</em>
+</p>
+
+<ol>
+  <li><em>$M$ is a Hausdorf space;</em></li>
+  <li><em>$M$ has a countable basis for its topology (second-countable);</em></li>
+  <li><em>for each point $p \in M$, there exist an open set $U \subset M$, an open set $V \subset \mathbb{R}^m$ and a map $\phi : U \to V$, such that $p \in U$ and $\phi$ is an homeomorphism.</em></li>
+</ol>
+						</div>
+
+					
+
+		</div>
+
+						
+
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Manifold</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_def05_manifold_v2.svg" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+
+			
+						<section>
+
+				<div class="slide-title">
+					<h2>Chart</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Definition (Chart):</span>
+ <p>
+ <em>Let $M$ be a $m$-dimensional topological manifold. A $m$-dimensional chart is an homeomorphism $\phi$ from an open subset $U \subset M$ to an open subset $V \subset \mathbb{R}^m$. </em>
+</p>
+						</div>
+obs: $U$ is called a coordinate open subset, the map $\phi$ is called a coordinate map, and the components of $\phi(p)$, for some $p \in U$, are called the coordinates of $p$ in the chart $\phi$.
+					
+
+		</div>
+
+						
+
+			</section>
+
+			
+
+
+
+			
+						<section>
+
+				<div class="slide-title">
+					<h2>$C^k$-Atlas</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Definition ($C^k$-Atlas):</span>
+<p>
+ <em>A $m$-dimensional Atlas of differentiability class $C^k$, or a $C^k$-Atlas, for a manifold $M$ is a set $\mathcal{A}$ of $C^k$-compatible charts in $M$ such that the domain covers $M$.</em>
+</p>
+		</div>
+
+						
+
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>$C^k$-Atlas</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_def08_atlas_v2.svg" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+
+
+			
+	
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Transition Map</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Definition (Transition Map):</span>
+<p>
+ <em>Let $M$ be a $m$-dimensional topological manifold. Let $\phi : U \to \mathbb{R}^m$ and $\psi : V \to \mathbb{R}^m$ be charts in $M$ for $U \subset M$ and $V \subset M$ with $U \cap V \neq \varnothing$. The maps</em>
+</p>
+
+$$
+\begin{aligned}
+  \psi \circ \phi^{-1} &: \phi(U \cap V) \to \psi(U \cap V) \\
+  \phi \circ \psi^{-1} &: \psi(U \cap V) \to \phi(U \cap V)
+\end{aligned}
+$$
+
+<p>
+  <em>are called transition maps (from $\phi$ to $\psi$ and from $\psi$ to $\phi$).</em>
+</p>
+		</div>
+
+						
+
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Transition Map</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_def07_transition_v2.svg" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>$C^k$-Manifold</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Definition ($C^k$-Manifold):</span>
+<p>
+  <em>A $m$-dimensional topological manifold $M$ provided with a $C^k$-Atlas $\mathcal{A}$ forms the pair $(M, \mathcal{A})$ and is defined as a $C^k$-manifold. If the atlas $\mathcal{A}$ is of class $C^\infty$, then the manifold is said to be a smooth manifold.</em>
+</p>
+		</div>
+
+						
+
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>$C^k$-Manifold</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_def09_ckmanifold_v3.svg" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+
+
+			
+				<section>
+
+				<div class="slide-title">
+					<h2>$C^k$-Map</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Definition ($C^k$-Map):</span>
+<p>
+  <em>Let $M$ and $N$ be $C^k$-manifolds. A map $f : M \to N$ is said to be a $C^k$-map if, for any charts $\phi$ of $M$ and $\psi$ of $N$, the composition $\psi \circ f \circ \phi^{-1}$ is of class $C^k$ on its domain.</em>
+</p>
+		</div>
+
+		Obs: A map $f : M \to N$ is said to be smooth if it is $C^\infty$-map.
+
+						
+
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>$C^k$-Map</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_def10_ckmap_v2.svg" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+
+
+
+
+
+
+						<section>
+
+				<div class="slide-title">
+					<h2>Lie Group Theory</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Definition (Lie Group):</span>
+ <p>
+ <em>A Lie group is a group whose set $G$ also has a structure of a smooth manifold ($C^\infty$), so that the product map</em>
+</p>
+
+$$
+\begin{aligned}
+  \Psi : G \times G &\to G \\
+  (g, h) &\mapsto \Psi(g, h) = g\cdot h
+\end{aligned}
+$$
+
+<p>
+  <em>is smooth map ($C^\infty$).</em>
+</p>
+						</div>
+
+					
+
+		</div>
+
+						
+
+			</section>
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Special Orthogonal Group $SO(n)$</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Definition (Special Orthogonal Group $SO(n)$):</span>
+<p>
+  <em>The special orthogonal group of dimension $n$ is the set of rotation matrices</em>
+</p>
+
+$$
+SO(n) = \left\{ R \in \mathbb{R}^{n \times n} \;:\; R^\top R = R R^\top = I_n, \;\; \det(R) = +1 \right\}
+$$
+
+<p>
+  <em>with the matrix product as group operation, identity $I_n$ and inverse $R^{-1} = R^\top$. It is a Lie group of dimension $n(n-1)/2$; e.g., $SO(2)$ (planar rotations) and $SO(3)$ (rotations in 3D).</em>
+</p>
+					</div>
+
+		</div>
+
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Lie Group Theory</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_def11_liegroup_v2.svg" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Special Euclidean Group $SE(n)$</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Definition (Special Euclidean Group $SE(n)$):</span>
+<p>
+  <em>The special Euclidean group (rigid-body transformations) is</em>
+</p>
+
+$$
+SE(n) = \left\{ G = \begin{bmatrix} R & t \\ 0 & 1 \end{bmatrix} \;:\; R \in SO(n),\; t \in \mathbb{R}^n \right\}
+$$
+
+<p>
+  <em>with the matrix product, identity $I_{n+1}$ and inverse $G^{-1} = \left[\begin{smallmatrix} R^\top & -R^\top t \\ 0 & 1 \end{smallmatrix}\right]$. Dimension $n(n+1)/2$; e.g., $SE(2)$ and $SE(3)$.</em>
+</p>
+					</div>
+
+		</div>
+
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>$SE(2)$: Pose of a Differential Robot</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_se2_robot.svg" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Translation Group $T(n)$</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Definition (Translation Group $T(n)$):</span>
+<p>
+  <em>The translation group of dimension $n$ is the set of pure translations</em>
+</p>
+
+$$
+T(n) = \left\{ \begin{bmatrix} I_n & t \\ 0 & 1 \end{bmatrix} \;:\; t \in \mathbb{R}^n \right\} \cong (\mathbb{R}^n, +)
+$$
+
+<p>
+  <em>with composition $t_1 + t_2$, identity $0$ and inverse $-t$. It is a commutative (abelian) Lie group of dimension $n$, where $\mathrm{Exp}(\tau) = \tau$ and $\mathrm{Log}(t) = t$.</em>
+</p>
+					</div>
+
+		</div>
+
+			</section>
+
+
+
+				<section>
+
+				<div class="slide-title">
+					<h2>Lie Algebra Theory</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Definition (Lie Algebra):</span>
+ <p>
+  <em>A Lie algebra is a vector space $\mathfrak{g}$ with a product operation $[\cdot, \cdot] : \mathfrak{g} \times \mathfrak{g} \to \mathfrak{g}$ satisfying:</em>
+</p>
+
+<ol type="i">
+  <li><em>The $[\cdot, \cdot]$ product is linear in each of the variables.</em></li>
+  <li><em>$[X, Y] = -[Y, X]$, for every $X, Y \in \mathfrak{g}$.</em></li>
+  <li><em>The Jacobi identity: <Br>$[X, [Y, Z]] + [Z, [X, Y]] + [Y, [Z, X]] = 0$,<Br> for every $X, Y, Z \in \mathfrak{g}$.</em></li>
+</ol>
+
+<p>
+  <em>This product operation is called the Lie bracket.</em>
+</p>
+						</div>
+
+					
+
+		</div>
+
+						
+
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Lie Bracket</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_bracket.svg" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Lie Algebra</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_def12_liealgebra_v2.svg" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Example: Lie Algebra of S<sup>1</sup></h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:space-between; gap:20px;">
+					<img src="../images/lesson9/lie_s1_algebra.svg" style="width:40%; box-shadow:none; border:none; background:none;">
+					<div style="width:58%; font-size:0.85em;">
+$$
+\begin{aligned}
+  & z^* z = z\, z^* = 1 \quad \text{(group constraint)} \\[4pt]
+  & \frac{d}{dt}(z^* z) = \dot{z}^* z + z^* \dot{z} = 0 \\[4pt]
+  \Rightarrow\;& z^* \dot{z} = -(z^* \dot{z})^* = j\omega \\[4pt]
+  \Rightarrow\;& \boxed{\dot{z} = z\, j\omega}, \quad \dot{z} \in T_z G \\[4pt]
+  \Rightarrow\;& z(t) = z(0)\, \exp(j\omega t) \\[4pt]
+  \Rightarrow\;& \exp(j\omega t) = z(0)^* z(t) \in G
+\end{aligned}
+$$
+					</div>
+				</div>
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Example: Exponential Map on S<sup>1</sup></h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_exp_series_v6.gif" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Example: Exponential Map on S<sup>1</sup></h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_s1_exp_limit.svg" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+			
+
+			<section>
+				<div class="slide-title">
+					<h2>Exp and Log Maps</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_exp_log.svg" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Exponential Map</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Definition (Exponential Map):</span>
+<p>
+  <em>Let $G$ be a matrix Lie group with Lie algebra $\mathfrak{g}$. The exponential map $\exp : \mathfrak{g} \to G$ is</em>
+</p>
+
+$$
+\exp(\tau^\wedge) = \sum_{k=0}^{\infty} \frac{(\tau^\wedge)^k}{k!}
+$$
+
+<p>
+  <em>and $\mathrm{Exp} : \mathbb{R}^m \to G$ is $\mathrm{Exp}(\tau) = \exp(\tau^\wedge)$.</em>
+</p>
+					</div>
+
+		</div>
+
+			</section>
+
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Logarithmic Map</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Definition (Logarithmic Map):</span>
+<p>
+  <em>The logarithmic map $\log : G \to \mathfrak{g}$ is the inverse of $\exp$, given near $I$ by</em>
+</p>
+
+$$
+\log(\mathcal{X}) = \sum_{k=1}^{\infty} \frac{(-1)^{k+1}}{k}(\mathcal{X} - I)^k
+$$
+
+<p>
+  <em>and $\mathrm{Log} : G \to \mathbb{R}^m$ is $\mathrm{Log}(\mathcal{X}) = \log(\mathcal{X})^\vee$.</em>
+</p>
+					</div>
+
+		</div>
+
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Adjoint</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_adjoint_v2.svg" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Jacobian</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_jacobian.svg" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Plus and Minus Operators</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_plus_minus.svg" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Random Variables on Lie Groups</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_gaussian_v3.svg" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Random Variables on Lie Groups</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Definition (Concentrated Gaussian):</span>
+<p>
+  <em>A random variable $\mathcal{X} \in G$ has a concentrated Gaussian distribution, $\mathcal{X} \sim \mathcal{N}_G(\bar{\mathcal{X}}, \Sigma)$, if</em>
+</p>
+
+$$
+\mathcal{X} = \bar{\mathcal{X}} \oplus \tau = \bar{\mathcal{X}} \cdot \mathrm{Exp}(\tau), \qquad \tau \sim \mathcal{N}(0, \Sigma)
+$$
+
+<p>
+  <em>where $\bar{\mathcal{X}} \in G$ is the mean and $\Sigma$ is the covariance in $T_{\bar{\mathcal{X}}}G$, small enough that $\mathrm{Exp}$ is one-to-one. Its density is</em>
+</p>
+
+$$
+p(\mathcal{X}) \propto \exp\left(-\tfrac{1}{2}(\mathcal{X} \ominus \bar{\mathcal{X}})^\top \Sigma^{-1} (\mathcal{X} \ominus \bar{\mathcal{X}})\right)
+$$
+					</div>
+
+		</div>
+
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Example: Random Walk on the Sphere</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_sphere_randomwalk_v4.gif" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Example: Banana-Shaped Distribution</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_banana_v5.png" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Example: Banana-Shaped Distribution in 3D</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_banana3d_v8.png" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Dynamic Systems on Lie Groups</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">Discrete-Time Model:</span>
+
+$$
+\begin{aligned}
+  \mathcal{X}_{k+1} &= \mathcal{X}_k \, \mathrm{Exp}_G\big(\Omega(\mathcal{X}_k, u_k) + w_k\big), \\
+  y_k &= h(\mathcal{X}_k) \, \mathrm{Exp}_{G'}(v_k)
+\end{aligned}
+$$
+
+<ul>
+  <li><em>$\mathcal{X}_k \in G$: state; $u_k$: input; $\Omega : G \times \mathbb{R}^p \to \mathbb{R}^m$: velocity (increment) in the Lie algebra</em></li>
+  <li><em>$y_k \in G'$: measurement; $h : G \to G'$: observation map</em></li>
+  <li><em>$w_k \sim \mathcal{N}(0, Q_k)$ and $v_k \sim \mathcal{N}(0, R_k)$: process and measurement noises in the tangent spaces</em></li>
+</ul>
+					</div>
+
+		</div>
+
+			</section>
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Classical EKF</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">EKF (Euclidean case):</span>
+
+$$
+\begin{aligned}
+  \hat{x}_{k+1|k} &= f(\hat{x}_{k|k}, u_k), \\
+  P_{k+1|k} &= F_k P_{k|k} F_k^\top + Q_k, \\
+  K &= P_{k+1|k} H^\top \left(R_{k+1} + H P_{k+1|k} H^\top\right)^{-1}, \\
+  \hat{x}_{k+1|k+1} &= \hat{x}_{k+1|k} + K\big(y_{k+1} - h(\hat{x}_{k+1|k})\big), \\
+  P_{k+1|k+1} &= (I - K H) P_{k+1|k} (I - K H)^\top + K R_{k+1} K^\top
+\end{aligned}
+$$
+					</div>
+
+		</div>
+
+			</section>
+
+			<section>
+
+				<div class="slide-title">
+					<h2>D-EKF on Lie Groups</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">D-EKF-LIE (Prediction):</span>
+
+$$
+\begin{aligned}
+  \hat{\mathcal{X}}_{k+1|k} &= \hat{\mathcal{X}}_{k|k} \, \mathrm{Exp}_G(\hat{\Omega}_k), \\
+  P_{k+1|k} &= \mathcal{F} P_{k|k} \mathcal{F}^\top + J_r(\hat{\Omega}_k) Q_k J_r(\hat{\Omega}_k)^\top
+\end{aligned}
+$$
+
+<p>
+  <em>where $\hat{\Omega}_k = \Omega(\hat{\mathcal{X}}_{k|k}, u_k)$, $\mathcal{F}$ is the Jacobian of the model with respect to $\mathcal{X}$, and $J_r$ is the right Jacobian of $G$.</em>
+</p>
+					</div>
+
+		</div>
+
+			</section>
+
+
+
+			<section>
+
+				<div class="slide-title">
+					<h2>D-EKF on Lie Groups</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+						<span class="box-title">D-EKF-LIE (Update):</span>
+
+$$
+\begin{aligned}
+  K &= P_{k+1|k} \mathcal{H}^\top \left(R_{k+1} + \mathcal{H} P_{k+1|k} \mathcal{H}^\top\right)^{-1}, \\
+  z_{k+1} &= \mathrm{Log}_{G'}\big(h(\hat{\mathcal{X}}_{k+1|k})^{-1} \, y_{k+1}\big), \\
+  \hat{\mathcal{X}}_{k+1|k+1} &= \hat{\mathcal{X}}_{k+1|k} \, \mathrm{Exp}_G(K z_{k+1}), \\
+  P_{k+1|k+1} &= (I - K\mathcal{H}) P_{k+1|k} (\bullet)^\top + K R_{k+1} K^\top
+\end{aligned}
+$$
+
+<p>
+  <em>where $z_{k+1}$ is the innovation and $\mathcal{H}$ is the Jacobian of $h$ with respect to $\mathcal{X}$.</em>
+</p>
+					</div>
+
+		</div>
+
+			</section>
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Example: Navigation on $SE(3)$</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+					
+
+$$
+\begin{aligned}
+  \mathcal{X}_k &= \begin{bmatrix} R_k & p_k \\ 0 & 1 \end{bmatrix} \in SE(3), \\
+  \mathcal{X}_{k+1} &= \mathcal{X}_k \, \mathrm{Exp}\left( \begin{bmatrix} v_k \\ \omega_k \end{bmatrix} \Delta t + w_k \right), \\
+  y_k &= p_k + \nu_k
+\end{aligned}
+$$
+
+<ul>
+  <li><em>$R_k \in SO(3)$: attitude; $p_k \in \mathbb{R}^3$: position</em></li>
+  <li><em>$u_k = (v_k, \omega_k)$: body velocity (odometry) and angular rate (gyroscope)</em></li>
+  
+</ul>
+					</div>
+
+		</div>
+
+			</section>
+
+			<section>
+
+				<div class="slide-title">
+					<h2>Example: Inertial Navigation on SE<sub>2</sub>(3)</h2>
+				</div>
+				<div class="slide-content">
+					<div class="box">
+					$$
+\mathcal{X}_k = \begin{bmatrix} R_k & v_k & p_k \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix} \in SE_2(3)
+$$
+
+$$
+\begin{aligned}
+  R_{k+1} &= R_k \, \mathrm{Exp}\big((\tilde{\omega}_k - n^{\omega}_k)\Delta t\big), \\
+  v_{k+1} &= v_k + \big(R_k(\tilde{a}_k - n^{a}_k) + g\big)\Delta t, \\
+  p_{k+1} &= p_k + v_k \Delta t + \tfrac{1}{2}\big(R_k(\tilde{a}_k - n^{a}_k) + g\big)\Delta t^2
+\end{aligned}
+$$
+
+<ul>
+  <li><em>$\tilde{\omega}_k, \tilde{a}_k$: gyroscope and accelerometer readings (IMU); $g$: gravity</em></li>
+  
+</ul>
+					</div>
+
+		</div>
+
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Example: Map-Based Localization</h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:space-between; gap:20px;">
+					<img src="../images/lesson9/lie_localization.svg" style="width:47%; box-shadow:none; border:none; background:none;">
+					<div style="width:52%; font-size:0.8em;">
+$$
+\begin{aligned}
+  \mathcal{X}_k &= \begin{bmatrix} R(\theta_k) & p_k \\ 0 & 1 \end{bmatrix} \in SE(2) \\[4pt]
+  \mathcal{X}_{k+1} &= \mathcal{X}_k \, \mathrm{Exp}\big(u_k \Delta t + w_k\big) \\[4pt]
+  y^i_k &= R(\theta_k)^\top (b_i - p_k) + \nu^i_k
+\end{aligned}
+$$
+<ul style="font-size:0.85em;">
+  <li><em>$u_k = (v_k, 0, \omega_k)$: odometry (linear and angular velocity)</em></li>
+  <li><em>$b_i$: known landmarks (the map)</em></li>
+  <li><em>$y^i_k$: landmark $b_i$ measured in the robot frame</em></li>
+  <li><em>The D-EKF-LIE estimates $\mathcal{X}_k$ from $u_k$ and $y^i_k$</em></li>
+</ul>
+					</div>
+				</div>
+			</section>
+
+			<section>
+				<div class="slide-title">
+					<h2>Example: Map-Based Localization </h2>
+				</div>
+				<div class="slide-content" style="display:flex; align-items:center; justify-content:center;">
+					<img src="../images/lesson9/lie_localization_v2.gif" style="height:590px; max-width:100%; object-fit:contain; box-shadow:none; border:none; background:none;">
+				</div>
+			</section>
+
+
+
+
+
+			<section>
+		
+				<div class="slide-content">
+					<center>
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+					<h2>Until next time!</h2>
+				</center>
+				</div>
+
+			</section>
+
+
+
+
+				
+
+
+
+				<!------------------------>
+			</div>
+		</div>
+
+		
+
+		<script src="../dist/reveal.js"></script>
+		<script src="../plugin/notes/notes.js"></script>
+		<script src="../plugin/markdown/markdown.js"></script>
+		<script src="../plugin/highlight/highlight.js"></script>
+		<script src="../plugin/math/math.js"></script>
+		<script src="../init.js"></script>
+		<script src="../plugin/handwriting/plugin.js"></script>
+	</body>
+</html>

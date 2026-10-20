@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 480" width="100%" height="100%" style="background-color: #fafbfc; font-family: &#39;Cambria Math&#39;, &#39;STIX Two Math&#39;, &#39;Times New Roman&#39;, serif;">
+  <defs>
+    <!-- Sombra suave para acabamento visual refinado -->
+    <filter id="soft-shadow" x="-8%" y="-8%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.05" />
+    </filter>
+
+    <!-- Gradiente da Variedade M (Tons neutros suaves) -->
+    <linearGradient id="manifold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="60%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#edf2f7" />
+    </linearGradient>
+
+    <!-- Gradiente dos planos R^m -->
+    <linearGradient id="plane-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#f8fafc" />
+    </linearGradient>
+
+    <!-- Marcadores de Flechas com cores coordenadas -->
+    <marker id="arrow-slate" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#475569" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#2563eb" />
+    </marker>
+    <marker id="arrow-rose" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#e11d48" />
+    </marker>
+
+    <!-- Máscaras de recorte para as sobreposições -->
+    <clipPath id="clip-manifold-u">
+      <path d="M 330,120 C 375,95 445,100 455,135 C 465,165 395,185 350,170 C 315,155 300,135 330,120 Z" />
+    </clipPath>
+    <clipPath id="clip-plane-u">
+      <ellipse cx="260" cy="385" rx="70" ry="32" transform="rotate(-6, 260, 385)" />
+    </clipPath>
+    <clipPath id="clip-plane-v">
+      <ellipse cx="660" cy="385" rx="70" ry="32" transform="rotate(4, 660, 385)" />
+    </clipPath>
+  </defs>
+
+  <!-- =================================================== -->
+  <!-- 1. TOPO: VARIEDADE M                                -->
+  <!-- =================================================== -->
+  <g id="manifold-group">
+    <!-- Superfície M -->
+    <path d="M 175,190 C 240,105 320,55 440,60 C 570,65 650,95 730,65 C 680,135 700,195 685,220 C 560,250 350,245 175,190 Z" fill="url(#manifold-grad)" stroke="#64748b" stroke-width="1.8" stroke-linejoin="round" filter="url(#soft-shadow)" />
+
+    <!-- Aberto U (Azul Céu translúcido) -->
+    <path d="M 330,120 C 375,95 445,100 455,135 C 465,165 395,185 350,170 C 315,155 300,135 330,120 Z" fill="#38bdf8" fill-opacity="0.18" stroke="#0284c7" stroke-width="1.6" stroke-dasharray="5 3.5" />
+
+    <!-- Aberto V (Lavanda / Índigo translúcido) -->
+    <path d="M 410,125 C 445,90 515,100 530,135 C 540,170 480,195 435,180 C 390,165 385,145 410,125 Z" fill="#818cf8" fill-opacity="0.18" stroke="#6366f1" stroke-width="1.6" stroke-dasharray="5 3.5" />
+
+    <!-- Interseção U ∩ V (Âmbar Suave) -->
+    <path d="M 410,125 C 445,90 515,100 530,135 C 540,170 480,195 435,180 C 390,165 385,145 410,125 Z" clip-path="url(#clip-manifold-u)" fill="#f59e0b" fill-opacity="0.5" stroke="#d97706" stroke-width="1" />
+
+    <!-- Rótulos em M -->
+    <text x="670" y="110" font-size="24" font-style="italic" fill="#334155" font-weight="bold">M</text>
+    <text x="345" y="125" font-size="19" font-style="italic" fill="#0369a1" font-weight="600">U</text>
+    <text x="495" y="168" font-size="19" font-style="italic" fill="#4338ca" font-weight="600">V</text>
+  </g>
+
+  <!-- =================================================== -->
+  <!-- 2. BASE: PLANOS EUCLIDIANOS (R^m)                   -->
+  <!-- =================================================== -->
+  <!-- Plano Esquerdo: R^m (Carta phi) -->
+  <g id="plane-left">
+    <polygon points="160,320 460,320 330,440 30,440" fill="url(#plane-grad)" stroke="#94a3b8" stroke-width="1.4" stroke-linejoin="round" filter="url(#soft-shadow)" />
+
+    <!-- phi(U) -->
+    <ellipse cx="260" cy="385" rx="70" ry="32" transform="rotate(-6, 260, 385)" fill="#38bdf8" fill-opacity="0.16" stroke="#0284c7" stroke-width="1.5" stroke-dasharray="5 3.5" />
+
+    <!-- phi(U ∩ V) -->
+    <ellipse cx="290" cy="382" rx="36" ry="22" transform="rotate(-6, 290, 382)" clip-path="url(#clip-plane-u)" fill="#f59e0b" fill-opacity="0.5" stroke="#d97706" stroke-width="1" />
+
+    <text x="410" y="345" font-size="19" font-style="italic" fill="#64748b" font-weight="bold">ℝ<tspan font-size="13" dy="-6">m</tspan></text>
+    <text x="148" y="400" font-size="18" font-style="italic" fill="#0284c7" font-weight="600">ϕ(U)</text>
+  </g>
+
+  <!-- Plano Direito: R^m (Carta psi) -->
+  <g id="plane-right">
+    <polygon points="560,320 860,320 730,440 430,440" fill="url(#plane-grad)" stroke="#94a3b8" stroke-width="1.4" stroke-linejoin="round" filter="url(#soft-shadow)" />
+
+    <!-- psi(V) -->
+    <ellipse cx="660" cy="385" rx="70" ry="32" transform="rotate(4, 660, 385)" fill="#818cf8" fill-opacity="0.16" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="5 3.5" />
+
+    <!-- psi(U ∩ V) -->
+    <ellipse cx="628" cy="386" rx="36" ry="22" transform="rotate(4, 628, 386)" clip-path="url(#clip-plane-v)" fill="#f59e0b" fill-opacity="0.5" stroke="#d97706" stroke-width="1" />
+
+    <text x="810" y="345" font-size="19" font-style="italic" fill="#64748b" font-weight="bold">ℝ<tspan font-size="13" dy="-6">m</tspan></text>
+    <text x="705" y="418" font-size="18" font-style="italic" fill="#4338ca" font-weight="600">ψ(V)</text>
+  </g>
+
+  <!-- =================================================== -->
+  <!-- 3. MAPEAMENTOS E MAPAS DE TRANSIÇÃO                 -->
+  <!-- =================================================== -->
+  <!-- Mapeamento phi -->
+  <path d="M 315,145 Q 180,175 190,368" fill="none" stroke="#475569" stroke-width="1.6" marker-end="url(#arrow-slate)" />
+  <rect x="175" y="215" width="30" height="26" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+  <text x="190" y="233" text-anchor="middle" font-size="18" font-style="italic" fill="#334155" font-weight="600">ϕ</text>
+
+  <!-- Mapeamento psi -->
+  <path d="M 520,180 Q 610,225 700,368" fill="none" stroke="#475569" stroke-width="1.6" marker-end="url(#arrow-slate)" />
+  <rect x="650" y="255" width="30" height="26" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+  <text x="665" y="273" text-anchor="middle" font-size="18" font-style="italic" fill="#334155" font-weight="600">ψ</text>
+
+  <!-- Transição: psi o phi^-1 (Arco Superior em Azul Equilibrado) -->
+  <path d="M 302,375 C 370,285 530,285 612,370" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-dasharray="5 3" marker-end="url(#arrow-blue)" />
+  <rect x="408" y="272" width="94" height="24" rx="4" fill="#f0f7ff" stroke="#bfdbfe" stroke-width="1" />
+  <text x="455" y="289" text-anchor="middle" font-size="14" font-style="italic" fill="#1d4ed8" font-weight="600">
+    ψ ∘ ϕ<tspan font-size="10" dy="-5">−1</tspan>
+  </text>
+
+  <!-- Transição: phi o psi^-1 (Arco Inferior em Rosa Suave) -->
+  <path d="M 620,400 C 540,475 385,470 318,412" fill="none" stroke="#e11d48" stroke-width="1.8" stroke-dasharray="5 3" marker-end="url(#arrow-rose)" />
+  <rect x="418" y="440" width="94" height="24" rx="4" fill="#fff1f2" stroke="#fecdd3" stroke-width="1" />
+  <text x="465" y="457" text-anchor="middle" font-size="14" font-style="italic" fill="#be123c" font-weight="600">
+    ϕ ∘ ψ<tspan font-size="10" dy="-5">−1</tspan>
+  </text>
+</svg>
